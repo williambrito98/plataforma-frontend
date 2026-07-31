@@ -1,5 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { User } from "lucide-react";
+import { Sun, User } from "lucide-react";
+import { useTheme } from "next-themes";
 
 import {
   SidebarMenu,
@@ -12,10 +13,10 @@ import { AdminIcon } from "@/features/admin/components/admin-icon";
 import { cn } from "@/lib/utils";
 
 const navButtonClassName =
-  "h-10 gap-2 rounded-md px-4 py-2 text-sm leading-5 text-[#737373] hover:bg-accent hover:text-[#737373] group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-3 group-data-[collapsible=icon]:py-2.5";
+  "h-10 gap-2 rounded-md px-4 py-2 text-sm leading-5 text-muted-foreground hover:bg-accent hover:text-muted-foreground group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-3 group-data-[collapsible=icon]:py-2.5";
 
 const activeNavButtonClassName =
-  "border border-[#A3A3A3] bg-accent text-[#404040] hover:bg-accent hover:text-[#404040]";
+  "border border-muted-foreground bg-accent text-foreground hover:bg-accent hover:text-foreground";
 
 export function AdminSidebarNav() {
   const { state } = useSidebar();
@@ -53,18 +54,30 @@ export function AdminSidebarNav() {
 
 export function AdminSidebarDarkModeItem() {
   const { state } = useSidebar();
+  const { resolvedTheme, setTheme } = useTheme();
   const isCollapsed = state === "collapsed";
+  const isDark = resolvedTheme === "dark";
+  const label = isDark ? "Modo claro" : "Modo escuro";
+
+  function toggleTheme() {
+    setTheme(isDark ? "light" : "dark");
+  }
 
   return (
     <SidebarMenu className="gap-2.5 group-data-[collapsible=icon]:items-center">
       <SidebarMenuItem className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
         <SidebarMenuButton
-          tooltip={isCollapsed ? "Modo escuro" : undefined}
-          className={cn(navButtonClassName, "cursor-default")}
+          tooltip={isCollapsed ? label : undefined}
+          className={cn(navButtonClassName, "cursor-pointer")}
           type="button"
+          onClick={toggleTheme}
         >
-          <AdminIcon name="moon" size={16} />
-          {isCollapsed ? null : <span>Modo escuro</span>}
+          {isDark ? (
+            <Sun className="size-4 shrink-0" aria-hidden />
+          ) : (
+            <AdminIcon name="moon" size={16} />
+          )}
+          {isCollapsed ? null : <span>{label}</span>}
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
@@ -83,11 +96,11 @@ export function AdminSidebarUserMenu() {
       )}
     >
       <div className="flex items-center gap-3 group-data-[collapsible=icon]:gap-0">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted text-[#737373]">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
           <User className="size-5" aria-hidden />
         </div>
         {!isCollapsed ? (
-          <div className="flex min-w-0 flex-col justify-center text-[#737373]">
+          <div className="flex min-w-0 flex-col justify-center text-muted-foreground">
             <span className="truncate text-sm leading-5">Marcelo Cardoso</span>
             <span className="truncate text-xs leading-4 font-bold">WIMPRA</span>
           </div>

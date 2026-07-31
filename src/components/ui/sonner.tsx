@@ -1,13 +1,16 @@
 import { toast, Toaster as Sonner, type ToasterProps } from "sonner";
+import { useTheme } from "next-themes";
 
 import { Alert, type AlertProps } from "@/components/ui/alert";
 
 type AlertVariant = NonNullable<AlertProps["variant"]>;
 
 const Toaster = ({ ...props }: ToasterProps) => {
+  const { resolvedTheme } = useTheme();
+
   return (
     <Sonner
-      theme="light"
+      theme={(resolvedTheme as "light" | "dark") ?? "light"}
       position="top-right"
       expand
       visibleToasts={4}

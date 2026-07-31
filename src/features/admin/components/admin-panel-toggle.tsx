@@ -15,7 +15,7 @@ export function AdminPanelToggle({ className }: AdminPanelToggleProps) {
       onClick={toggleSidebar}
       aria-label={open ? "Recolher menu lateral" : "Expandir menu lateral"}
       className={cn(
-        "inline-flex size-4 shrink-0 cursor-pointer items-center justify-center text-[#737373] transition-opacity hover:opacity-80 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "inline-flex size-4 shrink-0 cursor-pointer items-center justify-center text-muted-foreground transition-opacity hover:opacity-80 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
     >
