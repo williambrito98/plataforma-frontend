@@ -11,6 +11,7 @@ import {
 import { adminNavigation } from "@/features/admin/config/admin-navigation";
 import { AdminIcon } from "@/features/admin/components/admin-icon";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const navButtonClassName =
   "h-10 gap-2 rounded-md px-4 py-2 text-sm leading-5 text-muted-foreground hover:bg-accent hover:text-muted-foreground group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-3 group-data-[collapsible=icon]:py-2.5";
@@ -21,7 +22,8 @@ const activeNavButtonClassName =
 export function AdminSidebarNav() {
   const { state } = useSidebar();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isCollapsed = state === "collapsed";
+  const isMobile = useIsMobile();
+  const isCollapsed = !isMobile && state === "collapsed";
 
   return (
     <SidebarMenu className="gap-2.5 group-data-[collapsible=icon]:items-center">
@@ -55,8 +57,9 @@ export function AdminSidebarNav() {
 export function AdminSidebarDarkModeItem() {
   const { state } = useSidebar();
   const { resolvedTheme, setTheme } = useTheme();
-  const isCollapsed = state === "collapsed";
   const isDark = resolvedTheme === "dark";
+  const isMobile = useIsMobile();
+  const isCollapsed = !isMobile && state === "collapsed";
   const label = isDark ? "Modo claro" : "Modo escuro";
 
   function toggleTheme() {
@@ -86,7 +89,8 @@ export function AdminSidebarDarkModeItem() {
 
 export function AdminSidebarUserMenu() {
   const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
+  const isMobile = useIsMobile();
+  const isCollapsed = !isMobile && state === "collapsed";
 
   return (
     <div
