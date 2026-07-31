@@ -1,0 +1,51 @@
+---
+description: Padrão de alertas/toasts — usar alertToast do componente customizado
+alwaysApply: true
+---
+
+# Alertas e toasts
+
+Para exibir alertas ao usuário, **sempre** use `alertToast` de `@/components/ui/sonner`.
+
+**Nunca** importe ou chame `toast` diretamente do pacote `sonner` (`toast.success`, `toast.error`, `toast.custom`, etc.).
+
+O `<Toaster />` já está configurado globalmente em `AppProvider` — não é necessário adicioná-lo novamente nas páginas.
+
+## Tipos disponíveis
+
+| Método | Variante | Uso típico |
+|--------|----------|------------|
+| `alertToast.success` | `success` | Ação concluída com sucesso |
+| `alertToast.warning` | `warning` | Avisos ou situações que exigem atenção |
+| `alertToast.error` | `error` | Falhas de API, validação ou operações |
+| `alertToast.info` | `info` | Informações neutras ou contexto adicional |
+
+Assinatura: `(title: string, description?: string) => string | number`
+
+## Exemplos
+
+```typescript
+import { alertToast } from "@/components/ui/sonner";
+
+// ✅ Correto
+alertToast.success("Login realizado", "Bem-vindo de volta!");
+alertToast.error("Falha no login", message);
+alertToast.warning("Atenção", "Esta ação não pode ser desfeita.");
+alertToast.info("Processando", "Aguarde enquanto sincronizamos os dados.");
+
+// ❌ Proibido — não importar toast do sonner
+import { toast } from "sonner";
+toast.success("...");
+toast.error("...");
+toast.custom(() => <Alert ... />);
+```
+
+## Onde usar
+
+- **Mutations (React Query)**: `onSuccess` → `alertToast.success`; `onError` → `alertToast.error`
+- **Ações de UI**: feedback imediato após cliques ou confirmações
+- **Mensagens em português (BR)**, claras e acionáveis
+
+## Referência
+
+Implementação em `src/components/ui/sonner.tsx`. Visual baseado no componente `Alert` (`src/components/ui/alert.tsx`).

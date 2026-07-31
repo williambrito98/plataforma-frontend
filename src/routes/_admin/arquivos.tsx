@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { AdminPagePlaceholder } from "@/features/admin/components/admin-page-placeholder";
+import { FilesPage } from "@/features/files/components/files-page";
 
 export const Route = createFileRoute("/_admin/arquivos")({
   component: ArquivosPage,
 });
 
 function ArquivosPage() {
-  return <AdminPagePlaceholder title="Arquivos" />;
+  return <FilesPage />;
 }

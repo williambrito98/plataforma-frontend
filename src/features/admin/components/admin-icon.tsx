@@ -7,6 +7,7 @@ import logoWIcon from "@/assets/admin/icons/logo-w.svg";
 import moonIcon from "@/assets/admin/icons/moon.svg";
 import panelToggleCloseIcon from "@/assets/admin/icons/panel-toggle-close.svg";
 import panelToggleOpenIcon from "@/assets/admin/icons/panel-toggle-open.svg";
+import downloadIcon from "@/assets/admin/icons/download.svg";
 import settings2Icon from "@/assets/admin/icons/settings-2.svg";
 
 import type { AdminNavIcon } from "@/features/admin/types/admin-navigation";
@@ -15,6 +16,7 @@ const iconMap = {
   container: containerIcon,
   "folder-tree": folderTreeIcon,
   "settings-2": settings2Icon,
+  download: downloadIcon,
   moon: moonIcon,
   "chevron-up": chevronUpIcon,
   "panel-toggle-close": panelToggleCloseIcon,
