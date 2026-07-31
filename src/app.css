@@ -133,6 +133,8 @@
     --sidebar-accent-foreground: oklch(0.269 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.527 0.137 150.069);
+    --sidebar-width: 320px;
+    --sidebar-width-icon: 72px;
     /* Badges & alertas — Figma 08 · Badges & Alerts */
     --badge: oklch(0.922 0 0); /* color/badge/bg → neutral-200 #E5E5E5 */
     --badge-foreground: oklch(0.371 0 0); /* color/badge/text → neutral-700 #404040 */
