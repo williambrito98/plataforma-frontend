@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { AdminPagePlaceholder } from "@/features/admin/components/admin-page-placeholder";
+import { AdjustPage } from "@/features/adjust/components/adjust-page";
 
 export const Route = createFileRoute("/_admin/ajustes")({
   component: AjustesPage,
 });
 
 function AjustesPage() {
-  return <AdminPagePlaceholder title="Ajustes" />;
+  return <AdjustPage />;
 }

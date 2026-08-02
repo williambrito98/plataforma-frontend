@@ -22,7 +22,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const sidebarUserMenuItems = [
   { label: "Configurações de conta", icon: Cog },
-  { label: "Meu perfil", icon: UserCog },
+  { label: "Meu perfil", icon: UserCog, href: "/perfil" as const },
   { label: "Sair", icon: LogOut },
 ] as const;
 
@@ -164,12 +164,19 @@ export function AdminSidebarUserMenu() {
         align="start"
         className="mb-1 w-60 border-border"
       >
-        {sidebarUserMenuItems.map(({ label, icon: Icon }) => (
+        {sidebarUserMenuItems.map(({ label, icon: Icon, ...item }) => (
           <DropdownMenuItem
             key={label}
             aria-label={label}
             className="cursor-pointer text-muted-foreground"
-            onClick={(event) => event.preventDefault()}
+            render={
+              "href" in item && item.href ? <Link to={item.href} /> : undefined
+            }
+            onClick={
+              "href" in item && item.href
+                ? undefined
+                : (event) => event.preventDefault()
+            }
           >
             <Icon aria-hidden />
             <span>{label}</span>

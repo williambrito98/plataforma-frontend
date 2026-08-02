@@ -1,4 +1,8 @@
+import type { LucideIcon } from "lucide-react";
+
 export type AdminNavIcon = "container" | "folder-tree" | "settings-2" | "moon";
+
+export type AdminLucideIcon = "UserCog";
 
 export type AdminNavItem = {
   label: string;
@@ -8,5 +12,8 @@ export type AdminNavItem = {
 
 export type AdminPageMeta = {
   title: string;
-  icon: AdminNavIcon;
+  icon?: AdminNavIcon;
+  lucideIcon?: AdminLucideIcon;
 };
+
+export type AdminLucideIconMap = Record<AdminLucideIcon, LucideIcon>;

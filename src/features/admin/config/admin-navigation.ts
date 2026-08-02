@@ -28,7 +28,22 @@ export const adminPageMetaByHref: Record<AdminNavItem["href"], AdminPageMeta> =
     "/ajustes": { title: "Ajustes", icon: "settings-2" },
   };
 
+export const adminSecondaryPageMeta = {
+  "/perfil": { title: "Meu perfil", lucideIcon: "UserCog" },
+} as const satisfies Record<string, AdminPageMeta>;
+
 export function getAdminPageMeta(pathname: string): AdminPageMeta | null {
-  const match = adminNavigation.find((item) => pathname.startsWith(item.href));
-  return match ? adminPageMetaByHref[match.href] : null;
+  const navMatch = adminNavigation.find((item) =>
+    pathname.startsWith(item.href),
+  );
+
+  if (navMatch) {
+    return adminPageMetaByHref[navMatch.href];
+  }
+
+  const secondaryMatch = Object.entries(adminSecondaryPageMeta).find(([href]) =>
+    pathname.startsWith(href),
+  );
+
+  return secondaryMatch ? secondaryMatch[1] : null;
 }
