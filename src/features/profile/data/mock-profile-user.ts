@@ -7,5 +7,5 @@ export const mockProfileUser: ProfileUser = {
   company: "WIMPRA",
   avatar: undefined,
   role: { id: "1", name: "Admin", description: null },
-  permissions: ["automacoes", "arquivos", "ajustes"],
+  permissions: ["automacoes", "arquivos"],
 };

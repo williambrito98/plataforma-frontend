@@ -1,12 +1,12 @@
 import type { LucideIcon } from "lucide-react";
 
-export type AdminNavIcon = "container" | "folder-tree" | "settings-2" | "moon";
+export type AdminNavIcon = "container" | "folder-tree" | "moon";
 
 export type AdminLucideIcon = "UserCog";
 
 export type AdminNavItem = {
   label: string;
-  href: "/automacoes" | "/arquivos" | "/ajustes";
+  href: "/automacoes" | "/arquivos";
   icon: AdminNavIcon;
 };
 

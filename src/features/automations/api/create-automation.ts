@@ -1,4 +1,4 @@
-import type { CreateAutomationPayload } from "@/features/adjust/types/adjust";
+import type { CreateAutomationPayload } from "@/features/automations/types/automation";
 
 export async function createAutomationMock(
   payload: CreateAutomationPayload,

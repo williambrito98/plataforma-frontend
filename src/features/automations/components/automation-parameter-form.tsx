@@ -6,17 +6,17 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { alertToast } from "@/components/ui/sonner";
-import { NativeSelect } from "@/features/adjust/components/native-select";
+import { NativeSelect } from "@/features/automations/components/native-select";
 import {
   PARAMETER_INPUT_TYPES,
   type ParameterInputType,
-} from "@/features/adjust/config/input-types";
-import type { AutomationParameterDraft } from "@/features/adjust/types/adjust";
+} from "@/features/automations/config/input-types";
+import type { AutomationParameterDraft } from "@/features/automations/types/automation";
 
 const inputClassName =
   "h-8 border-border bg-secondary px-3 shadow-none rounded-md";
 
-type AdjustParameterFormProps = {
+type AutomationParameterFormProps = {
   draft: AutomationParameterDraft;
   onDraftChange: (updates: Partial<AutomationParameterDraft>) => void;
   onAdd: (draft: AutomationParameterDraft) => {
@@ -25,11 +25,11 @@ type AdjustParameterFormProps = {
   };
 };
 
-export function AdjustParameterForm({
+export function AutomationParameterForm({
   draft,
   onDraftChange,
   onAdd,
-}: AdjustParameterFormProps) {
+}: AutomationParameterFormProps) {
   function handleAddParameter() {
     const result = onAdd(draft);
 

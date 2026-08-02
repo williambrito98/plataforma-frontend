@@ -4,29 +4,29 @@ import { useForm } from "react-hook-form";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
-  adjustSchema,
-  type AdjustFormValues,
-} from "@/features/adjust/schemas/adjust-schema";
+  createAutomationSchema,
+  type CreateAutomationFormValues,
+} from "@/features/automations/schemas/create-automation-schema";
 
 const inputClassName =
   "h-8 border-border bg-secondary px-3 shadow-none rounded-md";
 
-type AdjustAutomationFormProps = {
+type CreateAutomationFormProps = {
   formId: string;
-  onSubmit: (values: AdjustFormValues) => Promise<boolean>;
+  onSubmit: (values: CreateAutomationFormValues) => Promise<boolean>;
 };
 
-export function AdjustAutomationForm({
+export function CreateAutomationForm({
   formId,
   onSubmit,
-}: AdjustAutomationFormProps) {
+}: CreateAutomationFormProps) {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<AdjustFormValues>({
-    resolver: zodResolver(adjustSchema),
+  } = useForm<CreateAutomationFormValues>({
+    resolver: zodResolver(createAutomationSchema),
     defaultValues: {
       name: "",
       description: "",
@@ -34,7 +34,7 @@ export function AdjustAutomationForm({
     },
   });
 
-  async function handleFormSubmit(values: AdjustFormValues) {
+  async function handleFormSubmit(values: CreateAutomationFormValues) {
     const success = await onSubmit(values);
 
     if (success) {
@@ -97,4 +97,4 @@ export function AdjustAutomationForm({
   );
 }
 
-export type { AdjustFormValues };
+export type { CreateAutomationFormValues };

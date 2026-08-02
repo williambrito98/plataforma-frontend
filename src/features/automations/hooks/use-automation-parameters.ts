@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import type {
   AutomationParameter,
   AutomationParameterDraft,
-} from "@/features/adjust/types/adjust";
+} from "@/features/automations/types/automation";
 
 const emptyDraft: AutomationParameterDraft = {
   name: "",
@@ -13,7 +13,7 @@ const emptyDraft: AutomationParameterDraft = {
   required: false,
 };
 
-export function useAdjustParameters() {
+export function useAutomationParameters() {
   const [parameters, setParameters] = useState<AutomationParameter[]>([]);
   const [draft, setDraft] = useState<AutomationParameterDraft>(emptyDraft);
 

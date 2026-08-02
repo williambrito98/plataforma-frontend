@@ -1,4 +1,4 @@
-import type { ParameterInputType } from "@/features/adjust/config/input-types";
+import type { ParameterInputType } from "@/features/automations/config/input-types";
 
 export type AutomationParameter = {
   id: string;
@@ -17,12 +17,12 @@ export type AutomationParameterDraft = {
   required: boolean;
 };
 
-export type AdjustFormValues = {
+export type CreateAutomationFormValues = {
   name: string;
   description: string;
   path: string;
 };
 
-export type CreateAutomationPayload = AdjustFormValues & {
+export type CreateAutomationPayload = CreateAutomationFormValues & {
   fields: AutomationParameter[];
 };

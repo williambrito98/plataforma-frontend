@@ -1,11 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-import { AdminPagePlaceholder } from "@/features/admin/components/admin-page-placeholder";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_admin/automacoes")({
-  component: AutomacoesPage,
+  component: AutomacoesLayout,
 });
 
-function AutomacoesPage() {
-  return <AdminPagePlaceholder title="Automações" />;
+function AutomacoesLayout() {
+  return <Outlet />;
 }

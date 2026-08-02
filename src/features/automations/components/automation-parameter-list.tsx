@@ -2,18 +2,18 @@ import { Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getParameterInputTypeLabel } from "@/features/adjust/config/input-types";
-import type { AutomationParameter } from "@/features/adjust/types/adjust";
+import { getParameterInputTypeLabel } from "@/features/automations/config/input-types";
+import type { AutomationParameter } from "@/features/automations/types/automation";
 
-type AdjustParameterListProps = {
+type AutomationParameterListProps = {
   parameters: AutomationParameter[];
   onRemove: (id: string) => void;
 };
 
-export function AdjustParameterList({
+export function AutomationParameterList({
   parameters,
   onRemove,
-}: AdjustParameterListProps) {
+}: AutomationParameterListProps) {
   if (parameters.length === 0) {
     return null;
   }
