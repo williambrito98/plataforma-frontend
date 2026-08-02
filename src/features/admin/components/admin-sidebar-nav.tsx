@@ -1,7 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Sun, User } from "lucide-react";
+import { Cog, LogOut, Sun, User, UserCog } from "lucide-react";
 import { useTheme } from "next-themes";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -10,8 +16,15 @@ import {
 } from "@/components/ui/sidebar";
 import { adminNavigation } from "@/features/admin/config/admin-navigation";
 import { AdminIcon } from "@/features/admin/components/admin-icon";
+import { mockSidebarUser } from "@/features/admin/data/mock-sidebar-user";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+const sidebarUserMenuItems = [
+  { label: "Configurações de conta", icon: Cog },
+  { label: "Meu perfil", icon: UserCog },
+  { label: "Sair", icon: LogOut },
+] as const;
 
 const navButtonClassName =
   "h-10 gap-2 rounded-md px-4 py-2 text-sm leading-5 text-muted-foreground hover:bg-accent hover:text-muted-foreground group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:px-3 group-data-[collapsible=icon]:py-2.5";
@@ -91,26 +104,78 @@ export function AdminSidebarUserMenu() {
   const { state } = useSidebar();
   const isMobile = useIsMobile();
   const isCollapsed = !isMobile && state === "collapsed";
+  const user = mockSidebarUser;
 
   return (
-    <div
-      className={cn(
-        "flex w-full items-center rounded-md py-0.5",
-        isCollapsed ? "justify-center p-0.5" : "justify-between pl-0.5 pr-3",
-      )}
-    >
-      <div className="flex items-center gap-3 group-data-[collapsible=icon]:gap-0">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
-          <User className="size-5" aria-hidden />
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <button
+            type="button"
+            className={cn(
+              "group flex w-full cursor-pointer items-center rounded-md py-0.5 transition-colors",
+              "hover:bg-accent data-popup-open:bg-accent",
+              isCollapsed
+                ? "justify-center p-0.5"
+                : "justify-between pl-0.5 pr-3",
+            )}
+          />
+        }
+      >
+        <div
+          className={cn(
+            "flex items-center",
+            isCollapsed ? "gap-0" : "min-w-0 flex-1 gap-3",
+          )}
+        >
+          <div className="flex size-10 shrink-0 overflow-hidden rounded-md bg-muted text-muted-foreground">
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="size-full object-cover"
+              />
+            ) : (
+              <div className="flex size-full items-center justify-center">
+                <User className="size-5" aria-hidden />
+              </div>
+            )}
+          </div>
+          {!isCollapsed ? (
+            <div className="flex min-w-0 flex-col text-muted-foreground">
+              <span className="truncate text-sm leading-5">{user.name}</span>
+              <span className="truncate text-xs leading-4 font-bold">
+                {user.subtitle}
+              </span>
+            </div>
+          ) : null}
         </div>
         {!isCollapsed ? (
-          <div className="flex min-w-0 flex-col justify-center text-muted-foreground">
-            <span className="truncate text-sm leading-5">Marcelo Cardoso</span>
-            <span className="truncate text-xs leading-4 font-bold">WIMPRA</span>
-          </div>
+          <AdminIcon
+            name="chevron-up"
+            size={16}
+            className="transition-transform duration-200 ease-in-out group-data-popup-open:rotate-180"
+          />
         ) : null}
-      </div>
-      {!isCollapsed ? <AdminIcon name="chevron-up" size={16} /> : null}
-    </div>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent
+        side="top"
+        align="start"
+        className="mb-1 w-60 border-border"
+      >
+        {sidebarUserMenuItems.map(({ label, icon: Icon }) => (
+          <DropdownMenuItem
+            key={label}
+            aria-label={label}
+            className="cursor-pointer text-muted-foreground"
+            onClick={(event) => event.preventDefault()}
+          >
+            <Icon aria-hidden />
+            <span>{label}</span>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
