@@ -1,8 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { alertToast } from "@/components/ui/sonner";
+import { useCategories } from "@/features/categories/hooks/use-categories";
 import {
   createAutomationSchema,
   type CreateAutomationFormValues,
@@ -21,7 +31,15 @@ export function CreateAutomationForm({
   onSubmit,
 }: CreateAutomationFormProps) {
   const {
+    data: categories = [],
+    isLoading: isCategoriesLoading,
+    isError: isCategoriesError,
+    error: categoriesError,
+  } = useCategories();
+
+  const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -31,8 +49,18 @@ export function CreateAutomationForm({
       name: "",
       description: "",
       path: "",
+      categoryId: "",
     },
   });
+
+  useEffect(() => {
+    if (isCategoriesError) {
+      alertToast.error(
+        "Erro ao carregar categorias",
+        categoriesError instanceof Error ? categoriesError.message : undefined,
+      );
+    }
+  }, [isCategoriesError, categoriesError]);
 
   async function handleFormSubmit(values: CreateAutomationFormValues) {
     const success = await onSubmit(values);
@@ -42,11 +70,15 @@ export function CreateAutomationForm({
     }
   }
 
+  const categoryPlaceholder = isCategoriesLoading
+    ? "Carregando categorias..."
+    : "Selecione uma categoria";
+
   return (
     <form
       id={formId}
       onSubmit={handleSubmit(handleFormSubmit)}
-      className="grid grid-cols-1 gap-4 md:grid-cols-3"
+      className="grid grid-cols-1 gap-4 md:grid-cols-2"
       noValidate
     >
       <Field orientation="vertical" className="gap-2">
@@ -92,6 +124,47 @@ export function CreateAutomationForm({
           {...register("path")}
         />
         <FieldError errors={[errors.path]} />
+      </Field>
+
+      <Field orientation="vertical" className="gap-2">
+        <FieldLabel
+          htmlFor="automation-category"
+          className="text-sm font-medium"
+        >
+          Categoria
+        </FieldLabel>
+        <Controller
+          control={control}
+          name="categoryId"
+          render={({ field }) => (
+            <Select
+              value={field.value || null}
+              onValueChange={(value) => field.onChange(value ?? "")}
+              disabled={isCategoriesLoading || categories.length === 0}
+              items={categories.map((category) => ({
+                label: category.name,
+                value: category.id,
+              }))}
+            >
+              <SelectTrigger
+                id="automation-category"
+                size="sm"
+                className="w-full border-border bg-secondary shadow-none"
+                aria-invalid={!!errors.categoryId}
+              >
+                <SelectValue placeholder={categoryPlaceholder} />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+        <FieldError errors={[errors.categoryId]} />
       </Field>
     </form>
   );

@@ -10,6 +10,9 @@ export const PermissionCodes = {
   AUTOMATIONS_CREATE: "automations.create",
 
   CATEGORIES_READ: "categories.read",
+  CATEGORIES_CREATE: "categories.create",
+  CATEGORIES_UPDATE: "categories.update",
+  CATEGORIES_DELETE: "categories.delete",
 
   EXECUTIONS_READ: "executions.read",
   EXECUTIONS_CONTROL: "executions.control",

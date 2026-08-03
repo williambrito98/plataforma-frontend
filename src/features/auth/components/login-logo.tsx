@@ -1,13 +1,11 @@
-import loginLogo from "@/assets/img/login-logo.svg";
+import logoW from "@/assets/brand/logo-w.svg";
 
 export function LoginLogo() {
   return (
     <img
-      src={loginLogo}
+      src={logoW}
       alt="Wimpra"
-      width={56}
-      height={47}
-      className="h-11.75 w-14 shrink-0"
+      className="h-9 w-10.75 shrink-0 object-contain"
     />
   );
 }

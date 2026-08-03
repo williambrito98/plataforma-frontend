@@ -1,20 +1,20 @@
-import { useId, useState } from "react";
+import { useId } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { alertToast } from "@/components/ui/sonner";
-import { createAutomationMock } from "@/features/automations/api/create-automation";
 import { AutomationParameterForm } from "@/features/automations/components/automation-parameter-form";
 import { AutomationParameterList } from "@/features/automations/components/automation-parameter-list";
 import { CreateAutomationForm } from "@/features/automations/components/create-automation-form";
 import { useAutomationParameters } from "@/features/automations/hooks/use-automation-parameters";
+import { useCreateAutomation } from "@/features/automations/hooks/use-create-automation";
 import type { CreateAutomationFormValues } from "@/features/automations/schemas/create-automation-schema";
 
 export function CreateAutomationPage() {
   const formId = useId();
   const navigate = useNavigate();
-  const [isSaving, setIsSaving] = useState(false);
+  const createAutomation = useCreateAutomation();
   const {
     parameters,
     draft,
@@ -35,23 +35,17 @@ export function CreateAutomationPage() {
       return false;
     }
 
-    setIsSaving(true);
-
     try {
-      await createAutomationMock({
+      await createAutomation.mutateAsync({
         ...values,
         fields: parameters,
       });
 
       clearParameters();
-      alertToast.success(
-        "Automação criada",
-        "Configurações salvas com sucesso.",
-      );
       await navigate({ to: "/automacoes" });
       return true;
-    } finally {
-      setIsSaving(false);
+    } catch {
+      return false;
     }
   }
 
@@ -82,7 +76,7 @@ export function CreateAutomationPage() {
         <Button
           type="submit"
           form={formId}
-          loading={isSaving}
+          loading={createAutomation.isPending}
           disabled={parameters.length === 0}
           className="ml-auto grid justify-self-end"
         >

@@ -3,6 +3,7 @@ import { apiClient } from "@/lib/api-client";
 
 import {
   normalizeUserListItem,
+  type UpdateUserAdminPayload,
   type UserListItem,
   type UserListItemApiResponse,
 } from "@/features/users/types/user";
@@ -11,6 +12,24 @@ export type UpdateUserPayload = {
   name?: string;
   password?: string;
 };
+
+export async function updateUserAdmin(
+  id: string,
+  payload: UpdateUserAdminPayload,
+): Promise<UserListItem> {
+  try {
+    const { data } = await apiClient.patch<UserListItemApiResponse>(
+      `/users/${id}`,
+      payload,
+    );
+    return normalizeUserListItem(data);
+  } catch (error) {
+    throw new Error(
+      getApiErrorMessage(error, "Não foi possível atualizar o usuário."),
+      { cause: error },
+    );
+  }
+}
 
 export async function updateUser(
   id: string,

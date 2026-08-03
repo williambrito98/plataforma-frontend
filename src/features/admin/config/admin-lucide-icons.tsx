@@ -1,4 +1,11 @@
-import { Container, FolderTree, ShieldCheck, UserCog } from "lucide-react";
+import {
+  Container,
+  FolderTree,
+  ShieldCheck,
+  Tags,
+  UserCog,
+  Users,
+} from "lucide-react";
 
 import type {
   AdminLucideIcon,
@@ -10,7 +17,9 @@ export const adminLucideIconMap = {
   Container,
   FolderTree,
   ShieldCheck,
+  Tags,
   UserCog,
+  Users,
 } satisfies AdminLucideIconMap;
 
 type AdminLucideIconProps = {

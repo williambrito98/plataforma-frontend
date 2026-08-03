@@ -6,11 +6,13 @@ export type AdminLucideIcon =
   | "Container"
   | "FolderTree"
   | "ShieldCheck"
-  | "UserCog";
+  | "Tags"
+  | "UserCog"
+  | "Users";
 
 export type AdminNavItem = {
   label: string;
-  href: "/automacoes" | "/arquivos" | "/rbac";
+  href: "/automacoes" | "/arquivos" | "/categorias" | "/rbac" | "/usuarios";
   lucideIcon: AdminLucideIcon;
   access?: NavAccess;
 };

@@ -9,6 +9,8 @@ export type UserListItem = {
   name: string;
   email: string;
   profilePhotoUrl: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
   role: UserRoleSummary | null;
 };
 
@@ -22,6 +24,20 @@ export type UserListItemApiResponse = {
   role: UserRoleSummary | null;
 };
 
+export type CreateUserPayload = {
+  name: string;
+  email: string;
+  password: string;
+  roleId: string;
+};
+
+export type UpdateUserAdminPayload = {
+  name?: string;
+  email?: string;
+  password?: string;
+  roleId?: string | null;
+};
+
 export function normalizeUserListItem(
   user: UserListItemApiResponse,
 ): UserListItem {
@@ -30,6 +46,8 @@ export function normalizeUserListItem(
     name: user.name,
     email: user.email,
     profilePhotoUrl: user.profilePhotoUrl ?? null,
+    createdAt: user.createdAt ?? null,
+    updatedAt: user.updatedAt ?? null,
     role: user.role,
   };
 }

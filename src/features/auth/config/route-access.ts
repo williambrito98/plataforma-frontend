@@ -7,6 +7,8 @@ export const routeAccessByPath: Record<string, RouteAccess> = {
   "/automacoes": { permissions: [PermissionCodes.EXECUTIONS_READ] },
   "/automacoes/nova": { permissions: [PermissionCodes.AUTOMATIONS_CREATE] },
   "/arquivos": { permissions: [PermissionCodes.FILES_READ] },
+  "/categorias": { permissions: [PermissionCodes.CATEGORIES_READ] },
+  "/usuarios": { permissions: [PermissionCodes.USER_CONTROL] },
   "/rbac": "rbac",
 };
 

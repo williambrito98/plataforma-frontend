@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronUp, Cog, LogOut, Moon, Sun, User, UserCog } from "lucide-react";
+import { ChevronUp, LogOut, Moon, Sun, User, UserCog } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import {
