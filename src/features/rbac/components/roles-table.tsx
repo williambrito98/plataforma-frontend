@@ -99,6 +99,10 @@ export function RolePermissionsEditor({
           <Select
             value={resolvedRoleId}
             onValueChange={(value) => handleRoleChange(value ?? "")}
+            items={roles.map((role) => ({
+              label: role.name,
+              value: role.id,
+            }))}
           >
             <SelectTrigger id="role-permissions-select" className="w-full">
               <SelectValue placeholder="Selecione um papel" />

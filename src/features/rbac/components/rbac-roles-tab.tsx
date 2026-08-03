@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+
+import { alertToast } from "@/components/ui/sonner";
 import { CreateRoleForm } from "@/features/rbac/components/create-role-form";
 import {
   RolePermissionsEditor,
@@ -9,8 +12,32 @@ import {
 } from "@/features/rbac/hooks/use-rbac-admin";
 
 export function RbacRolesTab() {
-  const { data: permissions = [] } = useRbacPermissions();
-  const { data: roles = [], isLoading } = useRbacRoles();
+  const {
+    data: permissions = [],
+    isError: isPermissionsError,
+    error: permissionsError,
+  } = useRbacPermissions();
+  const { data: roles = [], isLoading, isError, error } = useRbacRoles();
+
+  useEffect(() => {
+    if (isPermissionsError) {
+      alertToast.error(
+        "Erro ao carregar permissões",
+        permissionsError instanceof Error
+          ? permissionsError.message
+          : undefined,
+      );
+    }
+  }, [isPermissionsError, permissionsError]);
+
+  useEffect(() => {
+    if (isError) {
+      alertToast.error(
+        "Erro ao carregar papéis",
+        error instanceof Error ? error.message : undefined,
+      );
+    }
+  }, [isError, error]);
 
   return (
     <div className="space-y-6">

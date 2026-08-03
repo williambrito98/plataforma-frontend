@@ -10,6 +10,7 @@ import {
   setUserRole,
 } from "@/features/rbac/api/rbac-api";
 import { rbacQueryKeys } from "@/features/rbac/hooks/rbac-query-keys";
+import { usersQueryKeys } from "@/features/users/hooks/users-query-keys";
 import { useAuthStore } from "@/features/auth/stores/auth-store";
 
 function getErrorMessage(error: unknown, fallback: string): string {
@@ -112,6 +113,7 @@ export function useSetUserRole() {
     onSuccess: async () => {
       await useAuthStore.getState().refreshUser();
       queryClient.invalidateQueries({ queryKey: rbacQueryKeys.roles });
+      queryClient.invalidateQueries({ queryKey: usersQueryKeys.all });
       alertToast.success(
         "Papel atualizado",
         "Papel do usuário atualizado com sucesso.",
