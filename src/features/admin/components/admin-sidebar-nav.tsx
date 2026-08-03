@@ -17,7 +17,6 @@ import {
 import { AdminLucideIcon } from "@/features/admin/config/admin-lucide-icons";
 import { adminNavigation } from "@/features/admin/config/admin-navigation";
 import { mockSidebarUser } from "@/features/admin/data/mock-sidebar-user";
-import { useRbac } from "@/features/rbac/hooks/use-rbac";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
@@ -38,15 +37,10 @@ export function AdminSidebarNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isMobile = useIsMobile();
   const isCollapsed = !isMobile && state === "collapsed";
-  const { canAccessRbac } = useRbac();
 
   return (
     <SidebarMenu className="gap-2.5 group-data-[collapsible=icon]:items-center">
       {adminNavigation.map((item) => {
-        if (item.href === "/rbac" && !canAccessRbac) {
-          return null;
-        }
-
         const isActive = pathname === item.href;
 
         return (
