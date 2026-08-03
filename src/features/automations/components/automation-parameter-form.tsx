@@ -5,8 +5,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { alertToast } from "@/components/ui/sonner";
-import { NativeSelect } from "@/features/automations/components/native-select";
 import {
   PARAMETER_INPUT_TYPES,
   type ParameterInputType,
@@ -15,6 +21,11 @@ import type { AutomationParameterDraft } from "@/features/automations/types/auto
 
 const inputClassName =
   "h-8 border-border bg-secondary px-3 shadow-none rounded-md";
+
+const PARAMETER_TYPE_SELECT_ITEMS = [
+  { value: "", label: "Selecione" },
+  ...PARAMETER_INPUT_TYPES,
+];
 
 type AutomationParameterFormProps = {
   draft: AutomationParameterDraft;
@@ -64,20 +75,29 @@ export function AutomationParameterForm({
           <FieldLabel htmlFor="parameter-type" className="text-sm font-medium">
             Tipo
           </FieldLabel>
-          <NativeSelect
-            id="parameter-type"
+          <Select
             value={draft.type}
-            placeholder="Selecione o tipo"
-            onChange={(value) =>
-              onDraftChange({ type: value as ParameterInputType | "" })
+            items={PARAMETER_TYPE_SELECT_ITEMS}
+            onValueChange={(value) =>
+              onDraftChange({ type: (value ?? "") as ParameterInputType | "" })
             }
+            defaultValue={""}
           >
-            {PARAMETER_INPUT_TYPES.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </NativeSelect>
+            <SelectTrigger
+              id="parameter-type"
+              size="sm"
+              className="w-full border-border bg-secondary shadow-none"
+            >
+              <SelectValue placeholder="Selecione" />
+            </SelectTrigger>
+            <SelectContent>
+              {PARAMETER_TYPE_SELECT_ITEMS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </Field>
 
         <Field orientation="vertical" className="gap-2">

@@ -8,7 +8,7 @@ export function AutomationsListPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-end">
-        <Button render={<Link to="/automacoes/nova" />}>
+        <Button render={<Link to="/automacoes/nova" />} nativeButton={false}>
           <Plus aria-hidden />
           Criar automação
         </Button>
