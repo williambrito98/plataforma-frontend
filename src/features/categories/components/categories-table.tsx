@@ -4,6 +4,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -23,6 +24,9 @@ import {
 import { categoryNameSchema } from "@/features/categories/schemas/category-name-schema";
 import type { Category } from "@/features/categories/types/category";
 import { formatFileDate } from "@/features/files/utils/format-file-date";
+import { cn } from "@/lib/utils";
+
+const SKELETON_ROW_COUNT = 5;
 
 type CategoriesTableProps = {
   categories: Category[];
@@ -118,14 +122,34 @@ export function CategoriesTable({
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={columnCount}
-                    className="text-muted-foreground"
-                  >
-                    Carregando categorias...
-                  </TableCell>
-                </TableRow>
+                Array.from({ length: SKELETON_ROW_COUNT }, (_, index) => {
+                  const isLastRow = index === SKELETON_ROW_COUNT - 1;
+
+                  return (
+                    <TableRow
+                      key={index}
+                      className={cn(
+                        "border-border hover:bg-transparent",
+                        isLastRow && "border-0",
+                      )}
+                    >
+                      <TableCell className="px-3 py-2.5">
+                        <Skeleton className="h-4 w-40" />
+                      </TableCell>
+                      <TableCell className="px-3 py-2.5">
+                        <Skeleton className="h-4 w-28" />
+                      </TableCell>
+                      {showActions ? (
+                        <TableCell className="px-3 py-2.5">
+                          <div className="flex justify-end gap-1">
+                            <Skeleton className="size-8 rounded-md" />
+                            <Skeleton className="size-8 rounded-md" />
+                          </div>
+                        </TableCell>
+                      ) : null}
+                    </TableRow>
+                  );
+                })
               ) : categories.length === 0 ? (
                 <TableRow>
                   <TableCell

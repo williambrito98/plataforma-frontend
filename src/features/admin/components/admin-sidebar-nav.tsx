@@ -61,7 +61,7 @@ export function AdminSidebarNav() {
                 navButtonClassName,
                 isActive && activeNavButtonClassName,
               )}
-              render={<Link to={item.href} />}
+              render={<Link to={item.href} preload="render" />}
             >
               <AdminLucideIcon
                 name={item.lucideIcon}

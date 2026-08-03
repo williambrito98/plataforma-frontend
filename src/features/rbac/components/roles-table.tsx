@@ -26,8 +26,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { Permission, Role } from "@/features/rbac/types/rbac";
 import { useSetRolePermissions } from "@/features/rbac/hooks/use-rbac-admin";
+import { cn } from "@/lib/utils";
+
+const SKELETON_ROW_COUNT = 5;
 
 type RolePermissionsEditorProps = {
   roles: Role[];
@@ -178,11 +182,33 @@ export function RolesTable({ roles, isLoading }: RolesTableProps) {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={3} className="text-muted-foreground">
-                  Carregando papéis...
-                </TableCell>
-              </TableRow>
+              Array.from({ length: SKELETON_ROW_COUNT }, (_, index) => {
+                const isLastRow = index === SKELETON_ROW_COUNT - 1;
+
+                return (
+                  <TableRow
+                    key={index}
+                    className={cn(
+                      "border-border hover:bg-transparent",
+                      isLastRow && "border-0",
+                    )}
+                  >
+                    <TableCell className="px-3 py-2.5">
+                      <Skeleton className="h-4 w-32" />
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5">
+                      <Skeleton className="h-4 w-48" />
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5">
+                      <div className="flex flex-wrap gap-2">
+                        <Skeleton className="h-5 w-20 rounded-full" />
+                        <Skeleton className="h-5 w-24 rounded-full" />
+                        <Skeleton className="h-5 w-16 rounded-full" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             ) : roles.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} className="text-muted-foreground">

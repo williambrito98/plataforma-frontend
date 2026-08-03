@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -8,6 +9,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { Permission } from "@/features/rbac/types/rbac";
+import { cn } from "@/lib/utils";
+
+const SKELETON_ROW_COUNT = 5;
 
 type PermissionsTableProps = {
   permissions: Permission[];
@@ -35,11 +39,26 @@ export function PermissionsTable({
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={2} className="text-muted-foreground">
-                  Carregando permissões...
-                </TableCell>
-              </TableRow>
+              Array.from({ length: SKELETON_ROW_COUNT }, (_, index) => {
+                const isLastRow = index === SKELETON_ROW_COUNT - 1;
+
+                return (
+                  <TableRow
+                    key={index}
+                    className={cn(
+                      "border-border hover:bg-transparent",
+                      isLastRow && "border-0",
+                    )}
+                  >
+                    <TableCell className="px-3 py-2.5">
+                      <Skeleton className="h-4 w-40" />
+                    </TableCell>
+                    <TableCell className="px-3 py-2.5">
+                      <Skeleton className="h-4 w-64" />
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             ) : permissions.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={2} className="text-muted-foreground">

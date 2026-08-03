@@ -4,6 +4,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -18,6 +19,9 @@ import { DeleteUserDialog } from "@/features/users/components/delete-user-dialog
 import { EditUserSheet } from "@/features/users/components/edit-user-sheet";
 import { useDeleteUser } from "@/features/users/hooks/use-users-admin";
 import type { UserListItem } from "@/features/users/types/user";
+import { cn } from "@/lib/utils";
+
+const SKELETON_ROW_COUNT = 5;
 
 type UsersTableProps = {
   users: UserListItem[];
@@ -85,11 +89,41 @@ export function UsersTable({ users, isLoading }: UsersTableProps) {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-muted-foreground">
-                    Carregando usuários...
-                  </TableCell>
-                </TableRow>
+                Array.from({ length: SKELETON_ROW_COUNT }, (_, index) => {
+                  const isLastRow = index === SKELETON_ROW_COUNT - 1;
+
+                  return (
+                    <TableRow
+                      key={index}
+                      className={cn(
+                        "border-border hover:bg-transparent",
+                        isLastRow && "border-0",
+                      )}
+                    >
+                      <TableCell className="px-3 py-2.5">
+                        <Skeleton className="size-8 rounded-md" />
+                      </TableCell>
+                      <TableCell className="px-3 py-2.5">
+                        <Skeleton className="h-4 w-36" />
+                      </TableCell>
+                      <TableCell className="px-3 py-2.5">
+                        <Skeleton className="h-4 w-48" />
+                      </TableCell>
+                      <TableCell className="px-3 py-2.5">
+                        <Skeleton className="h-4 w-24" />
+                      </TableCell>
+                      <TableCell className="px-3 py-2.5">
+                        <Skeleton className="h-4 w-28" />
+                      </TableCell>
+                      <TableCell className="px-3 py-2.5">
+                        <div className="flex justify-end gap-1">
+                          <Skeleton className="size-8 rounded-md" />
+                          <Skeleton className="size-8 rounded-md" />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               ) : users.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-muted-foreground">
