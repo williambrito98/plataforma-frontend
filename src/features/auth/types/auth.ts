@@ -8,6 +8,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
+  profilePhoto?: string | null;
   profilePhotoUrl?: string | null;
   avatar?: string | null;
   createdAt?: string;

@@ -23,7 +23,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
 const sidebarUserMenuItems = [
-  { label: "Configurações de conta", icon: Cog },
   { label: "Meu perfil", icon: UserCog, href: "/perfil" as const },
   { label: "Sair", icon: LogOut },
 ] as const;
@@ -119,7 +118,7 @@ export function AdminSidebarUserMenu() {
 
   const displayName = user?.name ?? "Usuário";
   const subtitle = user?.role?.name ?? user?.email ?? "";
-  const avatar = user?.avatar ?? user?.profilePhotoUrl ?? undefined;
+  const avatar = user?.avatar ?? undefined;
 
   return (
     <DropdownMenu>

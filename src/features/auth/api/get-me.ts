@@ -6,13 +6,13 @@ import { getApiErrorMessage, getApiErrorStatus } from "@/lib/api-error";
 import { apiClient } from "@/lib/api-client";
 
 type MeApiResponse = Omit<User, "avatar"> & {
-  profilePhotoUrl?: string | null;
+  profilePhoto?: string | null;
 };
 
 function normalizeUser(user: MeApiResponse): User {
   return {
     ...user,
-    avatar: user.profilePhotoUrl ?? null,
+    avatar: user.profilePhoto ?? null,
   };
 }
 

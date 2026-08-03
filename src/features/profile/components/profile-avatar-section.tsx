@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,21 +10,16 @@ const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg"] as const;
 type ProfileAvatarSectionProps = {
   name: string;
   avatar?: string;
-  isUploading: boolean;
-  onAvatarChange: (avatarUrl: string) => void;
-  onUploadStart: () => void;
-  onUploadEnd: () => void;
+  onPhotoUpload: (file: File) => Promise<void>;
 };
 
 export function ProfileAvatarSection({
   name,
   avatar,
-  isUploading,
-  onAvatarChange,
-  onUploadStart,
-  onUploadEnd,
+  onPhotoUpload,
 }: ProfileAvatarSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   function handlePickPhoto() {
     fileInputRef.current?.click();
@@ -44,19 +39,18 @@ export function ProfileAvatarSection({
       return;
     }
 
-    onUploadStart();
+    setIsUploading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    const objectUrl = URL.createObjectURL(file);
-    onAvatarChange(objectUrl);
-    onUploadEnd();
-    alertToast.success("Foto atualizada", "Sua foto de perfil foi alterada.");
-    event.target.value = "";
+    try {
+      await onPhotoUpload(file);
+    } finally {
+      setIsUploading(false);
+      event.target.value = "";
+    }
   }
 
   return (
-    <div className="w-full shrink-0 lg:w-1/3">
+    <div className="flex flex-col items-center gap-4">
       <div
         className="group relative inline-block size-48 cursor-pointer xl:size-64"
         onClick={handlePickPhoto}
