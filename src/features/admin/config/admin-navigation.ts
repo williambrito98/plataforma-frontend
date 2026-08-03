@@ -7,23 +7,29 @@ export const adminNavigation = [
   {
     label: "Automações",
     href: "/automacoes",
-    icon: "container",
+    lucideIcon: "Container",
   },
   {
     label: "Arquivos",
     href: "/arquivos",
-    icon: "folder-tree",
+    lucideIcon: "FolderTree",
   },
-] as const satisfies readonly AdminNavItem[];
+  {
+    label: "RBAC",
+    href: "/rbac",
+    lucideIcon: "ShieldCheck",
+  },
+] as AdminNavItem[];
 
 export const adminPageMetaByHref: Record<AdminNavItem["href"], AdminPageMeta> =
   {
-    "/automacoes": { title: "Automações", icon: "container" },
-    "/arquivos": { title: "Arquivos", icon: "folder-tree" },
+    "/automacoes": { title: "Automações", lucideIcon: "Container" },
+    "/arquivos": { title: "Arquivos", lucideIcon: "FolderTree" },
+    "/rbac": { title: "RBAC", lucideIcon: "ShieldCheck" },
   };
 
 export const adminSecondaryPageMeta = {
-  "/automacoes/nova": { title: "Nova automação", icon: "container" },
+  "/automacoes/nova": { title: "Nova automação", lucideIcon: "Container" },
   "/perfil": { title: "Meu perfil", lucideIcon: "UserCog" },
 } as const satisfies Record<string, AdminPageMeta>;
 

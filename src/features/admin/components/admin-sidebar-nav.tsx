@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Cog, LogOut, Sun, User, UserCog } from "lucide-react";
+import { ChevronUp, Cog, LogOut, Moon, Sun, User, UserCog } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import {
@@ -14,11 +14,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { AdminLucideIcon } from "@/features/admin/config/admin-lucide-icons";
 import { adminNavigation } from "@/features/admin/config/admin-navigation";
-import { AdminIcon } from "@/features/admin/components/admin-icon";
 import { mockSidebarUser } from "@/features/admin/data/mock-sidebar-user";
-import { cn } from "@/lib/utils";
+import { useRbac } from "@/features/rbac/hooks/use-rbac";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 const sidebarUserMenuItems = [
   { label: "Configurações de conta", icon: Cog },
@@ -37,10 +38,15 @@ export function AdminSidebarNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isMobile = useIsMobile();
   const isCollapsed = !isMobile && state === "collapsed";
+  const { canAccessRbac } = useRbac();
 
   return (
     <SidebarMenu className="gap-2.5 group-data-[collapsible=icon]:items-center">
       {adminNavigation.map((item) => {
+        if (item.href === "/rbac" && !canAccessRbac) {
+          return null;
+        }
+
         const isActive = pathname === item.href;
 
         return (
@@ -57,7 +63,10 @@ export function AdminSidebarNav() {
               )}
               render={<Link to={item.href} />}
             >
-              <AdminIcon name={item.icon} size={16} />
+              <AdminLucideIcon
+                name={item.lucideIcon}
+                className="size-4 shrink-0"
+              />
               {isCollapsed ? null : <span>{item.label}</span>}
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -91,7 +100,7 @@ export function AdminSidebarDarkModeItem() {
           {isDark ? (
             <Sun className="size-4 shrink-0" aria-hidden />
           ) : (
-            <AdminIcon name="moon" size={16} />
+            <Moon className="size-4 shrink-0" aria-hidden />
           )}
           {isCollapsed ? null : <span>{label}</span>}
         </SidebarMenuButton>
@@ -151,10 +160,9 @@ export function AdminSidebarUserMenu() {
           ) : null}
         </div>
         {!isCollapsed ? (
-          <AdminIcon
-            name="chevron-up"
-            size={16}
-            className="transition-transform duration-200 ease-in-out group-data-popup-open:rotate-180"
+          <ChevronUp
+            className="size-4 shrink-0 transition-transform duration-200 ease-in-out group-data-popup-open:rotate-180"
+            aria-hidden
           />
         ) : null}
       </DropdownMenuTrigger>

@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminArquivosRouteImport } from './routes/_admin/arquivos'
 import { Route as AdminAutomacoesRouteImport } from './routes/_admin/automacoes'
 import { Route as AdminPerfilRouteImport } from './routes/_admin/perfil'
+import { Route as AdminRbacRouteImport } from './routes/_admin/rbac'
 import { Route as DesignSystemBadgesAlertsRouteImport } from './routes/design-system/badges-alerts'
 import { Route as DesignSystemButtonRouteImport } from './routes/design-system/button'
 import { Route as AdminAutomacoesIndexRouteImport } from './routes/_admin/automacoes.index'
@@ -49,6 +50,11 @@ const AdminPerfilRoute = AdminPerfilRouteImport.update({
   path: '/perfil',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminRbacRoute = AdminRbacRouteImport.update({
+  id: '/rbac',
+  path: '/rbac',
+  getParentRoute: () => AdminRoute,
+} as any)
 const DesignSystemBadgesAlertsRoute =
   DesignSystemBadgesAlertsRouteImport.update({
     id: '/design-system/badges-alerts',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/arquivos': typeof AdminArquivosRoute
   '/automacoes': typeof AdminAutomacoesRouteWithChildren
   '/perfil': typeof AdminPerfilRoute
+  '/rbac': typeof AdminRbacRoute
   '/design-system/badges-alerts': typeof DesignSystemBadgesAlertsRoute
   '/design-system/button': typeof DesignSystemButtonRoute
   '/automacoes/nova': typeof AdminAutomacoesNovaRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/arquivos': typeof AdminArquivosRoute
   '/perfil': typeof AdminPerfilRoute
+  '/rbac': typeof AdminRbacRoute
   '/design-system/badges-alerts': typeof DesignSystemBadgesAlertsRoute
   '/design-system/button': typeof DesignSystemButtonRoute
   '/automacoes/nova': typeof AdminAutomacoesNovaRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/_admin/arquivos': typeof AdminArquivosRoute
   '/_admin/automacoes': typeof AdminAutomacoesRouteWithChildren
   '/_admin/perfil': typeof AdminPerfilRoute
+  '/_admin/rbac': typeof AdminRbacRoute
   '/design-system/badges-alerts': typeof DesignSystemBadgesAlertsRoute
   '/design-system/button': typeof DesignSystemButtonRoute
   '/_admin/automacoes/nova': typeof AdminAutomacoesNovaRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/arquivos'
     | '/automacoes'
     | '/perfil'
+    | '/rbac'
     | '/design-system/badges-alerts'
     | '/design-system/button'
     | '/automacoes/nova'
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/arquivos'
     | '/perfil'
+    | '/rbac'
     | '/design-system/badges-alerts'
     | '/design-system/button'
     | '/automacoes/nova'
@@ -135,6 +146,7 @@ export interface FileRouteTypes {
     | '/_admin/arquivos'
     | '/_admin/automacoes'
     | '/_admin/perfil'
+    | '/_admin/rbac'
     | '/design-system/badges-alerts'
     | '/design-system/button'
     | '/_admin/automacoes/nova'
@@ -193,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPerfilRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_admin/rbac': {
+      id: '/_admin/rbac'
+      path: '/rbac'
+      fullPath: '/rbac'
+      preLoaderRoute: typeof AdminRbacRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/design-system/badges-alerts': {
       id: '/design-system/badges-alerts'
       path: '/design-system/badges-alerts'
@@ -242,12 +261,14 @@ interface AdminRouteChildren {
   AdminArquivosRoute: typeof AdminArquivosRoute
   AdminAutomacoesRoute: typeof AdminAutomacoesRouteWithChildren
   AdminPerfilRoute: typeof AdminPerfilRoute
+  AdminRbacRoute: typeof AdminRbacRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminArquivosRoute: AdminArquivosRoute,
   AdminAutomacoesRoute: AdminAutomacoesRouteWithChildren,
   AdminPerfilRoute: AdminPerfilRoute,
+  AdminRbacRoute: AdminRbacRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

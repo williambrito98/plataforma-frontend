@@ -1,5 +1,6 @@
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+
 import { useSidebar } from "@/components/ui/sidebar";
-import { AdminIcon } from "@/features/admin/components/admin-icon";
 import { cn } from "@/lib/utils";
 
 type AdminPanelToggleProps = {
@@ -19,10 +20,11 @@ export function AdminPanelToggle({ className }: AdminPanelToggleProps) {
         className,
       )}
     >
-      <AdminIcon
-        name={open ? "panel-toggle-close" : "panel-toggle-open"}
-        size={16}
-      />
+      {open ? (
+        <PanelLeftClose className="size-4" aria-hidden />
+      ) : (
+        <PanelLeftOpen className="size-4" aria-hidden />
+      )}
     </button>
   );
 }

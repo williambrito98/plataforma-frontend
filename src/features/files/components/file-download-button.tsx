@@ -1,4 +1,5 @@
-import { AdminIcon } from "@/features/admin/components/admin-icon";
+import { Download } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 type FileDownloadButtonProps = {
@@ -23,7 +24,11 @@ export function FileDownloadButton({
         className,
       )}
     >
-      <AdminIcon name="download" size={iconSize} />
+      <Download
+        className="shrink-0"
+        style={{ width: iconSize, height: iconSize }}
+        aria-hidden
+      />
       <span>{label}</span>
     </button>
   );

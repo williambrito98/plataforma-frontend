@@ -26,6 +26,19 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
       id: "1",
       name: "Administrador",
       email,
+      role: {
+        id: "admin-role",
+        name: "Admin",
+        description: "Administrador do sistema",
+      },
+      permissions: [
+        "rbac.manage",
+        "automacoes",
+        "arquivos",
+        "executions.read",
+        "files.read",
+        "automations.create",
+      ],
     },
   };
 

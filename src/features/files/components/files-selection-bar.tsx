@@ -1,7 +1,8 @@
+import { Download } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { AdminIcon } from "@/features/admin/components/admin-icon";
-import type { FileItem } from "@/features/files/types/file";
 import { alertToast } from "@/components/ui/sonner";
+import type { FileItem } from "@/features/files/types/file";
 
 type FilesSelectionBarProps = {
   selectedCount: number;
@@ -32,7 +33,7 @@ export function FilesSelectionBar({
         onClick={handleDownloadSelected}
         className="h-auto gap-2 rounded-[5px] border-primary px-2.5 py-1.5 text-xs leading-4 font-medium text-primary hover:bg-transparent hover:text-primary"
       >
-        <AdminIcon name="download" size={16} />
+        <Download className="size-4 shrink-0" aria-hidden />
         Baixar selecionados
       </Button>
     </div>
