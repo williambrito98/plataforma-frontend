@@ -1,22 +1,20 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
 import { alertToast } from "@/components/ui/sonner";
 import { AuthError } from "@/features/auth/api/auth-error";
-import { clearMockSession } from "@/features/auth/api/mock-session";
 import { logout } from "@/features/auth/api/logout";
-import { authQueryKeys } from "@/features/auth/hooks/auth-query-keys";
+import { useAuthStore } from "@/features/auth/stores/auth-store";
 import { getApiErrorMessage } from "@/lib/api-error";
 
 export function useLogout() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const clearUser = useAuthStore((state) => state.clearUser);
 
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      clearMockSession();
-      queryClient.setQueryData(authQueryKeys.session, null);
+      clearUser();
       alertToast.success("Logout realizado", "Até logo!");
       navigate({ to: "/login" });
     },

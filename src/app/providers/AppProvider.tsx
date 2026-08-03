@@ -3,6 +3,7 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthBootstrap } from "@/features/auth/components/auth-bootstrap";
 import { queryClient } from "@/lib/query-client";
 import { routeTree } from "@/routeTree.gen";
 
@@ -23,7 +24,9 @@ export const AppProvider = () => {
       storageKey="plataforma-theme"
     >
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <AuthBootstrap router={router}>
+          <RouterProvider router={router} />
+        </AuthBootstrap>
         <Toaster />
       </QueryClientProvider>
     </ThemeProvider>

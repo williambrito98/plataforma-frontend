@@ -10,7 +10,7 @@ import {
   setUserRole,
 } from "@/features/rbac/api/rbac-api";
 import { rbacQueryKeys } from "@/features/rbac/hooks/rbac-query-keys";
-import { authQueryKeys } from "@/features/auth/hooks/auth-query-keys";
+import { useAuthStore } from "@/features/auth/stores/auth-store";
 
 function getErrorMessage(error: unknown, fallback: string): string {
   if (error instanceof Error) {
@@ -81,9 +81,9 @@ export function useSetRolePermissions() {
       roleId: string;
       permissionIds: string[];
     }) => setRolePermissions(roleId, { permissionIds }),
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: rbacQueryKeys.roles });
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      await useAuthStore.getState().refreshUser();
       alertToast.success(
         "Permissões atualizadas",
         "Permissões do papel atualizadas.",
@@ -109,8 +109,8 @@ export function useSetUserRole() {
       userId: string;
       roleId?: string | null;
     }) => setUserRole(userId, { roleId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+    onSuccess: async () => {
+      await useAuthStore.getState().refreshUser();
       queryClient.invalidateQueries({ queryKey: rbacQueryKeys.roles });
       alertToast.success(
         "Papel atualizado",

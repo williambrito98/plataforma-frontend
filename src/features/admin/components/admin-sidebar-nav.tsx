@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/sidebar";
 import { AdminLucideIcon } from "@/features/admin/config/admin-lucide-icons";
 import { adminNavigation } from "@/features/admin/config/admin-navigation";
-import { mockSidebarUser } from "@/features/admin/data/mock-sidebar-user";
+import { checkNavAccess } from "@/features/auth/lib/check-access";
 import { useLogout } from "@/features/auth/hooks/use-logout";
+import { useSession } from "@/features/auth/hooks/use-session";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
@@ -38,10 +39,15 @@ export function AdminSidebarNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isMobile = useIsMobile();
   const isCollapsed = !isMobile && state === "collapsed";
+  const { user, isLoading } = useSession();
+
+  const visibleNavigation = isLoading
+    ? []
+    : adminNavigation.filter((item) => checkNavAccess(user, item.access));
 
   return (
     <SidebarMenu className="gap-2.5 group-data-[collapsible=icon]:items-center">
-      {adminNavigation.map((item) => {
+      {visibleNavigation.map((item) => {
         const isActive = pathname === item.href;
 
         return (
@@ -108,8 +114,12 @@ export function AdminSidebarUserMenu() {
   const { state } = useSidebar();
   const isMobile = useIsMobile();
   const isCollapsed = !isMobile && state === "collapsed";
-  const user = mockSidebarUser;
+  const { user } = useSession();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
+
+  const displayName = user?.name ?? "Usuário";
+  const subtitle = user?.role?.name ?? user?.email ?? "";
+  const avatar = user?.avatar ?? user?.profilePhotoUrl ?? undefined;
 
   return (
     <DropdownMenu>
@@ -134,10 +144,10 @@ export function AdminSidebarUserMenu() {
           )}
         >
           <div className="flex size-10 shrink-0 overflow-hidden rounded-md bg-muted text-muted-foreground">
-            {user.avatar ? (
+            {avatar ? (
               <img
-                src={user.avatar}
-                alt={user.name}
+                src={avatar}
+                alt={displayName}
                 className="size-full object-cover"
               />
             ) : (
@@ -148,9 +158,9 @@ export function AdminSidebarUserMenu() {
           </div>
           {!isCollapsed ? (
             <div className="flex min-w-0 flex-col text-muted-foreground">
-              <span className="truncate text-sm leading-5">{user.name}</span>
+              <span className="truncate text-sm leading-5">{displayName}</span>
               <span className="truncate text-xs leading-4 font-bold">
-                {user.subtitle}
+                {subtitle}
               </span>
             </div>
           ) : null}

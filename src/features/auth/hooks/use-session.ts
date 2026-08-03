@@ -1,17 +1,12 @@
-import { useQuery } from "@tanstack/react-query";
-
-import { getSession } from "@/features/auth/api/get-session";
-import { authQueryKeys } from "@/features/auth/hooks/auth-query-keys";
+import { useAuthStore } from "@/features/auth/stores/auth-store";
 
 export function useSession() {
-  const query = useQuery({
-    queryKey: authQueryKeys.session,
-    queryFn: getSession,
-  });
+  const user = useAuthStore((state) => state.user);
+  const status = useAuthStore((state) => state.status);
 
   return {
-    user: query.data ?? null,
-    isAuthenticated: Boolean(query.data),
-    isLoading: query.isLoading,
+    user,
+    isAuthenticated: Boolean(user),
+    isLoading: status === "bootstrapping" || status === "idle",
   };
 }

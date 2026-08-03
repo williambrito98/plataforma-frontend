@@ -2,22 +2,26 @@ import type {
   AdminNavItem,
   AdminPageMeta,
 } from "@/features/admin/types/admin-navigation";
+import { PermissionCodes } from "@/features/auth/constants/permissions";
 
 export const adminNavigation = [
   {
     label: "Automações",
     href: "/automacoes",
     lucideIcon: "Container",
+    access: { permissions: [PermissionCodes.EXECUTIONS_READ] },
   },
   {
     label: "Arquivos",
     href: "/arquivos",
     lucideIcon: "FolderTree",
+    access: { permissions: [PermissionCodes.FILES_READ] },
   },
   {
     label: "RBAC",
     href: "/rbac",
     lucideIcon: "ShieldCheck",
+    access: "rbac",
   },
 ] as AdminNavItem[];
 
