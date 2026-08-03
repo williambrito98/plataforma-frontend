@@ -18,5 +18,9 @@ export type LoginRequest = {
 };
 
 export type LoginResponse = {
-  user: User;
+  message: string;
+};
+
+export type LogoutResponse = {
+  message: string;
 };

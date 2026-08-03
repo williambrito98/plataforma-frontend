@@ -17,6 +17,7 @@ import {
 import { AdminLucideIcon } from "@/features/admin/config/admin-lucide-icons";
 import { adminNavigation } from "@/features/admin/config/admin-navigation";
 import { mockSidebarUser } from "@/features/admin/data/mock-sidebar-user";
+import { useLogout } from "@/features/auth/hooks/use-logout";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
@@ -108,6 +109,7 @@ export function AdminSidebarUserMenu() {
   const isMobile = useIsMobile();
   const isCollapsed = !isMobile && state === "collapsed";
   const user = mockSidebarUser;
+  const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
   return (
     <DropdownMenu>
@@ -166,24 +168,37 @@ export function AdminSidebarUserMenu() {
         align="start"
         className="mb-1 w-60 border-border"
       >
-        {sidebarUserMenuItems.map(({ label, icon: Icon, ...item }) => (
-          <DropdownMenuItem
-            key={label}
-            aria-label={label}
-            className="cursor-pointer text-muted-foreground"
-            render={
-              "href" in item && item.href ? <Link to={item.href} /> : undefined
-            }
-            onClick={
-              "href" in item && item.href
-                ? undefined
-                : (event) => event.preventDefault()
-            }
-          >
-            <Icon aria-hidden />
-            <span>{label}</span>
-          </DropdownMenuItem>
-        ))}
+        {sidebarUserMenuItems.map(({ label, icon: Icon, ...item }) => {
+          const isLogout = label === "Sair";
+
+          return (
+            <DropdownMenuItem
+              key={label}
+              aria-label={label}
+              className="cursor-pointer text-muted-foreground"
+              disabled={isLogout && isLoggingOut}
+              render={
+                "href" in item && item.href ? (
+                  <Link to={item.href} />
+                ) : undefined
+              }
+              onClick={(event) => {
+                if ("href" in item && item.href) {
+                  return;
+                }
+
+                event.preventDefault();
+
+                if (isLogout) {
+                  logout();
+                }
+              }}
+            >
+              <Icon aria-hidden />
+              <span>{label}</span>
+            </DropdownMenuItem>
+          );
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   );
