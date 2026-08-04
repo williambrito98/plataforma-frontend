@@ -73,10 +73,24 @@ function Badge({
       className={cn(badgeVariants({ variant, category }), className)}
       {...props}
     >
-      <span
-        aria-hidden
-        className={cn(badgeDotVariants({ variant, category }))}
-      />
+      <span className="relative inline-flex size-1.5 shrink-0">
+        <span
+          data-slot="badge-ping"
+          aria-hidden
+          className={cn(
+            "absolute inset-0 rounded-full opacity-75",
+            badgeDotVariants({ variant, category }),
+          )}
+        />
+        <span
+          data-slot="badge-dot"
+          aria-hidden
+          className={cn(
+            "relative z-10 size-1.5 rounded-full",
+            badgeDotVariants({ variant, category }),
+          )}
+        />
+      </span>
       {children}
     </span>
   );

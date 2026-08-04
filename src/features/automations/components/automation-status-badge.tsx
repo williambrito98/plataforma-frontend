@@ -18,7 +18,11 @@ export function AutomationStatusBadge({
     <Badge
       variant={config.badgeVariant}
       category={config.badgeVariant}
-      className={cn("w-fit", className)}
+      className={cn(
+        "w-fit",
+        className,
+        status === "running" && "[&_[data-slot=badge-dot]]:animate-ping",
+      )}
     >
       {config.label}
     </Badge>
