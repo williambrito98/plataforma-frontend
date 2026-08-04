@@ -11,6 +11,7 @@ const emptyDraft: AutomationParameterDraft = {
   label: "",
   placeholder: "",
   required: false,
+  options: "",
 };
 
 export function useAutomationParameters() {
@@ -34,6 +35,15 @@ export function useAutomationParameters() {
         label: parameterDraft.label.trim(),
         placeholder: parameterDraft.placeholder.trim() || undefined,
         required: parameterDraft.required,
+        ...(parameterDraft.type === "select"
+          ? {
+              options: parameterDraft.options
+                .split(",")
+                .map((option) => option.trim())
+                .filter(Boolean)
+                .map((value) => ({ value, label: value })),
+            }
+          : {}),
       };
 
       setParameters((current) => [...current, parameter]);

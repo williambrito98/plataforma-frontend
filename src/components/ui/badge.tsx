@@ -18,6 +18,10 @@ const badgeVariants = cva(
         pessoal: "",
         contabil: "",
         trabalhista: "",
+        success: "",
+        warning: "",
+        error: "",
+        info: "",
       },
     },
     defaultVariants: {
@@ -41,6 +45,10 @@ const badgeDotVariants = cva("size-1.5 shrink-0 rounded-full", {
       pessoal: "bg-category-pessoal",
       contabil: "bg-category-contabil",
       trabalhista: "bg-category-trabalhista",
+      success: "bg-success-foreground",
+      warning: "bg-warning-foreground",
+      error: "bg-error-foreground",
+      info: "bg-info-foreground",
     },
   },
   defaultVariants: {

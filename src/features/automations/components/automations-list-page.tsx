@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { AdminPagePlaceholder } from "@/features/admin/components/admin-page-placeholder";
+import { AutomationsList } from "@/features/automations/components/automations-list";
 import { PermissionCodes } from "@/features/auth/constants/permissions";
 import { useCan } from "@/features/auth/hooks/use-can";
 
@@ -19,7 +19,7 @@ export function AutomationsListPage() {
           </Button>
         </div>
       ) : null}
-      <AdminPagePlaceholder title="Automações" />
+      <AutomationsList />
     </div>
   );
 }

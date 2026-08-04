@@ -132,6 +132,24 @@ export function AutomationParameterForm({
         />
       </Field>
 
+      {draft.type === "select" ? (
+        <Field orientation="vertical" className="gap-2">
+          <FieldLabel
+            htmlFor="parameter-options"
+            className="text-sm font-medium"
+          >
+            Opções (separadas por vírgula)
+          </FieldLabel>
+          <Input
+            id="parameter-options"
+            placeholder="Opção A, Opção B, Opção C"
+            className={inputClassName}
+            value={draft.options}
+            onChange={(event) => onDraftChange({ options: event.target.value })}
+          />
+        </Field>
+      ) : null}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
           <Checkbox
