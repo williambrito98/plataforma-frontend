@@ -20,8 +20,8 @@ export function AutomationCardMetadata({
   runtime,
 }: AutomationCardMetadataProps) {
   return (
-    <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-start">
-      <dl className="grid gap-4 sm:grid-cols-3">
+    <div className="w-55 min-w-0 space-y-4">
+      <dl className="grid gap-4">
         <div className="space-y-1">
           <dt className="text-sm text-muted-foreground">Iniciado em</dt>
           <dd className="text-sm font-medium text-foreground">
@@ -42,11 +42,16 @@ export function AutomationCardMetadata({
             {formatDisplayDate(runtime.finishedAt)}
           </dd>
         </div>
-      </dl>
 
-      <Badge variant="category" category={category} className="w-fit">
-        {categoryLabel}
-      </Badge>
+        <div className="space-y-1">
+          <dt className="text-sm text-muted-foreground">Categoria</dt>
+          <dd>
+            <Badge variant="category" category={category} className="w-fit">
+              {categoryLabel}
+            </Badge>
+          </dd>
+        </div>
+      </dl>
     </div>
   );
 }

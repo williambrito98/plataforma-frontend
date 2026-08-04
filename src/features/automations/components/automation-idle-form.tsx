@@ -63,8 +63,8 @@ export function AutomationIdleForm({
         ))}
       </div>
 
-      <div className="flex justify-end">
-        <Button type="submit" size="sm" disabled={!isValid}>
+      <div className="flex">
+        <Button type="submit" size="sm" disabled={!isValid} className="w-full">
           <Play aria-hidden />
           Iniciar
         </Button>

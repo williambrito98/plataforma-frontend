@@ -1,6 +1,6 @@
 import {
   Check,
-  Loader2,
+  Loader,
   Pause,
   Play,
   Settings2,
@@ -37,11 +37,11 @@ export const AUTOMATION_STATUS_CONFIG: Record<
   running: {
     label: "Em execução",
     badgeVariant: "info",
-    icon: Loader2,
+    icon: Loader,
     spinIcon: true,
     showProgress: true,
     action: { label: "Pausar", icon: Pause },
-    alertTitle: "Transmissão em andamento",
+    alertTitle: "Clique para ver detalhes da execução",
     alertSubtitle: "Aguarde a conclusão do processamento",
   },
   paused: {

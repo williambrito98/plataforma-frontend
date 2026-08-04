@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
-import { Separator } from "@/components/ui/separator";
 import { alertToast } from "@/components/ui/sonner";
 import { AutomationCardHeader } from "@/features/automations/components/automation-card-header";
 import { AutomationCardMetadata } from "@/features/automations/components/automation-card-metadata";
@@ -58,6 +57,9 @@ export function AutomationCard({ automation }: AutomationCardProps) {
   }
 
   const isIdle = runtime.status === "idle";
+  const contentLayoutClassName = isIdle
+    ? "flex flex-col gap-4 lg:flex-row lg:flex-nowrap"
+    : "flex flex-col gap-4 lg:flex-row lg:flex-nowrap";
 
   return (
     <Collapsible
@@ -72,38 +74,37 @@ export function AutomationCard({ automation }: AutomationCardProps) {
       />
 
       <CollapsibleContent className="h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 ease-out data-starting-style:h-0 data-ending-style:h-0 [&[hidden]:not([hidden='until-found'])]:hidden">
-        <CardContent className="space-y-6 border-t border-border py-6">
+        <CardContent className={`border-t border-border py-6 ${contentLayoutClassName}`}>
+          <div className="min-w-0 lg:w-55 lg:flex-none">
+            <AutomationCardMetadata
+              category={automation.category}
+              categoryLabel={automation.categoryLabel}
+              runtime={runtime}
+            />
+          </div>
+
           {isIdle ? (
-            <>
-              <AutomationCardMetadata
-                category={automation.category}
-                categoryLabel={automation.categoryLabel}
-                runtime={runtime}
-              />
-              <Separator />
+            <div className="min-w-0 lg:flex-1 border-l border-border pl-4">
               <AutomationIdleForm
                 fields={automation.fields}
                 onStart={handleStart}
               />
-            </>
+            </div>
           ) : (
             <>
-              <AutomationCardMetadata
-                category={automation.category}
-                categoryLabel={automation.categoryLabel}
-                runtime={runtime}
-              />
-              <Separator />
-              <AutomationExecutionMonitor
-                processed={runtime.processed}
-                total={runtime.total}
-                logs={runtime.logs}
-              />
-              <Separator />
-              <AutomationSubmittedData
-                submittedValues={runtime.submittedValues}
-                onCancel={handleCancel}
-              />
+              <div className="min-w-0 lg:flex-1 lg:border-x lg:border-border lg:px-4">
+                <AutomationExecutionMonitor
+                  processed={runtime.processed}
+                  total={runtime.total}
+                  logs={runtime.logs}
+                />
+              </div>
+              <div className="min-w-0 lg:w-55 lg:flex-none">
+                <AutomationSubmittedData
+                  submittedValues={runtime.submittedValues}
+                  onCancel={handleCancel}
+                />
+              </div>
             </>
           )}
         </CardContent>

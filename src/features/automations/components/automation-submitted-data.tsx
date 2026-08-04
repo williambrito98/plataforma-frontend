@@ -20,7 +20,7 @@ export function AutomationSubmittedData({
         </p>
       </div>
 
-      <dl className="grid gap-3 sm:grid-cols-2">
+      <dl className="grid gap-3 sm:grid-cols-1">
         {entries.length === 0 ? (
           <p className="text-sm text-muted-foreground sm:col-span-2">
             Nenhum dado enviado.

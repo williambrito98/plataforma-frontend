@@ -27,7 +27,7 @@ export function AutomationCardHeader({
 
   return (
     <div className="relative px-6 py-4">
-      <div className="flex items-start gap-4">
+      <div className="flex items-center gap-4">
         <div className="flex w-55 shrink-0 flex-col gap-1">
           <h3 className="truncate font-medium text-foreground">
             {automation.name}
