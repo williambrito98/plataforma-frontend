@@ -43,6 +43,9 @@ export function AutomationCard({ automation }: AutomationCardProps) {
           "Funcionalidade em desenvolvimento.",
         );
         break;
+      case "completed":
+        setIsOpen(true);
+        break;
     }
   }
 
@@ -54,6 +57,17 @@ export function AutomationCard({ automation }: AutomationCardProps) {
   function handleCancel() {
     cancel(automation.id);
     setIsOpen(false);
+  }
+
+  function handleDownload() {
+    if (!runtime.outputFile) {
+      return;
+    }
+
+    alertToast.success(
+      "Download iniciado",
+      `Baixando ${runtime.outputFile.name}...`,
+    );
   }
 
   const isIdle = runtime.status === "idle";
@@ -104,8 +118,11 @@ export function AutomationCard({ automation }: AutomationCardProps) {
               </div>
               <div className="min-w-0 lg:w-55 lg:flex-none">
                 <AutomationSubmittedData
+                  status={runtime.status}
                   submittedValues={runtime.submittedValues}
+                  outputFile={runtime.outputFile}
                   onCancel={handleCancel}
+                  onDownload={handleDownload}
                 />
               </div>
             </>

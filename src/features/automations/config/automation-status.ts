@@ -1,10 +1,12 @@
 import {
   Check,
+  List,
   Loader,
   Pause,
   Play,
   Settings2,
   ShieldAlert,
+  ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -13,7 +15,7 @@ import type { AutomationStatus } from "@/features/automations/types/automation";
 type AutomationStatusConfig = {
   label: string;
   badgeVariant: "idle" | "success" | "info" | "warning" | "error";
-  progressBarColor: string; 
+  progressBarColor: string;
   icon: LucideIcon;
   spinIcon?: boolean;
   showProgress: boolean;
@@ -66,6 +68,16 @@ export const AUTOMATION_STATUS_CONFIG: Record<
     action: { label: "Reportar", icon: ShieldAlert },
     alertTitle: "Falha na execução",
     alertSubtitle: "Verifique os logs e reporte o problema",
+  },
+  completed: {
+    label: "Concluído",
+    badgeVariant: "success",
+    progressBarColor: "bg-success-foreground",
+    icon: ShieldCheck,
+    showProgress: true,
+    action: { label: "Detalhes", icon: List },
+    alertTitle: "Execução concluída",
+    alertSubtitle: "clique para ver detalhes",
   },
 };
 
