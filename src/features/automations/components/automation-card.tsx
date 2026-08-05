@@ -99,6 +99,7 @@ export function AutomationCard({ automation }: AutomationCardProps) {
                   processed={runtime.processed}
                   total={runtime.total}
                   logs={runtime.logs}
+                  status={runtime.status}
                 />
               </div>
               <div className="min-w-0 lg:w-55 lg:flex-none">
