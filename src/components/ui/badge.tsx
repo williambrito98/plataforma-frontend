@@ -8,6 +8,7 @@ const badgeVariants = cva(
     variants: {
       variant: {
         category: "bg-badge text-badge-foreground",
+        idle: "bg-secondary text-success-foreground",
         success: "bg-success text-success-foreground",
         warning: "bg-warning text-warning-foreground",
         error: "bg-error text-error-foreground",
@@ -18,6 +19,7 @@ const badgeVariants = cva(
         pessoal: "",
         contabil: "",
         trabalhista: "",
+        idle: "",
         success: "",
         warning: "",
         error: "",
@@ -35,20 +37,22 @@ const badgeDotVariants = cva("size-1.5 shrink-0 rounded-full", {
   variants: {
     variant: {
       category: "",
-      success: "bg-success-foreground",
-      warning: "bg-warning-foreground",
-      error: "bg-error-foreground",
-      info: "bg-info-foreground",
+      idle: "bg-dot-success-foreground",
+      success: "bg-dot-success-foreground",
+      warning: "bg-dot-warning-foreground",
+      error: "bg-dot-error-foreground",
+      info: "bg-dot-info-foreground",
     },
     category: {
       fiscal: "bg-category-fiscal",
       pessoal: "bg-category-pessoal",
       contabil: "bg-category-contabil",
       trabalhista: "bg-category-trabalhista",
-      success: "bg-success-foreground",
-      warning: "bg-warning-foreground",
-      error: "bg-error-foreground",
-      info: "bg-info-foreground",
+      idle: "",
+      success: "",
+      warning: "",
+      error: "",
+      info: "",
     },
   },
   defaultVariants: {

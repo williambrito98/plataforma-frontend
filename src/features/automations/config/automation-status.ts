@@ -12,7 +12,8 @@ import type { AutomationStatus } from "@/features/automations/types/automation";
 
 type AutomationStatusConfig = {
   label: string;
-  badgeVariant: "success" | "info" | "warning" | "error";
+  badgeVariant: "idle" | "success" | "info" | "warning" | "error";
+  progressBarColor: string; 
   icon: LucideIcon;
   spinIcon?: boolean;
   showProgress: boolean;
@@ -27,7 +28,8 @@ export const AUTOMATION_STATUS_CONFIG: Record<
 > = {
   idle: {
     label: "Parado",
-    badgeVariant: "success",
+    badgeVariant: "idle",
+    progressBarColor: "bg-success-foreground",
     icon: Check,
     showProgress: false,
     action: { label: "Configurar", icon: Settings2 },
@@ -37,16 +39,18 @@ export const AUTOMATION_STATUS_CONFIG: Record<
   running: {
     label: "Em execução",
     badgeVariant: "info",
+    progressBarColor: "bg-progress-bar",
     icon: Loader,
     spinIcon: true,
     showProgress: true,
     action: { label: "Pausar", icon: Pause },
-    alertTitle: "Clique para ver detalhes da execução",
-    alertSubtitle: "Aguarde a conclusão do processamento",
+    alertTitle: "Executando...",
+    alertSubtitle: "Clique para ver detalhes da execução",
   },
   paused: {
     label: "Pausado",
     badgeVariant: "warning",
+    progressBarColor: "bg-warning-foreground",
     icon: Pause,
     showProgress: true,
     action: { label: "Retomar", icon: Play },
@@ -56,6 +60,7 @@ export const AUTOMATION_STATUS_CONFIG: Record<
   maintenance: {
     label: "Em manutenção",
     badgeVariant: "error",
+    progressBarColor: "bg-error-foreground",
     icon: ShieldAlert,
     showProgress: true,
     action: { label: "Reportar", icon: ShieldAlert },

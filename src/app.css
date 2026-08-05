@@ -81,17 +81,22 @@
     --color-foreground: var(--foreground);
     --color-background: var(--background);
     --color-sidebar-ring: var(--sidebar-ring);
+    --color-progress-bar: var(--progress-bar);
     /* Badges & alertas — Figma 08 · Badges & Alerts */
     --color-badge: var(--badge);
     --color-badge-foreground: var(--badge-foreground);
     --color-success: var(--success);
     --color-success-foreground: var(--success-foreground);
+    --color-dot-success-foreground: var(--dot-success-foreground);
     --color-warning: var(--warning);
     --color-warning-foreground: var(--warning-foreground);
+    --color-dot-warning-foreground: var(--dot-warning-foreground);
     --color-error: var(--error);
     --color-error-foreground: var(--error-foreground);
+    --color-dot-error-foreground: var(--dot-error-foreground);
     --color-info: var(--info);
     --color-info-foreground: var(--info-foreground);
+    --color-dot-info-foreground: var(--dot-info-foreground);
     --color-category-fiscal: var(--category-fiscal);
     --color-category-pessoal: var(--category-pessoal);
     --color-category-contabil: var(--category-contabil);
@@ -135,21 +140,26 @@
     --sidebar-ring: oklch(0.527 0.137 150.069);
     --sidebar-width: 320px;
     --sidebar-width-icon: 72px;
+    --progress-bar: oklch(0.55 0.22 263); /* color/progress-bar/default → green-600 #2563eb */
     /* Badges & alertas — Figma 08 · Badges & Alerts */
     --badge: oklch(0.922 0 0); /* color/badge/bg → neutral-200 #E5E5E5 */
     --badge-foreground: oklch(0.371 0 0); /* color/badge/text → neutral-700 #404040 */
-    --success: oklch(0.982 0.018 155.826); /* color/success/bg → green-50 #F0FDF4 */
-    --success-foreground: oklch(0.527 0.137 150.069); /* color/success/text → green-700 #15803D */
-    --warning: oklch(0.962 0.059 95.617); /* color/warning/bg → amber-100 #FEF3C7 */
-    --warning-foreground: oklch(0.408 0.123 38.172); /* color/warning/text → amber-900 #78350F */
-    --error: oklch(0.936 0.032 17.717); /* color/error/bg → red-100 #FFE2E2 */
-    --error-foreground: oklch(0.505 0.19 27.518); /* color/error/text → red-700 #B91C1C */
-    --info: oklch(0.953 0.026 231.166); /* color/info/bg → sky-100 #DFF2FE */
-    --info-foreground: oklch(0.391 0.09 240.876); /* color/info/text → sky-900 #0C4A6E */
-    --category-fiscal: oklch(0.588 0.158 241.966); /* category/fiscal-600 → sky-600 #0284C7 */
-    --category-pessoal: oklch(0.648 0.2 131.684); /* category/personal-600 → lime-600 #65A30D */
-    --category-contabil: oklch(0.646 0.222 41.116); /* category/accounting-600 → orange-600 #EA580C */
-    --category-trabalhista: oklch(0.558 0.288 302.321); /* category/labor-600 → purple-600 #9333EA */
+    --success: oklch(0.962 0.044 156.743);
+    --success-foreground: oklch(0.393 0.095 152.535);
+    --dot-success-foreground: oklch(0.723 0.219 149.579);
+    --warning: oklch(0.962 0.059 95.617);
+    --warning-foreground: oklch(0.414 0.112 45.904);
+    --dot-warning-foreground: oklch(0.769 0.188 70.08);
+    --error: oklch(0.936 0.032 17.717);
+    --error-foreground: oklch(0.396 0.141 25.723);
+    --dot-error-foreground: oklch(0.637 0.237 25.331);
+    --info: oklch(0.951 0.026 236.824);
+    --info-foreground: oklch(0.391 0.09 240.876);
+    --dot-info-foreground: oklch(0.685 0.169 237.323);
+    --category-fiscal: oklch(0.588 0.158 241.966);
+    --category-pessoal: oklch(0.648 0.2 131.684);
+    --category-contabil: oklch(0.646 0.222 41.116);
+    --category-trabalhista: oklch(0.558 0.288 302.321);
 }
 
 .dark {
@@ -186,20 +196,25 @@
     --sidebar-accent-foreground: oklch(0.97 0 0);
     --sidebar-border: oklch(0.336 0.012 120.037);
     --sidebar-ring: oklch(0.729 0.212 147.822);
+    --progress-bar: oklch(0.55 0.22 263);
     --badge: oklch(0.336 0.012 120.037);
     --badge-foreground: oklch(0.922 0 0);
-    --success: oklch(0.336 0.05 150.069);
-    --success-foreground: oklch(0.768 0.204 130.85);
-    --warning: oklch(0.408 0.08 70);
-    --warning-foreground: oklch(0.962 0.059 95.617);
-    --error: oklch(0.336 0.05 27.518);
-    --error-foreground: oklch(0.808 0.114 19.571);
-    --info: oklch(0.336 0.05 240.876);
-    --info-foreground: oklch(0.828 0.111 230.318);
-    --category-fiscal: oklch(0.685 0.148 237.323);
-    --category-pessoal: oklch(0.768 0.204 130.85);
-    --category-contabil: oklch(0.705 0.187 47.604);
-    --category-trabalhista: oklch(0.627 0.233 303.9);
+    --success: oklch(0.962 0.044 156.743);
+    --success-foreground: oklch(0.393 0.095 152.535);
+    --dot-success-foreground: oklch(0.723 0.219 149.579);
+    --warning: oklch(0.962 0.059 95.617);
+    --warning-foreground: oklch(0.414 0.112 45.904);
+    --dot-warning-foreground: oklch(0.769 0.188 70.08);
+    --error: oklch(0.936 0.032 17.717);
+    --error-foreground: oklch(0.396 0.141 25.723);
+    --dot-error-foreground: oklch(0.637 0.237 25.331);
+    --info: oklch(0.951 0.026 236.824);
+    --info-foreground: oklch(0.391 0.09 240.876);
+    --dot-info-foreground: oklch(0.685 0.169 237.323);
+    --category-fiscal: oklch(0.588 0.158 241.966);
+    --category-pessoal: oklch(0.648 0.2 131.684);
+    --category-contabil: oklch(0.646 0.222 41.116);
+    --category-trabalhista: oklch(0.558 0.288 302.321);
 }
 
 @layer base {

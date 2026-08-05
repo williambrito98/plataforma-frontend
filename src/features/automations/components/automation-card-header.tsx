@@ -24,6 +24,7 @@ export function AutomationCardHeader({
 }: AutomationCardHeaderProps) {
   const config = AUTOMATION_STATUS_CONFIG[runtime.status];
   const ActionIcon = config.action.icon;
+  const ProgressBarColor = config.progressBarColor;
 
   return (
     <div className="relative px-6 py-4">
@@ -68,7 +69,8 @@ export function AutomationCardHeader({
             runtime.total > 0 ? (runtime.processed / runtime.total) * 100 : null
           }
           aria-label="Progresso da execução"
-          className="absolute inset-x-0 bottom-0 gap-0 **:data-[slot=progress-track]:h-0.5 **:data-[slot=progress-track]:rounded-none **:data-[slot=progress-track]:bg-border **:data-[slot=progress-indicator]:bg-info-foreground"
+          indicatorClassName={ProgressBarColor}
+          className="absolute inset-x-0 bottom-0 gap-0 **:data-[slot=progress-track]:h-0.5 **:data-[slot=progress-track]:rounded-none **:data-[slot=progress-track]:bg-border"
         />
       ) : null}
     </div>

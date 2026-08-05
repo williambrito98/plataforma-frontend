@@ -20,7 +20,7 @@ export function AutomationExecutionMonitor({
   const percent = total > 0 ? (processed / total) * 100 : 0;
 
   return (
-    <div className="space-y-4">
+    <div className="flex h-full min-h-0 flex-1 flex-col gap-4">
       <Progress
         value={percent}
         className="w-full justify-between gap-0 [&_[data-slot=progress-track]]:hidden"
@@ -31,23 +31,23 @@ export function AutomationExecutionMonitor({
         <ProgressValue className="ml-0 text-sm font-medium text-foreground" />
       </Progress>
 
-      <div className="max-h-48 space-y-3 overflow-y-auto rounded-lg bg-accent p-4">
+      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto rounded-lg bg-accent p-4">
         {logs.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             Nenhum log registrado ainda.
           </p>
         ) : (
           logs.map((log) => (
-            <div key={log.id} className="flex items-start gap-3">
-              <span
-                aria-hidden
-                className={cn(
-                  "mt-1.5 size-2 shrink-0 rounded-full",
-                  log.variant === "error" ? "bg-error" : "bg-info-foreground",
-                )}
-              />
-              <div className="min-w-0 space-y-0.5">
-                <p className="text-xs text-muted-foreground">{log.time}</p>
+            <div key={log.id} className="flex items-center gap-4">
+              <p className="text-xs text-muted-foreground">{log.time}</p>
+              <div className="flex items-center gap-2 min-w-0">
+                <span
+                  aria-hidden
+                  className={cn(
+                    "size-2 shrink-0 rounded-full",
+                    log.variant === "error" ? "bg-error" : "bg-dot-info-foreground",
+                  )}
+                />
                 <p className="text-sm text-foreground">{log.message}</p>
               </div>
             </div>

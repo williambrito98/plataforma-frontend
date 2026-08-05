@@ -1,3 +1,4 @@
+import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { AUTOMATION_STATUS_CONFIG } from "@/features/automations/config/automation-status";
 import type {
   AutomationRuntime,
@@ -23,11 +24,11 @@ function getAlertTexts(status: AutomationStatus, runtime: AutomationRuntime) {
 
   if (status === "running" || status === "paused") {
     return {
-      subtitle: config.alertTitle,
       title:
         runtime.total > 0
-          ? `${runtime.processed} de ${runtime.total} transmitidas`
+          ? `${runtime.processed} de ${runtime.total} encontrados`
           : config.alertSubtitle,
+      subtitle: config.alertSubtitle,
     };
   }
 
@@ -40,7 +41,7 @@ function getAlertTexts(status: AutomationStatus, runtime: AutomationRuntime) {
 function getAlertColorClass(status: AutomationStatus) {
   switch (status) {
     case "running":
-      return "text-info-foreground";
+      return "text-blue-600";
     case "paused":
       return "text-warning-foreground";
     case "maintenance":
@@ -78,7 +79,17 @@ export function AutomationCardAlert({
         <p className={cn("text-sm font-medium", getAlertColorClass(status))}>
           {title}
         </p>
-        <p className="truncate text-sm text-muted-foreground">{subtitle}</p>
+        <CollapsibleTrigger
+          nativeButton={false}
+          render={
+            <button
+              type="button"
+              className="truncate text-left text-sm text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+            ></button>
+          }
+        >
+          {subtitle}
+        </CollapsibleTrigger>
       </div>
     </div>
   );
