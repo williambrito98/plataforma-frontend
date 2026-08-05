@@ -3,21 +3,29 @@ import {
   ProgressLabel,
   ProgressValue,
 } from "@/components/ui/progress";
-import type { AutomationLogEntry } from "@/features/automations/types/automation";
+import type {
+  AutomationLogEntry,
+  AutomationStatus,
+} from "@/features/automations/types/automation";
 import { cn } from "@/lib/utils";
+import { AUTOMATION_STATUS_CONFIG } from "../config/automation-status";
 
 type AutomationExecutionMonitorProps = {
+  status: AutomationStatus;
   processed: number;
   total: number;
   logs: AutomationLogEntry[];
 };
 
 export function AutomationExecutionMonitor({
+  status,
   processed,
   total,
   logs,
 }: AutomationExecutionMonitorProps) {
   const percent = total > 0 ? (processed / total) * 100 : 0;
+  const config = AUTOMATION_STATUS_CONFIG[status];
+  const badgeVariant = config.badgeVariant;
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col gap-4">
@@ -45,7 +53,9 @@ export function AutomationExecutionMonitor({
                   aria-hidden
                   className={cn(
                     "size-2 shrink-0 rounded-full",
-                    log.variant === "error" ? "bg-error" : "bg-dot-info-foreground",
+                    badgeVariant === "error"
+                      ? "bg-error"
+                      : `bg-dot-${badgeVariant}-foreground`,
                   )}
                 />
                 <p className="text-sm text-foreground">{log.message}</p>

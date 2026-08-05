@@ -43,6 +43,9 @@ export function AutomationCard({ automation }: AutomationCardProps) {
           "Funcionalidade em desenvolvimento.",
         );
         break;
+      case "completed":
+        setIsOpen(true);
+        break;
     }
   }
 
@@ -54,6 +57,17 @@ export function AutomationCard({ automation }: AutomationCardProps) {
   function handleCancel() {
     cancel(automation.id);
     setIsOpen(false);
+  }
+
+  function handleDownload() {
+    if (!runtime.outputFile) {
+      return;
+    }
+
+    alertToast.success(
+      "Download iniciado",
+      `Baixando ${runtime.outputFile.name}...`,
+    );
   }
 
   const isIdle = runtime.status === "idle";
@@ -74,7 +88,9 @@ export function AutomationCard({ automation }: AutomationCardProps) {
       />
 
       <CollapsibleContent className="h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 ease-out data-starting-style:h-0 data-ending-style:h-0 [&[hidden]:not([hidden='until-found'])]:hidden">
-        <CardContent className={`border-t border-border py-6 ${contentLayoutClassName}`}>
+        <CardContent
+          className={`border-t border-border py-6 ${contentLayoutClassName}`}
+        >
           <div className="min-w-0 lg:w-55 lg:flex-none">
             <AutomationCardMetadata
               category={automation.category}
@@ -92,17 +108,21 @@ export function AutomationCard({ automation }: AutomationCardProps) {
             </div>
           ) : (
             <>
-              <div className="min-w-0 lg:flex-1 lg:border-x lg:border-border lg:px-4">
+              <div className="flex min-h-0 min-w-0 flex-col lg:flex-1 lg:border-x lg:border-border lg:px-4">
                 <AutomationExecutionMonitor
                   processed={runtime.processed}
                   total={runtime.total}
                   logs={runtime.logs}
+                  status={runtime.status}
                 />
               </div>
               <div className="min-w-0 lg:w-55 lg:flex-none">
                 <AutomationSubmittedData
+                  status={runtime.status}
                   submittedValues={runtime.submittedValues}
+                  outputFile={runtime.outputFile}
                   onCancel={handleCancel}
+                  onDownload={handleDownload}
                 />
               </div>
             </>

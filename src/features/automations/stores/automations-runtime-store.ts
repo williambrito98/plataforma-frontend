@@ -32,6 +32,11 @@ function getAutomationTotal(automationId: string, total?: number): number {
   return automation?.defaultTotal ?? 100;
 }
 
+function getMockOutputFile(automationId: string): { name: string } {
+  const slug = automationId.replace(/^auto-/, "");
+  return { name: `${slug}.zip` };
+}
+
 function appendLogForProgress(
   runtime: AutomationRuntime,
   processed: number,
@@ -190,13 +195,19 @@ export const useAutomationsRuntimeStore = create<AutomationsRuntimeState>(
           }
 
           if (processed >= runtime.total) {
+            const finalLogs = appendLogForProgress(
+              { ...runtime, processed, logs },
+              processed,
+            );
+
             nextRuntimes[automationId] = {
               ...runtime,
-              status: "idle",
+              status: "completed",
               processed,
               elapsedSeconds,
-              logs,
+              logs: finalLogs,
               finishedAt: new Date().toISOString(),
+              outputFile: getMockOutputFile(automationId),
             };
           } else {
             nextRuntimes[automationId] = {

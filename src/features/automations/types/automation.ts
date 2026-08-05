@@ -6,7 +6,12 @@ export type AutomationCategorySlug =
   | "contabil"
   | "trabalhista";
 
-export type AutomationStatus = "idle" | "running" | "paused" | "maintenance";
+export type AutomationStatus =
+  | "idle"
+  | "running"
+  | "paused"
+  | "maintenance"
+  | "completed";
 
 export type AutomationLogEntry = {
   id: string;
@@ -25,6 +30,10 @@ export type AutomationRuntime = {
   logs: AutomationLogEntry[];
   submittedValues: Record<string, string>;
   errorMessage?: string;
+  outputFile?: {
+    name: string;
+    url?: string;
+  };
 };
 
 export type AutomationParameterOption = {

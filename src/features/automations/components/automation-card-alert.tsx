@@ -32,6 +32,16 @@ function getAlertTexts(status: AutomationStatus, runtime: AutomationRuntime) {
     };
   }
 
+  if (status === "completed") {
+    return {
+      title:
+        runtime.total > 0
+          ? `${runtime.processed} de ${runtime.total} transmitidas`
+          : config.alertTitle,
+      subtitle: config.alertSubtitle,
+    };
+  }
+
   return {
     title: config.alertTitle,
     subtitle: config.alertSubtitle,
@@ -46,6 +56,8 @@ function getAlertColorClass(status: AutomationStatus) {
       return "text-warning-foreground";
     case "maintenance":
       return "text-error-foreground";
+    case "completed":
+      return "text-success-foreground";
     default:
       return "text-success-foreground";
   }
@@ -80,7 +92,7 @@ export function AutomationCardAlert({
           {title}
         </p>
         <CollapsibleTrigger
-          nativeButton={false}
+          nativeButton={true}
           render={
             <button
               type="button"

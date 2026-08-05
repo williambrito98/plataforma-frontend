@@ -184,6 +184,26 @@ export const MOCK_AUTOMATIONS: AutomationListItem[] = [
   },
 ];
 
+const completedRuntime: AutomationRuntime = {
+  status: "completed",
+  processed: 294,
+  total: 294,
+  startedAt: "2026-07-30T22:00:00.000Z",
+  finishedAt: "2026-07-31T13:32:45.000Z",
+  elapsedSeconds: 55725,
+  submittedValues: {
+    Clientes: "clientes.xslx",
+    Competência: "07/2026",
+  },
+  outputFile: { name: "reinf.zip" },
+  logs: AUTOMATION_LOG_SCRIPT.map((entry, index) => ({
+    id: `log-reinf-${index + 1}`,
+    time: "23:47:12",
+    message: entry.message,
+    variant: entry.variant,
+  })),
+};
+
 const maintenanceRuntime: AutomationRuntime = {
   status: "maintenance",
   processed: 50,
@@ -231,16 +251,18 @@ export const MOCK_INITIAL_RUNTIMES: Record<string, AutomationRuntime> =
       automation.id,
       automation.id === "auto-esocial"
         ? maintenanceRuntime
-        : {
-            status: "idle" as const,
-            processed: 0,
-            total: 0,
-            startedAt: null,
-            finishedAt: null,
-            elapsedSeconds: 0,
-            logs: [],
-            submittedValues: {},
-          },
+        : automation.id === "auto-reinf"
+          ? completedRuntime
+          : {
+              status: "idle" as const,
+              processed: 0,
+              total: 0,
+              startedAt: null,
+              finishedAt: null,
+              elapsedSeconds: 0,
+              logs: [],
+              submittedValues: {},
+            },
     ]),
   );
 
