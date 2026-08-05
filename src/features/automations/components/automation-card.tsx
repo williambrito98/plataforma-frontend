@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
@@ -8,66 +8,54 @@ import { AutomationCardMetadata } from "@/features/automations/components/automa
 import { AutomationExecutionMonitor } from "@/features/automations/components/automation-execution-monitor";
 import { AutomationIdleForm } from "@/features/automations/components/automation-idle-form";
 import { AutomationSubmittedData } from "@/features/automations/components/automation-submitted-data";
-import {
-  useAutomationRuntime,
-  useAutomationsRuntimeStore,
-} from "@/features/automations/stores/automations-runtime-store";
-import type { AutomationListItem } from "@/features/automations/types/automation";
+import type { ExecutionListItem } from "@/features/automations/types/automation";
+import { createRuntimeFromExecution } from "@/features/automations/utils/normalize-execution";
 
 type AutomationCardProps = {
-  automation: AutomationListItem;
+  execution: ExecutionListItem;
 };
 
-export function AutomationCard({ automation }: AutomationCardProps) {
+export function AutomationCard({ execution }: AutomationCardProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const runtime = useAutomationRuntime(automation.id);
-  const start = useAutomationsRuntimeStore((state) => state.start);
-  const restart = useAutomationsRuntimeStore((state) => state.restart);
-  const pause = useAutomationsRuntimeStore((state) => state.pause);
-  const resume = useAutomationsRuntimeStore((state) => state.resume);
-  const cancel = useAutomationsRuntimeStore((state) => state.cancel);
+  const runtime = useMemo(
+    () => createRuntimeFromExecution(execution),
+    [execution],
+  );
 
   function handleAction() {
     switch (runtime.status) {
       case "idle":
         setIsOpen(true);
         break;
-      case "running":
-        pause(automation.id);
-        break;
-      case "paused":
-        resume(automation.id);
-        break;
-      case "maintenance":
+      default:
         alertToast.info(
-          "Reportar problema",
-          "Funcionalidade em desenvolvimento.",
+          "Em desenvolvimento",
+          "Esta ação estará disponível em breve.",
         );
-        break;
-      case "completed":
-        restart(automation.id);
         break;
     }
   }
 
-  function handleStart(submittedValues: Record<string, string>) {
-    start(automation.id, submittedValues, automation.defaultTotal);
+  function handleStart() {
+    alertToast.info(
+      "Em desenvolvimento",
+      "A execução estará disponível em breve.",
+    );
     setIsOpen(true);
   }
 
   function handleCancel() {
-    cancel(automation.id);
+    alertToast.info(
+      "Em desenvolvimento",
+      "Esta ação estará disponível em breve.",
+    );
     setIsOpen(false);
   }
 
   function handleDownload() {
-    if (!runtime.outputFile) {
-      return;
-    }
-
-    alertToast.success(
-      "Download iniciado",
-      `Baixando ${runtime.outputFile.name}...`,
+    alertToast.info(
+      "Em desenvolvimento",
+      "O download estará disponível em breve.",
     );
   }
 
@@ -83,7 +71,7 @@ export function AutomationCard({ automation }: AutomationCardProps) {
       render={<Card className="group/card relative gap-0 py-0" />}
     >
       <AutomationCardHeader
-        automation={automation}
+        execution={execution}
         runtime={runtime}
         onAction={handleAction}
       />
@@ -94,8 +82,8 @@ export function AutomationCard({ automation }: AutomationCardProps) {
         >
           <div className="min-w-0 lg:w-55 lg:flex-none">
             <AutomationCardMetadata
-              category={automation.category}
-              categoryLabel={automation.categoryLabel}
+              categorySlug={execution.categorySlug}
+              categoryLabel={execution.categoryLabel}
               runtime={runtime}
             />
           </div>
@@ -103,7 +91,7 @@ export function AutomationCard({ automation }: AutomationCardProps) {
           {isIdle ? (
             <div className="min-w-0 lg:flex-1 border-l border-border pl-4">
               <AutomationIdleForm
-                fields={automation.fields}
+                fields={execution.fields}
                 onStart={handleStart}
               />
             </div>

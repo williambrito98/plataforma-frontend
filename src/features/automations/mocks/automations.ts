@@ -266,6 +266,11 @@ export const MOCK_INITIAL_RUNTIMES: Record<string, AutomationRuntime> =
     ]),
   );
 
+export {
+  formatDisplayDate,
+  formatElapsedTime,
+} from "@/features/automations/utils/format-execution-dates";
+
 export function formatLogTime(date: Date): string {
   return date.toLocaleTimeString("pt-BR", {
     hour: "2-digit",
@@ -273,22 +278,4 @@ export function formatLogTime(date: Date): string {
     second: "2-digit",
     hour12: false,
   });
-}
-
-export function formatDisplayDate(iso: string | null): string {
-  if (!iso) {
-    return "--/--/----";
-  }
-
-  return new Intl.DateTimeFormat("pt-BR").format(new Date(iso));
-}
-
-export function formatElapsedTime(totalSeconds: number): string {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  return [hours, minutes, seconds]
-    .map((value) => String(value).padStart(2, "0"))
-    .join(":");
 }
