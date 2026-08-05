@@ -51,7 +51,7 @@ function getAlertTexts(status: AutomationStatus, runtime: AutomationRuntime) {
 function getAlertColorClass(status: AutomationStatus) {
   switch (status) {
     case "running":
-      return "text-blue-600";
+      return "text-progress-bar";
     case "paused":
       return "text-warning-foreground";
     case "maintenance":
