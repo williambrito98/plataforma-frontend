@@ -1,7 +1,7 @@
 import {
   formatDisplayDate,
   formatElapsedTime,
-} from "@/features/automations/mocks/automations";
+} from "@/features/automations/utils/format-execution-dates";
 import type {
   AutomationCategorySlug,
   AutomationRuntime,
@@ -9,13 +9,13 @@ import type {
 import { Badge } from "@/components/ui/badge";
 
 type AutomationCardMetadataProps = {
-  category: AutomationCategorySlug;
+  categorySlug: AutomationCategorySlug;
   categoryLabel: string;
   runtime: AutomationRuntime;
 };
 
 export function AutomationCardMetadata({
-  category,
+  categorySlug,
   categoryLabel,
   runtime,
 }: AutomationCardMetadataProps) {
@@ -46,7 +46,7 @@ export function AutomationCardMetadata({
         <div className="space-y-1">
           <dt className="text-sm text-muted-foreground">Categoria</dt>
           <dd>
-            <Badge variant="category" category={category} className="w-fit">
+            <Badge variant="category" category={categorySlug} className="w-fit">
               {categoryLabel}
             </Badge>
           </dd>

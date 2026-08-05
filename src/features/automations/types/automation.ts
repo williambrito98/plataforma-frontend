@@ -60,6 +60,42 @@ export type AutomationParameterDraft = {
   options: string;
 };
 
+export type ExecutionStatusApi =
+  | "PENDENTE"
+  | "PARADO"
+  | "PAUSADO"
+  | "RODANDO"
+  | "EM_MANUTENCAO"
+  | "CONCLUIDO";
+
+export type ExecutionApiResponse = {
+  id: string;
+  userId: string;
+  automationId: string;
+  status: ExecutionStatusApi;
+  dataConsole: string | null;
+  lastFields: unknown;
+  startedAt: string | null;
+  finishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  automation: AutomationApiResponse | null;
+};
+
+export type ExecutionListItem = {
+  executionId: string;
+  automationId: string;
+  name: string;
+  description: string | null;
+  categoryId: string;
+  categoryLabel: string;
+  categorySlug: AutomationCategorySlug;
+  fields: AutomationParameter[];
+  status: AutomationStatus;
+  startedAt: string | null;
+  finishedAt: string | null;
+};
+
 export type AutomationListItem = {
   id: string;
   name: string;

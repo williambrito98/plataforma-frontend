@@ -7,18 +7,18 @@ import { AUTOMATION_STATUS_CONFIG } from "@/features/automations/config/automati
 import { AutomationCardAlert } from "@/features/automations/components/automation-card-alert";
 import { AutomationStatusBadge } from "@/features/automations/components/automation-status-badge";
 import type {
-  AutomationListItem,
   AutomationRuntime,
+  ExecutionListItem,
 } from "@/features/automations/types/automation";
 
 type AutomationCardHeaderProps = {
-  automation: AutomationListItem;
+  execution: ExecutionListItem;
   runtime: AutomationRuntime;
   onAction: () => void;
 };
 
 export function AutomationCardHeader({
-  automation,
+  execution,
   runtime,
   onAction,
 }: AutomationCardHeaderProps) {
@@ -31,7 +31,7 @@ export function AutomationCardHeader({
       <div className="flex items-center gap-4">
         <div className="flex w-55 shrink-0 flex-col gap-1">
           <h3 className="truncate font-medium text-foreground">
-            {automation.name}
+            {execution.name}
           </h3>
           <AutomationStatusBadge status={runtime.status} />
         </div>
