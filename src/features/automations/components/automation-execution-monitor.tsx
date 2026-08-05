@@ -26,6 +26,7 @@ export function AutomationExecutionMonitor({
   const percent = total > 0 ? (processed / total) * 100 : 0;
   const config = AUTOMATION_STATUS_CONFIG[status];
   const badgeVariant = config.badgeVariant;
+  const shouldAnimateLatestLog = status === "running";
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col gap-4">
@@ -45,23 +46,39 @@ export function AutomationExecutionMonitor({
             Nenhum log registrado ainda.
           </p>
         ) : (
-          logs.map((log) => (
-            <div key={log.id} className="flex items-center gap-4">
-              <p className="text-xs text-muted-foreground">{log.time}</p>
-              <div className="flex items-center gap-2 min-w-0">
-                <span
-                  aria-hidden
-                  className={cn(
-                    "size-2 shrink-0 rounded-full",
-                    badgeVariant === "error"
-                      ? "bg-error"
-                      : `bg-dot-${badgeVariant}-foreground`,
-                  )}
-                />
-                <p className="text-sm text-foreground">{log.message}</p>
+          logs.map((log, index) => {
+            const isLatestLog = index === logs.length - 1;
+
+            return (
+              <div key={log.id} className="flex items-center gap-4">
+                <p className="text-xs text-muted-foreground">{log.time}</p>
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="relative inline-flex size-1.5 shrink-0">
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "absolute inset-0 rounded-full opacity-75",
+                        badgeVariant === "error"
+                          ? "bg-error"
+                          : `bg-dot-${badgeVariant}-foreground`,
+                        shouldAnimateLatestLog && isLatestLog && "animate-ping",
+                      )}
+                    />
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "relative z-10 size-1.5 rounded-full",
+                        badgeVariant === "error"
+                          ? "bg-error"
+                          : `bg-dot-${badgeVariant}-foreground`,
+                      )}
+                    />
+                  </span>
+                                    <p className="text-sm text-foreground">{log.message}</p>
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>
