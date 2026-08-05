@@ -158,7 +158,7 @@ export function AdminSidebarUserMenu() {
           {!isCollapsed ? (
             <div className="flex min-w-0 flex-col text-muted-foreground">
               <span className="truncate text-sm leading-5">{displayName}</span>
-              <span className="truncate text-xs leading-4 font-bold">
+              <span className="truncate text-xs text-left leading-4 font-bold">
                 {subtitle}
               </span>
             </div>
