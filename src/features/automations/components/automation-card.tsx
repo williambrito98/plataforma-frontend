@@ -22,6 +22,7 @@ export function AutomationCard({ automation }: AutomationCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const runtime = useAutomationRuntime(automation.id);
   const start = useAutomationsRuntimeStore((state) => state.start);
+  const restart = useAutomationsRuntimeStore((state) => state.restart);
   const pause = useAutomationsRuntimeStore((state) => state.pause);
   const resume = useAutomationsRuntimeStore((state) => state.resume);
   const cancel = useAutomationsRuntimeStore((state) => state.cancel);
@@ -44,7 +45,7 @@ export function AutomationCard({ automation }: AutomationCardProps) {
         );
         break;
       case "completed":
-        setIsOpen(true);
+        restart(automation.id);
         break;
     }
   }

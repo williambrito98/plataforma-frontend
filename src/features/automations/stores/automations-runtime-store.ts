@@ -16,6 +16,7 @@ type AutomationsRuntimeState = {
     submittedValues: Record<string, string>,
     total?: number,
   ) => void;
+  restart: (automationId: string) => void;
   pause: (automationId: string) => void;
   resume: (automationId: string) => void;
   cancel: (automationId: string) => void;
@@ -100,6 +101,15 @@ export const useAutomationsRuntimeStore = create<AutomationsRuntimeState>(
               : [],
             submittedValues,
           },
+        },
+      }));
+    },
+
+    restart: (automationId) => {
+      set((state) => ({
+        runtimes: {
+          ...state.runtimes,
+          [automationId]: createEmptyRuntime(),
         },
       }));
     },

@@ -1,6 +1,6 @@
 import {
   Check,
-  List,
+  Power,
   Loader,
   Pause,
   Play,
@@ -75,7 +75,7 @@ export const AUTOMATION_STATUS_CONFIG: Record<
     progressBarColor: "bg-success-foreground",
     icon: ShieldCheck,
     showProgress: true,
-    action: { label: "Detalhes", icon: List },
+    action: { label: "Reiniciar", icon: Power },
     alertTitle: "Execução concluída",
     alertSubtitle: "clique para ver detalhes",
   },
