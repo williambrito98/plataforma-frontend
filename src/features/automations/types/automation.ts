@@ -31,7 +31,10 @@ export type AutomationRuntime = {
   submittedValues: Record<string, string>;
   errorMessage?: string;
   outputFile?: {
+    id: string;
     name: string;
+    token: string;
+    createdAt: string;
     url?: string;
   };
 };
@@ -89,6 +92,12 @@ export type ExecutionApiResponse = {
   automation: AutomationApiResponse | null;
 };
 
+export type ExecutionActionApiResponse = {
+  id: string;
+  status: ExecutionStatusApi;
+  message: string;
+};
+
 export type ExecutionListItem = {
   executionId: string;
   automationId: string;
@@ -101,6 +110,7 @@ export type ExecutionListItem = {
   status: AutomationStatus;
   startedAt: string | null;
   finishedAt: string | null;
+  dataConsole: Record<string, unknown> | null;
 };
 
 export type AutomationListItem = {

@@ -12,6 +12,8 @@ type AutomationSubmittedDataProps = {
   status: AutomationStatus;
   submittedValues: Record<string, string>;
   outputFile?: AutomationRuntime["outputFile"];
+  isLoadingFile?: boolean;
+  isCancelPending?: boolean;
   onCancel: () => void;
   onDownload?: () => void;
 };
@@ -20,6 +22,8 @@ export function AutomationSubmittedData({
   status,
   submittedValues,
   outputFile,
+  isLoadingFile = false,
+  isCancelPending = false,
   onCancel,
   onDownload,
 }: AutomationSubmittedDataProps) {
@@ -72,25 +76,37 @@ export function AutomationSubmittedData({
           </dl>
         </div>
 
-        {isCompleted && outputFile ? (
-          <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">Arquivo de saída</p>
-            <Button
-              variant="default"
-              size="sm"
-              className="w-full"
-              onClick={onDownload}
-            >
-              <FileArchive aria-hidden />
-              {outputFile.name}
-            </Button>
-          </div>
+        {isCompleted ? (
+          outputFile ? (
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground">Arquivo de saída</p>
+              <Button
+                variant="default"
+                size="sm"
+                className="w-full"
+                onClick={onDownload}
+              >
+                <FileArchive aria-hidden />
+                {outputFile.name}
+              </Button>
+            </div>
+          ) : isLoadingFile ? (
+            <p className="text-sm text-muted-foreground">
+              Carregando arquivo...
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Arquivo indisponível.
+            </p>
+          )
         ) : (
           <div className="flex justify-end">
             <Button
               variant="destructive"
               size="sm"
               onClick={() => setIsCancelModalOpen(true)}
+              disabled={isCancelPending}
+              loading={isCancelPending}
             >
               Cancelar
             </Button>

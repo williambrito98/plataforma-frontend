@@ -15,12 +15,14 @@ type AutomationCardHeaderProps = {
   execution: ExecutionListItem;
   runtime: AutomationRuntime;
   onAction: () => void;
+  isActionPending?: boolean;
 };
 
 export function AutomationCardHeader({
   execution,
   runtime,
   onAction,
+  isActionPending = false,
 }: AutomationCardHeaderProps) {
   const config = AUTOMATION_STATUS_CONFIG[runtime.status];
   const ActionIcon = config.action.icon;
@@ -55,6 +57,8 @@ export function AutomationCardHeader({
             variant="outline"
             size="sm"
             onClick={onAction}
+            disabled={isActionPending}
+            loading={isActionPending}
             className={"w-28"}
           >
             <ActionIcon aria-hidden />

@@ -1,5 +1,5 @@
+import { buildFileDownloadUrl } from "@/features/automations/utils/build-file-download-url";
+
 export function downloadFile(token: string): void {
-  window.location.assign(
-    `${import.meta.env.VITE_API_URL}/files/download/${token}`,
-  );
+  window.location.assign(buildFileDownloadUrl(token));
 }

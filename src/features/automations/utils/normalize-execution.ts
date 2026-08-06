@@ -25,6 +25,9 @@ export function normalizeExecution(
     status: mapExecutionStatus(execution.status),
     startedAt: execution.startedAt,
     finishedAt: execution.finishedAt,
+    dataConsole: execution.dataConsole
+      ? JSON.parse(execution.dataConsole)
+      : null,
   };
 }
 

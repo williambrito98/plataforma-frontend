@@ -11,14 +11,22 @@ import {
   normalizeParameterValues,
 } from "@/features/automations/schemas/automation-parameters-schema";
 import type { AutomationParameter } from "@/features/automations/types/automation";
+import { buildExecutionFormData } from "@/features/automations/utils/build-execution-form-data";
+
+export type AutomationStartPayload = {
+  formData: FormData;
+  displayValues: Record<string, string>;
+};
 
 type AutomationIdleFormProps = {
   fields: AutomationParameter[];
-  onStart: (submittedValues: Record<string, string>) => void;
+  isSubmitting?: boolean;
+  onStart: (payload: AutomationStartPayload) => void;
 };
 
 export function AutomationIdleForm({
   fields,
+  isSubmitting = false,
   onStart,
 }: AutomationIdleFormProps) {
   const schema = useMemo(() => buildParametersSchema(fields), [fields]);
@@ -38,7 +46,10 @@ export function AutomationIdleForm({
   });
 
   function handleStart(values: Record<string, unknown>) {
-    onStart(normalizeParameterValues(fields, values));
+    const formData = buildExecutionFormData(fields, values);
+    const displayValues = normalizeParameterValues(fields, values);
+
+    onStart({ formData, displayValues });
   }
 
   return (
@@ -64,7 +75,13 @@ export function AutomationIdleForm({
       </div>
 
       <div className="flex">
-        <Button type="submit" size="sm" disabled={!isValid} className="w-full">
+        <Button
+          type="submit"
+          size="sm"
+          loading={isSubmitting}
+          disabled={!isValid || isSubmitting}
+          className="w-full"
+        >
           <Play aria-hidden />
           Iniciar
         </Button>

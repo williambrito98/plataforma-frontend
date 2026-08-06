@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import {
   Progress,
   ProgressLabel,
@@ -27,9 +28,16 @@ export function AutomationExecutionMonitor({
   const config = AUTOMATION_STATUS_CONFIG[status];
   const badgeVariant = config.badgeVariant;
   const shouldAnimateLatestLog = status === "running";
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+  }, [logs]);
 
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <Progress
         value={percent}
         className="w-full justify-between gap-0 [&_[data-slot=progress-track]]:hidden"
@@ -40,7 +48,10 @@ export function AutomationExecutionMonitor({
         <ProgressValue className="ml-0 text-sm font-medium text-foreground" />
       </Progress>
 
-      <div className="min-h-0 flex-1 space-y-3 overflow-y-auto rounded-lg bg-accent p-4">
+      <div
+        ref={scrollContainerRef}
+        className="max-h-64 space-y-3 overflow-y-auto scroll-smooth rounded-lg bg-accent p-4"
+      >
         {logs.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             Nenhum log registrado ainda.
@@ -51,7 +62,6 @@ export function AutomationExecutionMonitor({
 
             return (
               <div key={log.id} className="flex items-center gap-4">
-                <p className="text-xs text-muted-foreground">{log.time}</p>
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="relative inline-flex size-1.5 shrink-0">
                     <span
@@ -74,7 +84,7 @@ export function AutomationExecutionMonitor({
                       )}
                     />
                   </span>
-                                    <p className="text-sm text-foreground">{log.message}</p>
+                  <p className="text-sm text-foreground">{log.message}</p>
                 </div>
               </div>
             );
