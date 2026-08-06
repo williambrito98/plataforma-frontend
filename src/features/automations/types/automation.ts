@@ -49,6 +49,13 @@ export type AutomationParameter = {
   placeholder?: string;
   required: boolean;
   options?: AutomationParameterOption[];
+  format?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  rows?: number;
+  multiple?: boolean;
+  extensions?: string[];
 };
 
 export type AutomationParameterDraft = {
@@ -123,6 +130,13 @@ export type AutomationFieldApiPayload = {
   required: boolean;
   placeholder?: string;
   options?: AutomationParameterOption[];
+  format?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  rows?: number;
+  multiple?: boolean;
+  extensions?: string[];
 };
 
 export type CreateAutomationRequest = CreateAutomationFormValues & {
@@ -160,13 +174,34 @@ export function serializeAutomationFields(
   parameters: AutomationParameter[],
 ): AutomationFieldApiPayload[] {
   return parameters.map(
-    ({ name, type, label, placeholder, required, options }) => ({
+    ({
+      name,
+      type,
+      label,
+      placeholder,
+      required,
+      options,
+      format,
+      min,
+      max,
+      step,
+      rows,
+      multiple,
+      extensions,
+    }) => ({
       name,
       type,
       label,
       required,
       ...(placeholder ? { placeholder } : {}),
       ...(options?.length ? { options } : {}),
+      ...(format ? { format } : {}),
+      ...(min !== undefined ? { min } : {}),
+      ...(max !== undefined ? { max } : {}),
+      ...(step !== undefined ? { step } : {}),
+      ...(rows !== undefined ? { rows } : {}),
+      ...(multiple !== undefined ? { multiple } : {}),
+      ...(extensions?.length ? { extensions } : {}),
     }),
   );
 }

@@ -3,6 +3,8 @@ import type {
   AutomationLogEntry,
   AutomationRuntime,
 } from "@/features/automations/types/automation";
+import { parseAutomationFields } from "@/features/automations/utils/parse-automation-fields";
+import fieldsFixture from "../../../../fields.json";
 
 export const AUTOMATION_LOG_SCRIPT: Array<{
   message: string;
@@ -181,6 +183,14 @@ export const MOCK_AUTOMATIONS: AutomationListItem[] = [
         required: false,
       },
     ],
+  },
+  {
+    id: "auto-fields-fixture",
+    name: "Fixture — Campos dinâmicos",
+    category: "contabil",
+    categoryLabel: "Contábil",
+    defaultTotal: 1,
+    fields: parseAutomationFields(fieldsFixture),
   },
 ];
 

@@ -34,6 +34,28 @@ function parseOptions(raw: unknown): AutomationParameterOption[] | undefined {
   return options.length > 0 ? options : undefined;
 }
 
+function parseNumber(raw: unknown): number | undefined {
+  if (typeof raw === "number" && Number.isFinite(raw)) {
+    return raw;
+  }
+
+  if (typeof raw === "string" && raw.trim() !== "") {
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+
+  return undefined;
+}
+
+function parseStringArray(raw: unknown): string[] | undefined {
+  if (!Array.isArray(raw)) {
+    return undefined;
+  }
+
+  const values = raw.filter((item): item is string => typeof item === "string");
+  return values.length > 0 ? values : undefined;
+}
+
 function parseField(raw: unknown, index: number): AutomationParameter | null {
   if (!isRecord(raw)) {
     return null;
@@ -55,6 +77,14 @@ function parseField(raw: unknown, index: number): AutomationParameter | null {
 
   const placeholder =
     typeof raw.placeholder === "string" ? raw.placeholder : undefined;
+  const format = typeof raw.format === "string" ? raw.format : undefined;
+  const min = parseNumber(raw.min);
+  const max = parseNumber(raw.max);
+  const step = parseNumber(raw.step);
+  const rows = parseNumber(raw.rows);
+  const multiple = raw.multiple === true ? true : undefined;
+  const extensions = parseStringArray(raw.extensions);
+  const options = parseOptions(raw.options);
 
   return {
     id: name || `field-${index}`,
@@ -63,9 +93,14 @@ function parseField(raw: unknown, index: number): AutomationParameter | null {
     label,
     required: required === true,
     ...(placeholder ? { placeholder } : {}),
-    ...(parseOptions(raw.options)
-      ? { options: parseOptions(raw.options) }
-      : {}),
+    ...(format ? { format } : {}),
+    ...(min !== undefined ? { min } : {}),
+    ...(max !== undefined ? { max } : {}),
+    ...(step !== undefined ? { step } : {}),
+    ...(rows !== undefined ? { rows } : {}),
+    ...(multiple ? { multiple } : {}),
+    ...(extensions ? { extensions } : {}),
+    ...(options ? { options } : {}),
   };
 }
 

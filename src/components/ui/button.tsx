@@ -1,6 +1,7 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Loader } from "lucide-react";
+import { forwardRef } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -42,17 +43,21 @@ type ButtonProps = ButtonPrimitive.Props &
     loading?: boolean;
   };
 
-function Button({
-  className,
-  variant = "default",
-  size = "default",
-  loading = false,
-  disabled,
-  children,
-  ...props
-}: ButtonProps) {
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    className,
+    variant = "default",
+    size = "default",
+    loading = false,
+    disabled,
+    children,
+    ...props
+  },
+  ref,
+) {
   return (
     <ButtonPrimitive
+      ref={ref}
       data-slot="button"
       data-loading={loading || undefined}
       aria-busy={loading || undefined}
@@ -78,7 +83,7 @@ function Button({
       ) : null}
     </ButtonPrimitive>
   );
-}
+});
 
 export { Button, buttonVariants };
 export type { ButtonProps };
