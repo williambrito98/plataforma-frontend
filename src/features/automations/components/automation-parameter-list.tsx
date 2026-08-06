@@ -42,6 +42,14 @@ export function AutomationParameterList({
                 Placeholder: {parameter.placeholder}
               </p>
             ) : null}
+            {parameter.options?.length ? (
+              <p className="text-xs text-muted-foreground">
+                Opções:{" "}
+                {parameter.options
+                  .map((option) => `${option.label} (${option.value})`)
+                  .join(", ")}
+              </p>
+            ) : null}
           </div>
 
           <Button

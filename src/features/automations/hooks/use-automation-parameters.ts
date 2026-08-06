@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import type {
   AutomationParameter,
   AutomationParameterDraft,
+  AutomationParameterOption,
 } from "@/features/automations/types/automation";
 
 const emptyDraft: AutomationParameterDraft = {
@@ -11,8 +12,19 @@ const emptyDraft: AutomationParameterDraft = {
   label: "",
   placeholder: "",
   required: false,
-  options: "",
+  options: [],
 };
+
+function parseOptionsFromDraft(
+  options: AutomationParameterDraft["options"],
+): AutomationParameterOption[] {
+  return options
+    .map((option) => ({
+      label: option.label.trim(),
+      value: option.value.trim(),
+    }))
+    .filter((option) => option.label && option.value);
+}
 
 export function useAutomationParameters() {
   const [parameters, setParameters] = useState<AutomationParameter[]>([]);
@@ -28,6 +40,17 @@ export function useAutomationParameters() {
         return { success: false as const, error: "missing-fields" as const };
       }
 
+      const needsOptions =
+        parameterDraft.type === "select" ||
+        parameterDraft.type === "multiselect";
+      const options = needsOptions
+        ? parseOptionsFromDraft(parameterDraft.options)
+        : undefined;
+
+      if (needsOptions && (!options || options.length === 0)) {
+        return { success: false as const, error: "missing-options" as const };
+      }
+
       const parameter: AutomationParameter = {
         id: crypto.randomUUID(),
         name: parameterDraft.name.trim(),
@@ -35,15 +58,7 @@ export function useAutomationParameters() {
         label: parameterDraft.label.trim(),
         placeholder: parameterDraft.placeholder.trim() || undefined,
         required: parameterDraft.required,
-        ...(parameterDraft.type === "select"
-          ? {
-              options: parameterDraft.options
-                .split(",")
-                .map((option) => option.trim())
-                .filter(Boolean)
-                .map((value) => ({ value, label: value })),
-            }
-          : {}),
+        ...(options?.length ? { options } : {}),
       };
 
       setParameters((current) => [...current, parameter]);
