@@ -24,6 +24,7 @@ export function AutomationsList() {
 
   useEffect(() => {
     if (isError) {
+      console.log(error);
       alertToast.error(
         "Erro ao carregar automações",
         error instanceof Error ? error.message : undefined,
