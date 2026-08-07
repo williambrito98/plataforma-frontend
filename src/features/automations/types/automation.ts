@@ -68,6 +68,7 @@ export type AutomationParameterDraft = {
   placeholder: string;
   required: boolean;
   options: AutomationParameterOption[];
+  extensionsText: string;
 };
 
 export type ExecutionStatusApi =

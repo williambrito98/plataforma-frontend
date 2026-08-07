@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -79,16 +79,26 @@ export function AutomationParameterForm({
   function handleTypeChange(value: string | null) {
     const nextType = (value ?? "") as ParameterInputType | "";
 
-    if (isOptionType(nextType)) {
+    if (nextType === "file") {
       onDraftChange({
         type: nextType,
-        options:
-          draft.options.length > 0 ? draft.options : [createEmptyOptionDraft()],
+        options: [],
+        extensionsText: draft.extensionsText,
       });
       return;
     }
 
-    onDraftChange({ type: nextType, options: [] });
+    if (nextType === "select" || nextType === "multiselect") {
+      onDraftChange({
+        type: nextType,
+        options:
+          draft.options.length > 0 ? draft.options : [createEmptyOptionDraft()],
+        extensionsText: "",
+      });
+      return;
+    }
+
+    onDraftChange({ type: nextType, options: [], extensionsText: "" });
   }
 
   return (
@@ -171,6 +181,30 @@ export function AutomationParameterForm({
           options={draft.options}
           onChange={(options) => onDraftChange({ options })}
         />
+      ) : null}
+
+      {draft.type === "file" ? (
+        <Field orientation="vertical" className="gap-2">
+          <FieldLabel
+            htmlFor="parameter-extensions"
+            className="text-sm font-medium"
+          >
+            Extensões permitidas (opcional)
+          </FieldLabel>
+          <Input
+            id="parameter-extensions"
+            placeholder="pdf, xlsx, csv"
+            className={inputClassName}
+            value={draft.extensionsText}
+            onChange={(event) =>
+              onDraftChange({ extensionsText: event.target.value })
+            }
+          />
+          <FieldDescription>
+            Separe por vírgula. Na execução, o seletor de arquivo mostrará
+            apenas essas extensões.
+          </FieldDescription>
+        </Field>
       ) : null}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

@@ -50,6 +50,16 @@ export function AutomationParameterList({
                   .join(", ")}
               </p>
             ) : null}
+            {parameter.type === "file" && parameter.extensions?.length ? (
+              <p className="text-xs text-muted-foreground">
+                Extensões:{" "}
+                {parameter.extensions
+                  .map((extension) =>
+                    extension.startsWith(".") ? extension : `.${extension}`,
+                  )
+                  .join(", ")}
+              </p>
+            ) : null}
           </div>
 
           <Button

@@ -13,6 +13,7 @@ const emptyDraft: AutomationParameterDraft = {
   placeholder: "",
   required: false,
   options: [],
+  extensionsText: "",
 };
 
 function parseOptionsFromDraft(
@@ -24,6 +25,22 @@ function parseOptionsFromDraft(
       value: option.value.trim(),
     }))
     .filter((option) => option.label && option.value);
+}
+
+function parseExtensionsFromDraft(text: string): string[] {
+  const seen = new Set<string>();
+
+  return text
+    .split(",")
+    .map((extension) => extension.trim().replace(/^\./, "").toLowerCase())
+    .filter((extension) => {
+      if (!extension || seen.has(extension)) {
+        return false;
+      }
+
+      seen.add(extension);
+      return true;
+    });
 }
 
 export function useAutomationParameters() {
@@ -51,6 +68,11 @@ export function useAutomationParameters() {
         return { success: false as const, error: "missing-options" as const };
       }
 
+      const extensions =
+        parameterDraft.type === "file"
+          ? parseExtensionsFromDraft(parameterDraft.extensionsText)
+          : [];
+
       const parameter: AutomationParameter = {
         id: crypto.randomUUID(),
         name: parameterDraft.name.trim(),
@@ -59,6 +81,7 @@ export function useAutomationParameters() {
         placeholder: parameterDraft.placeholder.trim() || undefined,
         required: parameterDraft.required,
         ...(options?.length ? { options } : {}),
+        ...(extensions.length ? { extensions } : {}),
       };
 
       setParameters((current) => [...current, parameter]);
