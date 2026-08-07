@@ -53,7 +53,7 @@ export function AutomationIdleForm({
   }
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(handleStart)}>
+    <form className="w-112 mx-auto space-y-6" onSubmit={handleSubmit(handleStart)}>
       <div className="space-y-1">
         <h4 className="text-sm font-medium text-foreground">
           Preencha os dados para iniciar

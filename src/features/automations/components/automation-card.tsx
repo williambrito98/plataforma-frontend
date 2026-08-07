@@ -187,7 +187,7 @@ export function AutomationCard({ execution }: AutomationCardProps) {
 
   const isIdle = runtime.status === "idle";
   const contentLayoutClassName = isIdle
-    ? "flex flex-col gap-4 lg:flex-row lg:flex-nowrap"
+    ? "flex flex-col gap-4 lg:flex-row lg:flex-wrap"
     : "flex flex-col gap-4 lg:flex-row lg:flex-nowrap";
 
   return (
@@ -219,13 +219,16 @@ export function AutomationCard({ execution }: AutomationCardProps) {
           </div>
 
           {isIdle ? (
-            <div className="min-w-0 flex-1 border-l border-border pl-4">
-              <AutomationIdleForm
-                fields={execution.fields}
-                isSubmitting={executeMutation.isPending}
-                onStart={handleStart}
-              />
-            </div>
+            <>
+              <div className="min-w-0 flex-1 border-l border-border pl-4">
+                <AutomationIdleForm
+                  fields={execution.fields}
+                  isSubmitting={executeMutation.isPending}
+                  onStart={handleStart}
+                />
+              </div>
+              <div className="min-w-0 shrink-0 lg:w-55 lg:self-stretch"></div>
+            </>
           ) : (
             <>
               <div className="min-w-0 flex-1 lg:border-x lg:border-border lg:px-4">
