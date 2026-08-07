@@ -1,4 +1,4 @@
-export const PARAMETER_INPUT_TYPES = [
+const PARAMETER_INPUT_TYPES_SOURCE = [
   { value: "text", label: "Texto" },
   { value: "email", label: "E-mail" },
   { value: "password", label: "Senha" },
@@ -19,8 +19,12 @@ export const PARAMETER_INPUT_TYPES = [
   { value: "file", label: "Arquivo" },
 ] as const;
 
+export const PARAMETER_INPUT_TYPES = [...PARAMETER_INPUT_TYPES_SOURCE].sort(
+  (a, b) => a.label.localeCompare(b.label, "pt-BR"),
+);
+
 export type ParameterInputType =
-  (typeof PARAMETER_INPUT_TYPES)[number]["value"];
+  (typeof PARAMETER_INPUT_TYPES_SOURCE)[number]["value"];
 
 export function getParameterInputTypeLabel(type: ParameterInputType): string {
   return (

@@ -42,6 +42,24 @@ export function AutomationParameterList({
                 Placeholder: {parameter.placeholder}
               </p>
             ) : null}
+            {parameter.options?.length ? (
+              <p className="text-xs text-muted-foreground">
+                Opções:{" "}
+                {parameter.options
+                  .map((option) => `${option.label} (${option.value})`)
+                  .join(", ")}
+              </p>
+            ) : null}
+            {parameter.type === "file" && parameter.extensions?.length ? (
+              <p className="text-xs text-muted-foreground">
+                Extensões:{" "}
+                {parameter.extensions
+                  .map((extension) =>
+                    extension.startsWith(".") ? extension : `.${extension}`,
+                  )
+                  .join(", ")}
+              </p>
+            ) : null}
           </div>
 
           <Button
