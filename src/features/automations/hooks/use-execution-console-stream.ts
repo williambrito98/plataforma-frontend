@@ -39,6 +39,7 @@ type ExecutionConsoleStreamState = {
   total: number;
   status?: AutomationStatus;
   connectionState: SseConnectionState;
+  resetMonitor: () => void;
 };
 
 const TERMINAL_STATUSES: AutomationStatus[] = [
@@ -72,6 +73,21 @@ export function useExecutionConsoleStream({
     shouldLoadHistory && status !== "idle",
   );
 
+  const enqueueLog = useCallback(
+    (entry: AutomationLogEntry) => {
+      setLogs((current) => appendLogEntry(current, entry));
+    },
+    [],
+  );
+
+  const resetMonitor = useCallback(() => {
+    seededExecutionIdRef.current = null;
+    setLogs([]);
+    setProcessed(0);
+    setTotal(0);
+    setStreamStatus(undefined);
+  }, []);
+
   useEffect(() => {
     if (!executionDetail?.dataConsole) {
       return;
@@ -92,11 +108,7 @@ export function useExecutionConsoleStream({
 
   useEffect(() => {
     if (status === "idle") {
-      seededExecutionIdRef.current = null;
-      setLogs([]);
-      setProcessed(0);
-      setTotal(0);
-      setStreamStatus(undefined);
+      return;
     }
   }, [status, executionId]);
 
@@ -115,9 +127,10 @@ export function useExecutionConsoleStream({
 
       if (isConsoleSseEvent(event)) {
         const entry = mapSseToLogEntry(event.data, event.timestamp);
-        setLogs((current) => appendLogEntry(current, entry));
+        enqueueLog(entry);
 
         const progress = extractProgressFromPayload(event.data);
+
         if (progress.processed != null) {
           setProcessed(progress.processed);
         }
@@ -138,7 +151,7 @@ export function useExecutionConsoleStream({
         }
       }
     },
-    [queryClient],
+    [enqueueLog, queryClient],
   );
 
   const { connectionState } = useSse<SseEventEnvelope>(sseUrl, {
@@ -153,5 +166,6 @@ export function useExecutionConsoleStream({
     total,
     status: streamStatus,
     connectionState: sseEnabled ? connectionState : "idle",
+    resetMonitor,
   };
 }
