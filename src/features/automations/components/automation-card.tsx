@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
@@ -29,6 +29,7 @@ import {
   consoleSnapshotToProgress,
   parseConsoleSnapshot,
 } from "@/features/automations/utils/parse-console-snapshot";
+import { computeElapsedSeconds } from "@/features/automations/utils/format-execution-dates";
 
 const TERMINAL_MONITOR_STATUSES: AutomationStatus[] = [
   "paused",
@@ -51,11 +52,37 @@ export function AutomationCard({ execution }: AutomationCardProps) {
   const continueMutation = useContinueExecution();
   const finishMutation = useFinishExecution();
 
+  const [elapsedSeconds, setElapsedSeconds] = useState(() =>
+    computeElapsedSeconds(execution.startedAt, execution.finishedAt),
+  );
+
+  useEffect(() => {
+    const updateElapsedTime = () => {
+      setElapsedSeconds(
+        computeElapsedSeconds(execution.startedAt, execution.finishedAt),
+      );
+    };
+
+    updateElapsedTime();
+
+    if (execution.status !== "running" || !execution.startedAt) {
+      return;
+    }
+
+    const intervalId = window.setInterval(updateElapsedTime, 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [execution.status, execution.startedAt, execution.finishedAt]);
+  
   const stream = useExecutionConsoleStream({
     executionId: execution.executionId,
     status: execution.status,
     enabled: execution.status === "running" && isOpen,
   });
+
+  const { resetMonitor } = stream;
 
   const fileStream = useExecutionFileStream({
     executionId: execution.executionId,
@@ -93,6 +120,7 @@ export function AutomationCard({ execution }: AutomationCardProps) {
   const runtime = useMemo(
     () => ({
       ...createRuntimeFromExecution(execution),
+      elapsedSeconds,
       logs:
         execution.status === "running"
           ? stream.logs
@@ -109,7 +137,7 @@ export function AutomationCard({ execution }: AutomationCardProps) {
       submittedValues,
       outputFile: fileStream.outputFile,
     }),
-    [execution, stream, staticConsole, submittedValues, fileStream.outputFile],
+    [execution, elapsedSeconds, stream, staticConsole, submittedValues, fileStream.outputFile,],
   );
 
   function handleAction() {
@@ -128,6 +156,7 @@ export function AutomationCard({ execution }: AutomationCardProps) {
           { executionId: execution.executionId },
           {
             onSuccess: () => {
+              resetMonitor();
               setSubmittedValues({});
               setIsOpen(true);
             },
@@ -152,6 +181,7 @@ export function AutomationCard({ execution }: AutomationCardProps) {
       },
       {
         onSuccess: () => {
+          resetMonitor();
           setSubmittedValues(displayValues);
           setIsOpen(true);
         },
@@ -164,6 +194,7 @@ export function AutomationCard({ execution }: AutomationCardProps) {
       { executionId: execution.executionId },
       {
         onSuccess: () => {
+          resetMonitor();
           setSubmittedValues({});
           setIsOpen(false);
         },
