@@ -254,3 +254,31 @@
     @apply text-sm font-medium;
   }
 }
+
+@layer utilities {
+  /* Configurações da calha e largura da barra */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 16px;
+  }
+
+  /* Remove o fundo da pista */
+  .custom-scrollbar::-webkit-track {
+    background: transparent;
+  }
+
+  /* Esconde as setas superiores e inferiores */
+  .custom-scrollbar::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  /* Estilização do indicador (puxador) */
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #9ca3af; /* Cor gray-400 do Tailwind */
+    border-radius: 9999px; /* Totalmente arredondado */
+    min-height: 40px; /* Evita que vire uma bolinha */
+    
+    /* Cria o espaçamento do topo, rodapé e lateral direita */
+    border: 6px solid transparent;
+    background-clip: padding-box;
+  }
+}
