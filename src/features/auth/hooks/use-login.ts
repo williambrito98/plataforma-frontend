@@ -5,30 +5,47 @@ import { alertToast } from "@/components/ui/sonner";
 import { AuthError } from "@/features/auth/api/auth-error";
 import { login } from "@/features/auth/api/login";
 import { bootstrapAuth } from "@/features/auth/lib/bootstrap-auth";
+import { resetClientSession } from "@/features/auth/lib/reset-client-session";
 import { useAuthStore } from "@/features/auth/stores/auth-store";
+import { queryClient } from "@/lib/query-client";
+
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
 
 export function useLogin() {
   const navigate = useNavigate();
   const setUser = useAuthStore((state) => state.setUser);
-  const clearUser = useAuthStore((state) => state.clearUser);
 
   return useMutation({
     mutationFn: login,
-    onSuccess: async () => {
-      const user = await bootstrapAuth();
+    onSuccess: async (_data, variables) => {
+      queryClient.clear();
 
-      if (user) {
-        setUser(user);
-        alertToast.success("Login realizado", "Bem-vindo de volta!");
-        navigate({ to: "/automacoes" });
+      const user = await bootstrapAuth();
+      const expectedEmail = normalizeEmail(variables.email);
+
+      if (!user) {
+        resetClientSession();
+        alertToast.error(
+          "Falha no login",
+          "Não foi possível carregar sua sessão. Tente novamente.",
+        );
         return;
       }
 
-      clearUser();
-      alertToast.error(
-        "Falha no login",
-        "Não foi possível carregar sua sessão. Tente novamente.",
-      );
+      if (normalizeEmail(user.email) !== expectedEmail) {
+        resetClientSession();
+        alertToast.error(
+          "Falha no login",
+          "A sessão anterior não foi encerrada corretamente. Saia e tente novamente.",
+        );
+        return;
+      }
+
+      setUser(user);
+      alertToast.success("Login realizado", "Bem-vindo de volta!");
+      navigate({ to: "/automacoes" });
     },
     onError: (error) => {
       const message =
