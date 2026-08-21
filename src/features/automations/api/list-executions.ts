@@ -7,9 +7,16 @@ import type {
 } from "@/features/automations/types/automation";
 import { normalizeExecution } from "@/features/automations/utils/normalize-execution";
 
-export async function listExecutions(): Promise<ExecutionListItem[]> {
+export async function listExecutions(
+  companyId: string,
+): Promise<ExecutionListItem[]> {
   try {
-    const { data } = await apiClient.get<ExecutionApiResponse[]>("/executions");
+    const { data } = await apiClient.get<ExecutionApiResponse[]>(
+      "/executions",
+      {
+        params: { companyId },
+      },
+    );
     return data.map(normalizeExecution);
   } catch (error) {
     throw new Error(

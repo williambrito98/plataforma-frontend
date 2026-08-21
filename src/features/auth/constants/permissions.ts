@@ -7,6 +7,9 @@ export const PermissionCodes = {
 
   USER_CONTROL: "user.control",
 
+  COMPANIES_READ: "companies.read",
+  COMPANIES_CREATE: "companies.create",
+
   AUTOMATIONS_CREATE: "automations.create",
 
   CATEGORIES_READ: "categories.read",

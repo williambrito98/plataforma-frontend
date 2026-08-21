@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AdminArquivosRouteImport } from './routes/_admin/arquivos'
 import { Route as AdminAutomacoesRouteImport } from './routes/_admin/automacoes'
 import { Route as AdminCategoriasRouteImport } from './routes/_admin/categorias'
+import { Route as AdminEmpresasRouteImport } from './routes/_admin/empresas'
 import { Route as AdminPerfilRouteImport } from './routes/_admin/perfil'
 import { Route as AdminRbacRouteImport } from './routes/_admin/rbac'
 import { Route as AdminUsuariosRouteImport } from './routes/_admin/usuarios'
@@ -50,6 +51,11 @@ const AdminCategoriasRoute = AdminCategoriasRouteImport.update({
   path: '/categorias',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminEmpresasRoute = AdminEmpresasRouteImport.update({
+  id: '/empresas',
+  path: '/empresas',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPerfilRoute = AdminPerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/arquivos': typeof AdminArquivosRoute
   '/automacoes': typeof AdminAutomacoesRouteWithChildren
   '/categorias': typeof AdminCategoriasRoute
+  '/empresas': typeof AdminEmpresasRoute
   '/perfil': typeof AdminPerfilRoute
   '/rbac': typeof AdminRbacRoute
   '/usuarios': typeof AdminUsuariosRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/arquivos': typeof AdminArquivosRoute
   '/categorias': typeof AdminCategoriasRoute
+  '/empresas': typeof AdminEmpresasRoute
   '/perfil': typeof AdminPerfilRoute
   '/rbac': typeof AdminRbacRoute
   '/usuarios': typeof AdminUsuariosRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/_admin/arquivos': typeof AdminArquivosRoute
   '/_admin/automacoes': typeof AdminAutomacoesRouteWithChildren
   '/_admin/categorias': typeof AdminCategoriasRoute
+  '/_admin/empresas': typeof AdminEmpresasRoute
   '/_admin/perfil': typeof AdminPerfilRoute
   '/_admin/rbac': typeof AdminRbacRoute
   '/_admin/usuarios': typeof AdminUsuariosRoute
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/arquivos'
     | '/automacoes'
     | '/categorias'
+    | '/empresas'
     | '/perfil'
     | '/rbac'
     | '/usuarios'
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/arquivos'
     | '/categorias'
+    | '/empresas'
     | '/perfil'
     | '/rbac'
     | '/usuarios'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/_admin/arquivos'
     | '/_admin/automacoes'
     | '/_admin/categorias'
+    | '/_admin/empresas'
     | '/_admin/perfil'
     | '/_admin/rbac'
     | '/_admin/usuarios'
@@ -200,6 +212,13 @@ declare module '@tanstack/react-router' {
       path: '/categorias'
       fullPath: '/categorias'
       preLoaderRoute: typeof AdminCategoriasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/empresas': {
+      id: '/_admin/empresas'
+      path: '/empresas'
+      fullPath: '/empresas'
+      preLoaderRoute: typeof AdminEmpresasRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_admin/perfil': {
@@ -258,6 +277,7 @@ interface AdminRouteChildren {
   AdminArquivosRoute: typeof AdminArquivosRoute
   AdminAutomacoesRoute: typeof AdminAutomacoesRouteWithChildren
   AdminCategoriasRoute: typeof AdminCategoriasRoute
+  AdminEmpresasRoute: typeof AdminEmpresasRoute
   AdminPerfilRoute: typeof AdminPerfilRoute
   AdminRbacRoute: typeof AdminRbacRoute
   AdminUsuariosRoute: typeof AdminUsuariosRoute
@@ -267,6 +287,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminArquivosRoute: AdminArquivosRoute,
   AdminAutomacoesRoute: AdminAutomacoesRouteWithChildren,
   AdminCategoriasRoute: AdminCategoriasRoute,
+  AdminEmpresasRoute: AdminEmpresasRoute,
   AdminPerfilRoute: AdminPerfilRoute,
   AdminRbacRoute: AdminRbacRoute,
   AdminUsuariosRoute: AdminUsuariosRoute,

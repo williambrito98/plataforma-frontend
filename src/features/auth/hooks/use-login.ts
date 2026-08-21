@@ -7,6 +7,11 @@ import { login } from "@/features/auth/api/login";
 import { bootstrapAuth } from "@/features/auth/lib/bootstrap-auth";
 import { resetClientSession } from "@/features/auth/lib/reset-client-session";
 import { useAuthStore } from "@/features/auth/stores/auth-store";
+import {
+  getUserCompanies,
+  needsCompanySelection,
+} from "@/features/companies/lib/company-selection";
+import { useCompanyStore } from "@/features/companies/stores/company-store";
 import { queryClient } from "@/lib/query-client";
 
 function normalizeEmail(email: string): string {
@@ -44,7 +49,20 @@ export function useLogin() {
       }
 
       setUser(user);
+      useCompanyStore.getState().initializeFromUser(user);
+
+      const selectedCompanyId = useCompanyStore.getState().selectedCompanyId;
+      const mustSelectCompany =
+        needsCompanySelection(user) &&
+        !selectedCompanyId &&
+        getUserCompanies(user).length > 1;
+
       alertToast.success("Login realizado", "Bem-vindo de volta!");
+
+      if (mustSelectCompany) {
+        return;
+      }
+
       navigate({ to: "/automacoes" });
     },
     onError: (error) => {

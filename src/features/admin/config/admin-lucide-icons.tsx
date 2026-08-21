@@ -1,4 +1,5 @@
 import {
+  Building2,
   Container,
   FolderTree,
   ShieldCheck,
@@ -14,6 +15,7 @@ import type {
 import { cn } from "@/lib/utils";
 
 export const adminLucideIconMap = {
+  Building2,
   Container,
   FolderTree,
   ShieldCheck,

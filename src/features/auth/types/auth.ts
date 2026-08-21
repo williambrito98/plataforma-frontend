@@ -1,3 +1,5 @@
+import type { CompanySummary } from "@/features/companies/types/company";
+
 export type UserRole = {
   id: number;
   name: string;
@@ -15,6 +17,7 @@ export type User = {
   updatedAt?: string;
   role?: UserRole;
   permissions?: string[];
+  companies?: CompanySummary[];
 };
 
 export type ValidateTokenResponse = {

@@ -13,6 +13,7 @@ function normalizeUser(user: MeApiResponse): User {
   return {
     ...user,
     avatar: user.profilePhoto ?? null,
+    companies: user.companies ?? [],
   };
 }
 

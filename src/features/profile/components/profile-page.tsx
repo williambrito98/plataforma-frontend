@@ -7,6 +7,7 @@ import { ProfileRoleCard } from "@/features/profile/components/profile-role-card
 import { useUpdateProfile } from "@/features/profile/hooks/use-update-profile";
 import type { ProfileFormValues } from "@/features/profile/schemas/profile-schema";
 import type { ProfileRole } from "@/features/profile/types/profile";
+import { useSelectedCompany } from "@/features/companies/hooks/use-selected-company";
 
 function ProfilePageSkeleton() {
   return (
@@ -39,6 +40,7 @@ function mapRole(role: UserRole | undefined): ProfileRole | undefined {
 
 export function ProfilePage() {
   const { user, isLoading } = useSession();
+  const { selectedCompany } = useSelectedCompany();
   const updateProfile = useUpdateProfile();
 
   if (isLoading || !user) {
@@ -77,7 +79,7 @@ export function ProfilePage() {
           defaultValues={{
             name: currentUser.name,
             email: currentUser.email,
-            company: "",
+            company: selectedCompany?.name ?? "Nenhuma empresa vinculada",
             password: "",
           }}
           isSaving={updateProfile.isPending && !updateProfile.variables?.photo}

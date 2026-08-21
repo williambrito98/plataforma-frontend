@@ -24,6 +24,12 @@ export const adminNavigation = [
     access: { permissions: [PermissionCodes.CATEGORIES_READ] },
   },
   {
+    label: "Empresas",
+    href: "/empresas",
+    lucideIcon: "Building2",
+    access: { permissions: [PermissionCodes.COMPANIES_CREATE] },
+  },
+  {
     label: "Usuários",
     href: "/usuarios",
     lucideIcon: "Users",
@@ -42,6 +48,7 @@ export const adminPageMetaByHref: Record<AdminNavItem["href"], AdminPageMeta> =
     "/automacoes": { title: "Automações", lucideIcon: "Container" },
     "/arquivos": { title: "Arquivos", lucideIcon: "FolderTree" },
     "/categorias": { title: "Categorias", lucideIcon: "Tags" },
+    "/empresas": { title: "Empresas", lucideIcon: "Building2" },
     "/usuarios": { title: "Usuários", lucideIcon: "Users" },
     "/rbac": { title: "RBAC", lucideIcon: "ShieldCheck" },
   };

@@ -4,6 +4,11 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { bootstrapAuth } from "@/features/auth/lib/bootstrap-auth";
 import { useAuthStore } from "@/features/auth/stores/auth-store";
+import {
+  getUserCompanies,
+  needsCompanySelection,
+} from "@/features/companies/lib/company-selection";
+import { useCompanyStore } from "@/features/companies/stores/company-store";
 
 const PUBLIC_ROUTES = ["/login"] as const;
 const DEFAULT_AUTHENTICATED_ROUTE = "/automacoes";
@@ -53,12 +58,21 @@ export function AuthBootstrap({ router, children }: AuthBootstrapProps) {
 
       if (user) {
         setUser(user);
+        useCompanyStore.getState().initializeFromUser(user);
 
-        if (isPublicRoute(pathname)) {
+        const selectedCompanyId = useCompanyStore.getState().selectedCompanyId;
+        const mustSelectCompany =
+          needsCompanySelection(user) &&
+          !selectedCompanyId &&
+          getUserCompanies(user).length > 1;
+
+        if (isPublicRoute(pathname) && !mustSelectCompany) {
           await router.navigate({
             to: DEFAULT_AUTHENTICATED_ROUTE,
             replace: true,
           });
+        } else if (!isPublicRoute(pathname) && mustSelectCompany) {
+          await router.navigate({ to: "/login", replace: true });
         }
       } else {
         clearUser();

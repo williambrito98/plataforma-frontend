@@ -15,7 +15,7 @@ export function AdminLayout() {
           <AdminSidebar />
           <SidebarInset className="min-h-svh bg-background">
             <header className="flex items-start px-6 pt-6.5">
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-6 w-full">
                 <AdminPanelToggle />
                 <AdminPageHeader />
               </div>
