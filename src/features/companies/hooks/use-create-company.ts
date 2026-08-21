@@ -21,9 +21,10 @@ export function useCreateCompany() {
   return useMutation({
     mutationFn: createCompany,
     onSuccess: async (company) => {
+      const previousSelectedId = useCompanyStore.getState().selectedCompanyId;
       const user = await useAuthStore.getState().refreshUser();
 
-      if (user) {
+      if (user && !previousSelectedId) {
         useCompanyStore.getState().setSelectedCompany(user.id, company.id);
       }
 
