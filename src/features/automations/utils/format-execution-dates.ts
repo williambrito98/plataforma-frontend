@@ -1,9 +1,13 @@
+const APP_TIMEZONE = "America/Sao_Paulo";
+
 export function formatDisplayDate(iso: string | null): string {
   if (!iso) {
     return "--/--/----";
   }
 
-  return new Intl.DateTimeFormat("pt-BR").format(new Date(iso));
+  return new Intl.DateTimeFormat("pt-BR", {
+    timeZone: APP_TIMEZONE,
+  }).format(new Date(iso));
 }
 
 export function formatElapsedTime(totalSeconds: number): string {
