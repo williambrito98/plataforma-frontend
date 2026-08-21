@@ -44,6 +44,19 @@ export function FilesTable({
     downloadFile(file.token);
   }
 
+  function handleRowClick(
+    event: React.MouseEvent<HTMLTableRowElement>,
+    fileId: string,
+  ) {
+    const target = event.target as HTMLElement;
+
+    if (target.closest("button, [data-slot='checkbox']")) {
+      return;
+    }
+
+    onToggle(fileId);
+  }
+
   return (
     <div className="w-full overflow-hidden rounded-md">
       <Table>
@@ -94,10 +107,12 @@ export function FilesTable({
               return (
                 <TableRow
                   key={file.id}
+                  data-state={isSelected(file.id) ? "selected" : undefined}
                   className={cn(
-                    "border-border hover:bg-transparent",
+                    "cursor-pointer border-border",
                     isLastRow && "border-0",
                   )}
+                  onClick={(event) => handleRowClick(event, file.id)}
                 >
                   <TableCell className="w-12 px-4 py-3">
                     <div className="flex items-center justify-center">

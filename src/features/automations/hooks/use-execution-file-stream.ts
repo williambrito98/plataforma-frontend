@@ -100,7 +100,7 @@ export function useExecutionFileStream({
     let cancelled = false;
     setIsLoadingFile(true);
 
-    void getExecutionFiles(executionId)
+    void getExecutionFiles({ executionId, page: 1, limit: 1 })
       .then((files) => {
         if (cancelled || files.length === 0) {
           return;

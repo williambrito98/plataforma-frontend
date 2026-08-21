@@ -48,6 +48,10 @@ export function useFileSelection({ fileIds }: UseFileSelectionOptions) {
     [fileIds, selectedIds],
   );
 
+  const clearSelection = useCallback(() => {
+    setSelectedIds(new Set());
+  }, []);
+
   return {
     selectedCount,
     isAllSelected,
@@ -55,6 +59,7 @@ export function useFileSelection({ fileIds }: UseFileSelectionOptions) {
     isSelected,
     toggle,
     toggleAll,
+    clearSelection,
     selectedFiles,
   };
 }
