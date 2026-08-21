@@ -21,6 +21,9 @@ import { Route as AdminRbacRouteImport } from './routes/_admin/rbac'
 import { Route as AdminUsuariosRouteImport } from './routes/_admin/usuarios'
 import { Route as AdminAutomacoesIndexRouteImport } from './routes/_admin/automacoes.index'
 import { Route as AdminAutomacoesNovaRouteImport } from './routes/_admin/automacoes.nova'
+import { Route as AdminEmpresasIndexRouteImport } from './routes/_admin/empresas.index'
+import { Route as AdminEmpresasNovaRouteImport } from './routes/_admin/empresas.nova'
+import { Route as AdminEmpresasIdEditarRouteImport } from './routes/_admin/empresas.$id.editar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -81,6 +84,21 @@ const AdminAutomacoesNovaRoute = AdminAutomacoesNovaRouteImport.update({
   path: '/nova',
   getParentRoute: () => AdminAutomacoesRoute,
 } as any)
+const AdminEmpresasIndexRoute = AdminEmpresasIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminEmpresasRoute,
+} as any)
+const AdminEmpresasNovaRoute = AdminEmpresasNovaRouteImport.update({
+  id: '/nova',
+  path: '/nova',
+  getParentRoute: () => AdminEmpresasRoute,
+} as any)
+const AdminEmpresasIdEditarRoute = AdminEmpresasIdEditarRouteImport.update({
+  id: '/$id/editar',
+  path: '/$id/editar',
+  getParentRoute: () => AdminEmpresasRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -88,24 +106,29 @@ export interface FileRoutesByFullPath {
   '/arquivos': typeof AdminArquivosRoute
   '/automacoes': typeof AdminAutomacoesRouteWithChildren
   '/categorias': typeof AdminCategoriasRoute
-  '/empresas': typeof AdminEmpresasRoute
+  '/empresas': typeof AdminEmpresasRouteWithChildren
   '/perfil': typeof AdminPerfilRoute
   '/rbac': typeof AdminRbacRoute
   '/usuarios': typeof AdminUsuariosRoute
   '/automacoes/nova': typeof AdminAutomacoesNovaRoute
+  '/empresas/nova': typeof AdminEmpresasNovaRoute
   '/automacoes/': typeof AdminAutomacoesIndexRoute
+  '/empresas/': typeof AdminEmpresasIndexRoute
+  '/empresas/$id/editar': typeof AdminEmpresasIdEditarRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/arquivos': typeof AdminArquivosRoute
   '/categorias': typeof AdminCategoriasRoute
-  '/empresas': typeof AdminEmpresasRoute
   '/perfil': typeof AdminPerfilRoute
   '/rbac': typeof AdminRbacRoute
   '/usuarios': typeof AdminUsuariosRoute
   '/automacoes/nova': typeof AdminAutomacoesNovaRoute
+  '/empresas/nova': typeof AdminEmpresasNovaRoute
   '/automacoes': typeof AdminAutomacoesIndexRoute
+  '/empresas': typeof AdminEmpresasIndexRoute
+  '/empresas/$id/editar': typeof AdminEmpresasIdEditarRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -115,12 +138,15 @@ export interface FileRoutesById {
   '/_admin/arquivos': typeof AdminArquivosRoute
   '/_admin/automacoes': typeof AdminAutomacoesRouteWithChildren
   '/_admin/categorias': typeof AdminCategoriasRoute
-  '/_admin/empresas': typeof AdminEmpresasRoute
+  '/_admin/empresas': typeof AdminEmpresasRouteWithChildren
   '/_admin/perfil': typeof AdminPerfilRoute
   '/_admin/rbac': typeof AdminRbacRoute
   '/_admin/usuarios': typeof AdminUsuariosRoute
   '/_admin/automacoes/nova': typeof AdminAutomacoesNovaRoute
+  '/_admin/empresas/nova': typeof AdminEmpresasNovaRoute
   '/_admin/automacoes/': typeof AdminAutomacoesIndexRoute
+  '/_admin/empresas/': typeof AdminEmpresasIndexRoute
+  '/_admin/empresas/$id/editar': typeof AdminEmpresasIdEditarRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -135,19 +161,24 @@ export interface FileRouteTypes {
     | '/rbac'
     | '/usuarios'
     | '/automacoes/nova'
+    | '/empresas/nova'
     | '/automacoes/'
+    | '/empresas/'
+    | '/empresas/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/arquivos'
     | '/categorias'
-    | '/empresas'
     | '/perfil'
     | '/rbac'
     | '/usuarios'
     | '/automacoes/nova'
+    | '/empresas/nova'
     | '/automacoes'
+    | '/empresas'
+    | '/empresas/$id/editar'
   id:
     | '__root__'
     | '/'
@@ -161,7 +192,10 @@ export interface FileRouteTypes {
     | '/_admin/rbac'
     | '/_admin/usuarios'
     | '/_admin/automacoes/nova'
+    | '/_admin/empresas/nova'
     | '/_admin/automacoes/'
+    | '/_admin/empresas/'
+    | '/_admin/empresas/$id/editar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -256,6 +290,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAutomacoesNovaRouteImport
       parentRoute: typeof AdminAutomacoesRoute
     }
+    '/_admin/empresas/': {
+      id: '/_admin/empresas/'
+      path: '/'
+      fullPath: '/empresas/'
+      preLoaderRoute: typeof AdminEmpresasIndexRouteImport
+      parentRoute: typeof AdminEmpresasRoute
+    }
+    '/_admin/empresas/nova': {
+      id: '/_admin/empresas/nova'
+      path: '/nova'
+      fullPath: '/empresas/nova'
+      preLoaderRoute: typeof AdminEmpresasNovaRouteImport
+      parentRoute: typeof AdminEmpresasRoute
+    }
+    '/_admin/empresas/$id/editar': {
+      id: '/_admin/empresas/$id/editar'
+      path: '/$id/editar'
+      fullPath: '/empresas/$id/editar'
+      preLoaderRoute: typeof AdminEmpresasIdEditarRouteImport
+      parentRoute: typeof AdminEmpresasRoute
+    }
   }
 }
 
@@ -273,11 +328,27 @@ const AdminAutomacoesRouteWithChildren = AdminAutomacoesRoute._addFileChildren(
   AdminAutomacoesRouteChildren,
 )
 
+interface AdminEmpresasRouteChildren {
+  AdminEmpresasNovaRoute: typeof AdminEmpresasNovaRoute
+  AdminEmpresasIndexRoute: typeof AdminEmpresasIndexRoute
+  AdminEmpresasIdEditarRoute: typeof AdminEmpresasIdEditarRoute
+}
+
+const AdminEmpresasRouteChildren: AdminEmpresasRouteChildren = {
+  AdminEmpresasNovaRoute: AdminEmpresasNovaRoute,
+  AdminEmpresasIndexRoute: AdminEmpresasIndexRoute,
+  AdminEmpresasIdEditarRoute: AdminEmpresasIdEditarRoute,
+}
+
+const AdminEmpresasRouteWithChildren = AdminEmpresasRoute._addFileChildren(
+  AdminEmpresasRouteChildren,
+)
+
 interface AdminRouteChildren {
   AdminArquivosRoute: typeof AdminArquivosRoute
   AdminAutomacoesRoute: typeof AdminAutomacoesRouteWithChildren
   AdminCategoriasRoute: typeof AdminCategoriasRoute
-  AdminEmpresasRoute: typeof AdminEmpresasRoute
+  AdminEmpresasRoute: typeof AdminEmpresasRouteWithChildren
   AdminPerfilRoute: typeof AdminPerfilRoute
   AdminRbacRoute: typeof AdminRbacRoute
   AdminUsuariosRoute: typeof AdminUsuariosRoute
@@ -287,7 +358,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminArquivosRoute: AdminArquivosRoute,
   AdminAutomacoesRoute: AdminAutomacoesRouteWithChildren,
   AdminCategoriasRoute: AdminCategoriasRoute,
-  AdminEmpresasRoute: AdminEmpresasRoute,
+  AdminEmpresasRoute: AdminEmpresasRouteWithChildren,
   AdminPerfilRoute: AdminPerfilRoute,
   AdminRbacRoute: AdminRbacRoute,
   AdminUsuariosRoute: AdminUsuariosRoute,

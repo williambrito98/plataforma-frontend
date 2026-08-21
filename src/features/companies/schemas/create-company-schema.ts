@@ -12,6 +12,7 @@ export const createCompanySchema = z.object({
     .max(18, "O documento deve ter no máximo 18 caracteres")
     .optional()
     .or(z.literal("")),
+  automationIds: z.array(z.string()).optional(),
 });
 
 export type CreateCompanyFormValues = z.infer<typeof createCompanySchema>;

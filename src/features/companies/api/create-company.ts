@@ -6,6 +6,7 @@ import type { Company } from "@/features/companies/types/company";
 export type CreateCompanyPayload = {
   name: string;
   document?: string;
+  automationIds?: string[];
 };
 
 type CompanyApiResponse = Company;

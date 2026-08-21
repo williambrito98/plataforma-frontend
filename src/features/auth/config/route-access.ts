@@ -8,11 +8,19 @@ export const routeAccessByPath: Record<string, RouteAccess> = {
   "/automacoes/nova": { permissions: [PermissionCodes.AUTOMATIONS_CREATE] },
   "/arquivos": { permissions: [PermissionCodes.FILES_READ] },
   "/categorias": { permissions: [PermissionCodes.CATEGORIES_READ] },
+  "/empresas": { permissions: [PermissionCodes.COMPANIES_READ] },
+  "/empresas/nova": { permissions: [PermissionCodes.COMPANIES_CREATE] },
   "/usuarios": { permissions: [PermissionCodes.USER_CONTROL] },
   "/rbac": "rbac",
 };
 
+const editCompanyRoutePattern = /^\/empresas\/\d+\/editar\/?$/;
+
 export function resolveRouteAccess(pathname: string): RouteAccess | undefined {
+  if (editCompanyRoutePattern.test(pathname)) {
+    return { permissions: [PermissionCodes.COMPANIES_UPDATE] };
+  }
+
   const candidates = Object.entries(routeAccessByPath)
     .filter(([path]) => pathname === path || pathname.startsWith(`${path}/`))
     .sort(([pathA], [pathB]) => pathB.length - pathA.length);

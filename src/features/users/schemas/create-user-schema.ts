@@ -17,6 +17,7 @@ export const createUserSchema = z.object({
     .min(8, "A senha deve ter no mínimo 8 caracteres")
     .max(255, "A senha deve ter no máximo 255 caracteres"),
   roleId: z.string().min(1, "Selecione um papel"),
+  companyIds: z.array(z.string()).min(1, "Selecione uma empresa"),
 });
 
 export type CreateUserFormValues = z.infer<typeof createUserSchema>;

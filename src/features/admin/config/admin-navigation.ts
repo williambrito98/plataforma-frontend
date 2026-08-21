@@ -27,7 +27,7 @@ export const adminNavigation = [
     label: "Empresas",
     href: "/empresas",
     lucideIcon: "Building2",
-    access: { permissions: [PermissionCodes.COMPANIES_CREATE] },
+    access: { permissions: [PermissionCodes.COMPANIES_READ] },
   },
   {
     label: "Usuários",
@@ -55,10 +55,20 @@ export const adminPageMetaByHref: Record<AdminNavItem["href"], AdminPageMeta> =
 
 export const adminSecondaryPageMeta = {
   "/automacoes/nova": { title: "Nova automação", lucideIcon: "Container" },
+  "/empresas/nova": { title: "Nova empresa", lucideIcon: "Building2" },
   "/perfil": { title: "Meu perfil", lucideIcon: "UserCog" },
 } as const satisfies Record<string, AdminPageMeta>;
 
+const editCompanyPageMeta: AdminPageMeta = {
+  title: "Editar empresa",
+  lucideIcon: "Building2",
+};
+
 export function getAdminPageMeta(pathname: string): AdminPageMeta | null {
+  if (/^\/empresas\/\d+\/editar\/?$/.test(pathname)) {
+    return editCompanyPageMeta;
+  }
+
   const candidates: Array<{ href: string; meta: AdminPageMeta }> = [];
 
   for (const item of adminNavigation) {

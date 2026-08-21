@@ -29,6 +29,7 @@ export type CreateUserPayload = {
   email: string;
   password: string;
   roleId: string;
+  companyIds: string[];
 };
 
 export type UpdateUserAdminPayload = {

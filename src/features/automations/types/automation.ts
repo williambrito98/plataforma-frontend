@@ -1,17 +1,10 @@
 import type { ParameterInputType } from "@/features/automations/config/input-types";
 
 export type AutomationCategorySlug =
-  | "fiscal"
-  | "pessoal"
-  | "contabil"
-  | "trabalhista";
+  "fiscal" | "pessoal" | "contabil" | "trabalhista";
 
 export type AutomationStatus =
-  | "idle"
-  | "running"
-  | "paused"
-  | "maintenance"
-  | "completed";
+  "idle" | "running" | "paused" | "maintenance" | "completed";
 
 export type AutomationLogEntry = {
   id: string;
@@ -44,6 +37,11 @@ export type AutomationParameterOption = {
   label: string;
 };
 
+export type AutomationTemplateFile = {
+  token: string;
+  name: string;
+};
+
 export type AutomationParameter = {
   id: string;
   name: string;
@@ -59,6 +57,8 @@ export type AutomationParameter = {
   rows?: number;
   multiple?: boolean;
   extensions?: string[];
+  templateFile?: AutomationTemplateFile;
+  templateFileUpload?: File;
 };
 
 export type AutomationParameterDraft = {
@@ -69,15 +69,11 @@ export type AutomationParameterDraft = {
   required: boolean;
   options: AutomationParameterOption[];
   extensionsText: string;
+  templateFileUpload?: File;
 };
 
 export type ExecutionStatusApi =
-  | "PENDENTE"
-  | "PARADO"
-  | "PAUSADO"
-  | "RODANDO"
-  | "EM_MANUTENCAO"
-  | "CONCLUIDO";
+  "PENDENTE" | "PARADO" | "PAUSADO" | "RODANDO" | "EM_MANUTENCAO" | "CONCLUIDO";
 
 export type ExecutionApiResponse = {
   id: string;
@@ -148,6 +144,7 @@ export type AutomationFieldApiPayload = {
   rows?: number;
   multiple?: boolean;
   extensions?: string[];
+  templateFile?: AutomationTemplateFile;
 };
 
 export type CreateAutomationRequest = CreateAutomationFormValues & {
@@ -199,6 +196,7 @@ export function serializeAutomationFields(
       rows,
       multiple,
       extensions,
+      templateFile,
     }) => ({
       name,
       type,
@@ -213,6 +211,7 @@ export function serializeAutomationFields(
       ...(rows !== undefined ? { rows } : {}),
       ...(multiple !== undefined ? { multiple } : {}),
       ...(extensions?.length ? { extensions } : {}),
+      ...(templateFile ? { templateFile } : {}),
     }),
   );
 }

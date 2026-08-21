@@ -2,6 +2,7 @@ import { PARAMETER_INPUT_TYPES } from "@/features/automations/config/input-types
 import type {
   AutomationParameter,
   AutomationParameterOption,
+  AutomationTemplateFile,
 } from "@/features/automations/types/automation";
 
 type ParameterInputType = (typeof PARAMETER_INPUT_TYPES)[number]["value"];
@@ -56,6 +57,21 @@ function parseStringArray(raw: unknown): string[] | undefined {
   return values.length > 0 ? values : undefined;
 }
 
+function parseTemplateFile(raw: unknown): AutomationTemplateFile | undefined {
+  if (!isRecord(raw)) {
+    return undefined;
+  }
+
+  const token = raw.token;
+  const name = raw.name;
+
+  if (typeof token !== "string" || typeof name !== "string") {
+    return undefined;
+  }
+
+  return { token, name };
+}
+
 function parseField(raw: unknown, index: number): AutomationParameter | null {
   if (!isRecord(raw)) {
     return null;
@@ -85,6 +101,7 @@ function parseField(raw: unknown, index: number): AutomationParameter | null {
   const multiple = raw.multiple === true ? true : undefined;
   const extensions = parseStringArray(raw.extensions);
   const options = parseOptions(raw.options);
+  const templateFile = parseTemplateFile(raw.templateFile);
 
   return {
     id: name || `field-${index}`,
@@ -101,6 +118,7 @@ function parseField(raw: unknown, index: number): AutomationParameter | null {
     ...(multiple ? { multiple } : {}),
     ...(extensions ? { extensions } : {}),
     ...(options ? { options } : {}),
+    ...(templateFile ? { templateFile } : {}),
   };
 }
 

@@ -1,8 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { alertToast } from "@/components/ui/sonner";
+import { executionsQueryKeys } from "@/features/automations/hooks/executions-query-keys";
 import { useAuthStore } from "@/features/auth/stores/auth-store";
 import { createCompany } from "@/features/companies/api/create-company";
+import { companiesQueryKeys } from "@/features/companies/hooks/companies-query-keys";
 import { useCompanyStore } from "@/features/companies/stores/company-store";
 
 function getErrorMessage(error: unknown, fallback: string): string {
@@ -14,6 +16,8 @@ function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 export function useCreateCompany() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: createCompany,
     onSuccess: async (company) => {
@@ -22,6 +26,9 @@ export function useCreateCompany() {
       if (user) {
         useCompanyStore.getState().setSelectedCompany(user.id, company.id);
       }
+
+      queryClient.invalidateQueries({ queryKey: companiesQueryKeys.all });
+      queryClient.invalidateQueries({ queryKey: executionsQueryKeys.all });
 
       alertToast.success("Empresa cadastrada", "Empresa criada com sucesso.");
     },

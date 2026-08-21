@@ -39,6 +39,7 @@ import {
 } from "@/features/automations/components/field-pickers";
 import { pickerTriggerClassName } from "@/features/automations/components/field-pickers/picker-trigger";
 import type { AutomationParameter } from "@/features/automations/types/automation";
+import { downloadTemplateFile } from "@/features/automations/utils/build-template-download-url";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon } from "lucide-react";
 
@@ -366,11 +367,21 @@ export function DynamicAutomationField<T extends FieldValues>({
 
     case "file":
       return (
-        <AutomationFieldShell
-          id={parameter.name}
-          label={parameter.label}
-          error={fieldError}
-        >
+        <Field orientation="vertical" className="gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <FieldLabel htmlFor={parameter.name}>{parameter.label}</FieldLabel>
+            {parameter.templateFile ? (
+              <button
+                type="button"
+                onClick={() =>
+                  downloadTemplateFile(parameter.templateFile!.token)
+                }
+                className="shrink-0 text-xs text-primary hover:underline"
+              >
+                Baixar modelo
+              </button>
+            ) : null}
+          </div>
           <Controller
             name={parameter.name as never}
             control={control}
@@ -389,7 +400,8 @@ export function DynamicAutomationField<T extends FieldValues>({
               />
             )}
           />
-        </AutomationFieldShell>
+          <FieldError errors={[asFieldError(fieldError)]} />
+        </Field>
       );
 
     case "date":

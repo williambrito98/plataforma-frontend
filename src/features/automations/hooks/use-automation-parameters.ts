@@ -14,6 +14,7 @@ const emptyDraft: AutomationParameterDraft = {
   required: false,
   options: [],
   extensionsText: "",
+  templateFileUpload: undefined,
 };
 
 function parseOptionsFromDraft(
@@ -68,6 +69,16 @@ export function useAutomationParameters() {
         return { success: false as const, error: "missing-options" as const };
       }
 
+      if (
+        parameterDraft.type === "file" &&
+        !parameterDraft.templateFileUpload
+      ) {
+        return {
+          success: false as const,
+          error: "missing-template-file" as const,
+        };
+      }
+
       const extensions =
         parameterDraft.type === "file"
           ? parseExtensionsFromDraft(parameterDraft.extensionsText)
@@ -82,6 +93,9 @@ export function useAutomationParameters() {
         required: parameterDraft.required,
         ...(options?.length ? { options } : {}),
         ...(extensions.length ? { extensions } : {}),
+        ...(parameterDraft.type === "file" && parameterDraft.templateFileUpload
+          ? { templateFileUpload: parameterDraft.templateFileUpload }
+          : {}),
       };
 
       setParameters((current) => [...current, parameter]);

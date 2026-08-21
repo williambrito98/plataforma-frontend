@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCompanies } from "@/features/companies/hooks/use-companies";
 import { useRbacRoles } from "@/features/rbac/hooks/use-rbac-admin";
 import { inputClassName } from "@/features/users/components/users-form-styles";
 import { useCreateUser } from "@/features/users/hooks/use-users-admin";
@@ -29,6 +30,8 @@ import {
 
 export function CreateUserForm() {
   const { data: roles = [], isLoading: isRolesLoading } = useRbacRoles();
+  const { data: companies = [], isLoading: isCompaniesLoading } =
+    useCompanies();
   const createUser = useCreateUser();
 
   const {
@@ -44,6 +47,7 @@ export function CreateUserForm() {
       email: "",
       password: "",
       roleId: "",
+      companyIds: [],
     },
   });
 
@@ -64,13 +68,14 @@ export function CreateUserForm() {
           Novo usuário
         </CardTitle>
         <CardDescription>
-          Cadastre um usuário com nome, e-mail, senha e papel de acesso.
+          Cadastre um usuário com nome, e-mail, senha, papel de acesso e empresa
+          vinculada.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
+          className="grid gap-4 md:grid-cols-2 xl:grid-cols-5"
           noValidate
         >
           <Field orientation="vertical" className="gap-2">
@@ -152,7 +157,50 @@ export function CreateUserForm() {
             <FieldError errors={[errors.roleId]} />
           </Field>
 
-          <div className="flex items-end justify-end md:col-span-2 xl:col-span-4">
+          <Field orientation="vertical" className="gap-2">
+            <FieldLabel htmlFor="user-company">Empresa</FieldLabel>
+            <Controller
+              control={control}
+              name="companyIds"
+              render={({ field }) => (
+                <Select
+                  value={field.value[0] ?? null}
+                  onValueChange={(value) =>
+                    field.onChange(value ? [value] : [])
+                  }
+                  disabled={isCompaniesLoading || companies.length === 0}
+                  items={companies.map((company) => ({
+                    label: company.name,
+                    value: company.id,
+                  }))}
+                >
+                  <SelectTrigger
+                    id="user-company"
+                    className="w-full"
+                    aria-invalid={!!errors.companyIds}
+                  >
+                    <SelectValue
+                      placeholder={
+                        isCompaniesLoading
+                          ? "Carregando empresas..."
+                          : "Selecione uma empresa"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {companies.map((company) => (
+                      <SelectItem key={company.id} value={company.id}>
+                        {company.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            <FieldError errors={[errors.companyIds]} />
+          </Field>
+
+          <div className="flex items-end justify-end md:col-span-2 xl:col-span-5">
             <Button type="submit" loading={createUser.isPending}>
               Criar usuário
             </Button>

@@ -1,15 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-import { PermissionCodes } from "@/features/auth/constants/permissions";
-import { CompaniesPage } from "@/features/companies/components/companies-page";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_admin/empresas")({
-  staticData: {
-    access: { permissions: [PermissionCodes.COMPANIES_CREATE] },
-  },
-  component: EmpresasRoutePage,
+  component: EmpresasLayout,
 });
 
-function EmpresasRoutePage() {
-  return <CompaniesPage />;
+function EmpresasLayout() {
+  return <Outlet />;
 }

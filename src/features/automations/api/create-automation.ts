@@ -9,19 +9,41 @@ import {
   type CreateAutomationPayload,
 } from "@/features/automations/types/automation";
 
+function buildCreateAutomationFormData(
+  payload: CreateAutomationPayload,
+): FormData {
+  const formData = new FormData();
+
+  formData.append("name", payload.name);
+  formData.append("description", payload.description);
+  formData.append("path", payload.path);
+  formData.append("categoryId", payload.categoryId);
+  formData.append(
+    "fields",
+    JSON.stringify(serializeAutomationFields(payload.fields)),
+  );
+
+  for (const parameter of payload.fields) {
+    if (parameter.type === "file" && parameter.templateFileUpload) {
+      formData.append(
+        `templateFiles[${parameter.name}]`,
+        parameter.templateFileUpload,
+      );
+    }
+  }
+
+  return formData;
+}
+
 export async function createAutomation(
   payload: CreateAutomationPayload,
 ): Promise<Automation> {
   try {
+    const formData = buildCreateAutomationFormData(payload);
+
     const { data } = await apiClient.post<AutomationApiResponse>(
       "/automations",
-      {
-        name: payload.name,
-        description: payload.description,
-        path: payload.path,
-        categoryId: payload.categoryId,
-        fields: serializeAutomationFields(payload.fields),
-      },
+      formData,
     );
 
     return normalizeAutomation(data);

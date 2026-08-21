@@ -60,6 +60,14 @@ export function AutomationParameterList({
                   .join(", ")}
               </p>
             ) : null}
+            {parameter.type === "file" &&
+            (parameter.templateFileUpload || parameter.templateFile) ? (
+              <p className="text-xs text-muted-foreground">
+                Modelo:{" "}
+                {parameter.templateFileUpload?.name ??
+                  parameter.templateFile?.name}
+              </p>
+            ) : null}
           </div>
 
           <Button

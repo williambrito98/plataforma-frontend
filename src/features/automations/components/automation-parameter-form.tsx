@@ -40,6 +40,23 @@ function isOptionType(
   return type !== "" && OPTION_TYPES.has(type);
 }
 
+function buildFileAccept(extensionsText: string): string | undefined {
+  const extensions = extensionsText
+    .split(",")
+    .map((extension) => extension.trim().replace(/^\./, "").toLowerCase())
+    .filter(Boolean);
+
+  if (!extensions.length) {
+    return undefined;
+  }
+
+  return extensions
+    .map((extension) =>
+      extension.startsWith(".") ? extension : `.${extension}`,
+    )
+    .join(",");
+}
+
 type AutomationParameterFormProps = {
   draft: AutomationParameterDraft;
   onDraftChange: (updates: Partial<AutomationParameterDraft>) => void;
@@ -66,6 +83,14 @@ export function AutomationParameterForm({
         return;
       }
 
+      if (result.error === "missing-template-file") {
+        alertToast.error(
+          "Arquivo modelo obrigatório",
+          "Selecione o arquivo modelo para o parâmetro do tipo arquivo.",
+        );
+        return;
+      }
+
       alertToast.error(
         "Campos obrigatórios",
         "Preencha nome, tipo e rótulo do parâmetro.",
@@ -84,6 +109,7 @@ export function AutomationParameterForm({
         type: nextType,
         options: [],
         extensionsText: draft.extensionsText,
+        templateFileUpload: undefined,
       });
       return;
     }
@@ -94,11 +120,17 @@ export function AutomationParameterForm({
         options:
           draft.options.length > 0 ? draft.options : [createEmptyOptionDraft()],
         extensionsText: "",
+        templateFileUpload: undefined,
       });
       return;
     }
 
-    onDraftChange({ type: nextType, options: [], extensionsText: "" });
+    onDraftChange({
+      type: nextType,
+      options: [],
+      extensionsText: "",
+      templateFileUpload: undefined,
+    });
   }
 
   return (
@@ -184,27 +216,52 @@ export function AutomationParameterForm({
       ) : null}
 
       {draft.type === "file" ? (
-        <Field orientation="vertical" className="gap-2">
-          <FieldLabel
-            htmlFor="parameter-extensions"
-            className="text-sm font-medium"
-          >
-            Extensões permitidas (opcional)
-          </FieldLabel>
-          <Input
-            id="parameter-extensions"
-            placeholder="pdf, xlsx, csv"
-            className={inputClassName}
-            value={draft.extensionsText}
-            onChange={(event) =>
-              onDraftChange({ extensionsText: event.target.value })
-            }
-          />
-          <FieldDescription>
-            Separe por vírgula. Na execução, o seletor de arquivo mostrará
-            apenas essas extensões.
-          </FieldDescription>
-        </Field>
+        <>
+          <Field orientation="vertical" className="gap-2">
+            <FieldLabel
+              htmlFor="parameter-extensions"
+              className="text-sm font-medium"
+            >
+              Extensões permitidas (opcional)
+            </FieldLabel>
+            <Input
+              id="parameter-extensions"
+              placeholder="pdf, xlsx, csv"
+              className={inputClassName}
+              value={draft.extensionsText}
+              onChange={(event) =>
+                onDraftChange({ extensionsText: event.target.value })
+              }
+            />
+            <FieldDescription>
+              Separe por vírgula. Na execução, o seletor de arquivo mostrará
+              apenas essas extensões.
+            </FieldDescription>
+          </Field>
+
+          <Field orientation="vertical" className="gap-2">
+            <FieldLabel
+              htmlFor="parameter-template-file"
+              className="text-sm font-medium"
+            >
+              Arquivo modelo
+            </FieldLabel>
+            <Input
+              id="parameter-template-file"
+              type="file"
+              className={inputClassName}
+              accept={buildFileAccept(draft.extensionsText)}
+              onChange={(event) =>
+                onDraftChange({
+                  templateFileUpload: event.target.files?.[0],
+                })
+              }
+            />
+            <FieldDescription>
+              Arquivo de referência que o usuário poderá baixar na execução.
+            </FieldDescription>
+          </Field>
+        </>
       ) : null}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
