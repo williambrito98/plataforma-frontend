@@ -4,7 +4,6 @@ import { alertToast } from "@/components/ui/sonner";
 import { useSelectedCompanyId } from "@/features/companies/stores/company-store";
 import { FilesPagination } from "@/features/files/components/files-pagination";
 import { FilesPaginationSkeleton } from "@/features/files/components/files-pagination-skeleton";
-import { FilesSelectionBar } from "@/features/files/components/files-selection-bar";
 import { FilesTable } from "@/features/files/components/files-table";
 import { FilesTableSkeleton } from "@/features/files/components/files-table-skeleton";
 import { useFileSelection } from "@/features/files/hooks/use-file-selection";
@@ -39,24 +38,22 @@ export function FilesPage() {
   const fileIds = useMemo(() => files.map((file) => file.id), [files]);
 
   const {
-    selectedCount,
     isAllSelected,
     isIndeterminate,
     isSelected,
     toggle,
     toggleAll,
     clearSelection,
-    selectedFiles,
   } = useFileSelection({ fileIds });
 
   useEffect(() => {
     clearSelection();
   }, [page, clearSelection]);
 
-  const selectedFileItems = useMemo(
-    () => files.filter((file) => selectedFiles.includes(file.id)),
-    [files, selectedFiles],
-  );
+  // const selectedFileItems = useMemo(
+  //   () => files.filter((file) => selectedFiles.includes(file.id)),
+  //   [files, selectedFiles],
+  // );
 
   const showInitialSkeleton = isLoading && !data;
 
@@ -87,11 +84,11 @@ export function FilesPage() {
           isLoading={isFetching}
         />
       ) : null}
-
+      {/* 
       <FilesSelectionBar
         selectedCount={selectedCount}
         selectedFiles={selectedFileItems}
-      />
+      /> */}
     </div>
   );
 }
