@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 import { formatTemporalDisplayValue } from "@/features/automations/components/field-pickers/date-format";
-import type { AutomationParameter } from "@/features/automations/types/automation";
+import type {
+  AutomationParameter,
+  AutomationParameterOption,
+} from "@/features/automations/types/automation";
 
 const TEMPORAL_PATTERNS = {
   date: /^\d{4}-\d{2}-\d{2}$/,
@@ -198,10 +201,14 @@ function buildFieldSchema(parameter: AutomationParameter): z.ZodTypeAny {
   }
 }
 
-export function buildParametersSchema(parameters: AutomationParameter[]) {
+export function buildParametersSchema(
+  parameters: AutomationParameter[],
+  extraParameters: AutomationParameter[] = [],
+) {
   const shape: Record<string, z.ZodTypeAny> = {};
+  const allParameters = [...parameters, ...extraParameters];
 
-  for (const parameter of parameters) {
+  for (const parameter of allParameters) {
     if (parameter.type === "date-range") {
       const startField = `${parameter.name}_start`;
       const endField = `${parameter.name}_end`;
@@ -215,7 +222,7 @@ export function buildParametersSchema(parameters: AutomationParameter[]) {
   }
 
   return z.object(shape).superRefine((values, ctx) => {
-    for (const parameter of parameters) {
+    for (const parameter of allParameters) {
       if (parameter.type !== "date-range") {
         continue;
       }
@@ -232,6 +239,20 @@ export function buildParametersSchema(parameters: AutomationParameter[]) {
       }
     }
   });
+}
+
+export function buildSheetNameParameter(
+  options: AutomationParameterOption[],
+): AutomationParameter {
+  return {
+    id: "sheetName",
+    name: "sheetName",
+    type: "select",
+    label: "Nome da Planilha",
+    required: true,
+    placeholder: "Selecione a aba",
+    options,
+  };
 }
 
 function formatMultiselectValue(
@@ -348,10 +369,14 @@ export function normalizeParameterValues(
   return normalized;
 }
 
-export function buildParameterDefaultValues(parameters: AutomationParameter[]) {
+export function buildParameterDefaultValues(
+  parameters: AutomationParameter[],
+  extraParameters: AutomationParameter[] = [],
+) {
   const defaults: Record<string, unknown> = {};
+  const allParameters = [...parameters, ...extraParameters];
 
-  for (const parameter of parameters) {
+  for (const parameter of allParameters) {
     if (parameter.type === "date-range") {
       defaults[`${parameter.name}_start`] = "";
       defaults[`${parameter.name}_end`] = "";

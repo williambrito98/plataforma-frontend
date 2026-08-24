@@ -40,6 +40,10 @@ import {
 import { pickerTriggerClassName } from "@/features/automations/components/field-pickers/picker-trigger";
 import type { AutomationParameter } from "@/features/automations/types/automation";
 import { downloadTemplateFile } from "@/features/automations/utils/build-template-download-url";
+import {
+  getSpreadsheetFileFromValue,
+  isSpreadsheetFile,
+} from "@/features/automations/utils/spreadsheet-file";
 import { cn } from "@/lib/utils";
 import { ChevronDownIcon } from "lucide-react";
 
@@ -85,6 +89,7 @@ type AutomationFieldShellProps = {
   label: string;
   error?: unknown;
   description?: string;
+  showValidationErrors?: boolean;
   children: ReactNode;
 };
 
@@ -93,6 +98,7 @@ function AutomationFieldShell({
   label,
   error,
   description,
+  showValidationErrors = false,
   children,
 }: AutomationFieldShellProps) {
   return (
@@ -100,7 +106,9 @@ function AutomationFieldShell({
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       {children}
       {description ? <FieldDescription>{description}</FieldDescription> : null}
-      <FieldError errors={[asFieldError(error)]} />
+      {showValidationErrors ? (
+        <FieldError errors={[asFieldError(error)]} />
+      ) : null}
     </Field>
   );
 }
@@ -109,16 +117,25 @@ type DynamicAutomationFieldProps<T extends FieldValues> = {
   parameter: AutomationParameter;
   control: Control<T>;
   errors?: FieldErrors<T>;
+  showValidationErrors?: boolean;
+  onSpreadsheetFileChange?: (file: File | null) => void;
+  isLoadingSheets?: boolean;
 };
 
 export function DynamicAutomationField<T extends FieldValues>({
   parameter,
   control,
   errors,
+  showValidationErrors = false,
+  onSpreadsheetFileChange,
+  isLoadingSheets = false,
 }: DynamicAutomationFieldProps<T>) {
   const fieldError = errors?.[parameter.name as keyof T];
   const startError = errors?.[`${parameter.name}_start` as keyof T];
   const endError = errors?.[`${parameter.name}_end` as keyof T];
+  const hasVisibleError = showValidationErrors && !!fieldError;
+  const hasVisibleStartError = showValidationErrors && !!startError;
+  const hasVisibleEndError = showValidationErrors && !!endError;
 
   switch (parameter.type) {
     case "textarea":
@@ -127,6 +144,7 @@ export function DynamicAutomationField<T extends FieldValues>({
           id={parameter.name}
           label={parameter.label}
           error={fieldError}
+          showValidationErrors={showValidationErrors}
         >
           <Controller
             name={parameter.name as never}
@@ -142,7 +160,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                 onBlur={field.onBlur}
                 name={field.name}
                 ref={field.ref}
-                aria-invalid={!!fieldError}
+                aria-invalid={hasVisibleError}
               />
             )}
           />
@@ -155,6 +173,7 @@ export function DynamicAutomationField<T extends FieldValues>({
           id={parameter.name}
           label={parameter.label}
           error={fieldError}
+          showValidationErrors={showValidationErrors}
         >
           <Controller
             name={parameter.name as never}
@@ -172,7 +191,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                   id={parameter.name}
                   size="sm"
                   className="w-full border-border bg-secondary shadow-none"
-                  aria-invalid={!!fieldError}
+                  aria-invalid={hasVisibleError}
                 >
                   <SelectValue
                     placeholder={parameter.placeholder ?? "Selecione"}
@@ -197,6 +216,7 @@ export function DynamicAutomationField<T extends FieldValues>({
           id={parameter.name}
           label={parameter.label}
           error={fieldError}
+          showValidationErrors={showValidationErrors}
         >
           <Controller
             name={parameter.name as never}
@@ -225,7 +245,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                         id={parameter.name}
                         type="button"
                         variant="outline"
-                        aria-invalid={!!fieldError}
+                        aria-invalid={hasVisibleError}
                         className={cn(
                           pickerTriggerClassName,
                           !displayValue && "text-muted-foreground",
@@ -274,6 +294,7 @@ export function DynamicAutomationField<T extends FieldValues>({
           id={parameter.name}
           label={parameter.label}
           error={fieldError}
+          showValidationErrors={showValidationErrors}
         >
           <Controller
             name={parameter.name as never}
@@ -289,7 +310,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                     <RadioGroupItem
                       value={option.value}
                       id={`${parameter.name}-${option.value}`}
-                      aria-invalid={!!fieldError}
+                      aria-invalid={hasVisibleError}
                     />
                     <Label
                       htmlFor={`${parameter.name}-${option.value}`}
@@ -317,7 +338,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                   id={parameter.name}
                   checked={field.value === true}
                   onCheckedChange={field.onChange}
-                  aria-invalid={!!fieldError}
+                  aria-invalid={hasVisibleError}
                 />
               )}
             />
@@ -328,7 +349,9 @@ export function DynamicAutomationField<T extends FieldValues>({
           {parameter.placeholder ? (
             <FieldDescription>{parameter.placeholder}</FieldDescription>
           ) : null}
-          <FieldError errors={[asFieldError(fieldError)]} />
+          {showValidationErrors ? (
+            <FieldError errors={[asFieldError(fieldError)]} />
+          ) : null}
         </Field>
       );
 
@@ -352,16 +375,18 @@ export function DynamicAutomationField<T extends FieldValues>({
                     onEndChange={endField.onChange}
                     onStartBlur={startField.onBlur}
                     onEndBlur={endField.onBlur}
-                    startInvalid={!!startError}
-                    endInvalid={!!endError}
+                    startInvalid={hasVisibleStartError}
+                    endInvalid={hasVisibleEndError}
                   />
                 )}
               />
             )}
           />
-          <FieldError
-            errors={[asFieldError(startError), asFieldError(endError)]}
-          />
+          {showValidationErrors ? (
+            <FieldError
+              errors={[asFieldError(startError), asFieldError(endError)]}
+            />
+          ) : null}
         </Field>
       );
 
@@ -392,15 +417,32 @@ export function DynamicAutomationField<T extends FieldValues>({
                 className={inputClassName}
                 accept={buildFileAccept(parameter.extensions)}
                 multiple={parameter.multiple === true}
-                onChange={(event) => onChange(event.target.files)}
+                onChange={(event) => {
+                  const files = event.target.files;
+                  onChange(files);
+
+                  if (!onSpreadsheetFileChange) {
+                    return;
+                  }
+
+                  const file = getSpreadsheetFileFromValue(files);
+                  onSpreadsheetFileChange(
+                    file && isSpreadsheetFile(file) ? file : null,
+                  );
+                }}
                 onBlur={onBlur}
                 name={name}
                 ref={ref}
-                aria-invalid={!!fieldError}
+                aria-invalid={hasVisibleError}
               />
             )}
           />
-          <FieldError errors={[asFieldError(fieldError)]} />
+          {isLoadingSheets ? (
+            <FieldDescription>Identificando abas...</FieldDescription>
+          ) : null}
+          {showValidationErrors ? (
+            <FieldError errors={[asFieldError(fieldError)]} />
+          ) : null}
         </Field>
       );
 
@@ -410,6 +452,7 @@ export function DynamicAutomationField<T extends FieldValues>({
           id={parameter.name}
           label={parameter.label}
           error={fieldError}
+          showValidationErrors={showValidationErrors}
         >
           <Controller
             name={parameter.name as never}
@@ -422,7 +465,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                 onBlur={field.onBlur}
                 placeholder={parameter.placeholder}
                 format={parameter.format}
-                invalid={!!fieldError}
+                invalid={hasVisibleError}
               />
             )}
           />
@@ -435,6 +478,7 @@ export function DynamicAutomationField<T extends FieldValues>({
           id={parameter.name}
           label={parameter.label}
           error={fieldError}
+          showValidationErrors={showValidationErrors}
         >
           <Controller
             name={parameter.name as never}
@@ -448,7 +492,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                 placeholder={parameter.placeholder}
                 format={parameter.format}
                 step={parameter.step}
-                invalid={!!fieldError}
+                invalid={hasVisibleError}
               />
             )}
           />
@@ -461,6 +505,7 @@ export function DynamicAutomationField<T extends FieldValues>({
           id={parameter.name}
           label={parameter.label}
           error={fieldError}
+          showValidationErrors={showValidationErrors}
         >
           <Controller
             name={parameter.name as never}
@@ -473,7 +518,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                 onBlur={field.onBlur}
                 placeholder={parameter.placeholder}
                 format={parameter.format}
-                invalid={!!fieldError}
+                invalid={hasVisibleError}
               />
             )}
           />
@@ -486,6 +531,7 @@ export function DynamicAutomationField<T extends FieldValues>({
           id={parameter.name}
           label={parameter.label}
           error={fieldError}
+          showValidationErrors={showValidationErrors}
         >
           <Controller
             name={parameter.name as never}
@@ -498,7 +544,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                 onBlur={field.onBlur}
                 placeholder={parameter.placeholder}
                 format={parameter.format}
-                invalid={!!fieldError}
+                invalid={hasVisibleError}
               />
             )}
           />
@@ -511,6 +557,7 @@ export function DynamicAutomationField<T extends FieldValues>({
           id={parameter.name}
           label={parameter.label}
           error={fieldError}
+          showValidationErrors={showValidationErrors}
         >
           <Controller
             name={parameter.name as never}
@@ -529,7 +576,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                 onBlur={field.onBlur}
                 name={field.name}
                 ref={field.ref}
-                aria-invalid={!!fieldError}
+                aria-invalid={hasVisibleError}
               />
             )}
           />
@@ -548,6 +595,7 @@ export function DynamicAutomationField<T extends FieldValues>({
           id={parameter.name}
           label={parameter.label}
           error={fieldError}
+          showValidationErrors={showValidationErrors}
         >
           <Controller
             name={parameter.name as never}
@@ -563,7 +611,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                 onBlur={field.onBlur}
                 name={field.name}
                 ref={field.ref}
-                aria-invalid={!!fieldError}
+                aria-invalid={hasVisibleError}
               />
             )}
           />
