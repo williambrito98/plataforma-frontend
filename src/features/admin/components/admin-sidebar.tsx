@@ -1,4 +1,3 @@
-import logoW from "@/assets/brand/logo-w.svg";
 import {
   Sidebar,
   SidebarContent,
@@ -10,17 +9,14 @@ import {
   AdminSidebarNav,
   AdminSidebarUserMenu,
 } from "@/features/admin/components/admin-sidebar-nav";
+import { BrandLogo } from "@/features/companies/components/brand-logo";
 
 export function AdminSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r-0">
       <SidebarHeader className="px-6 pt-9.5 pb-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-3.5 group-data-[collapsible=icon]:pt-9.5">
         <div className="flex h-9 w-10.75 items-center justify-center group-data-[collapsible=icon]:w-auto">
-          <img
-            src={logoW}
-            alt="Wimpra"
-            className="h-9 w-10.75 shrink-0 object-contain"
-          />
+          <BrandLogo />
         </div>
       </SidebarHeader>
 

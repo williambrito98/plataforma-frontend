@@ -1,4 +1,4 @@
-import { Building2, ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import logoW from "@/assets/brand/logo-w.svg";
+import { BrandLogo } from "@/features/companies/components/brand-logo";
 import { useSelectedCompany } from "@/features/companies/hooks/use-selected-company";
 import { useSwitchCompany } from "@/features/companies/hooks/use-switch-company";
 import { cn } from "@/lib/utils";
@@ -46,7 +48,7 @@ export function CompanySwitcher({ className }: CompanySwitcherProps) {
           />
         }
       >
-        <Building2 className="size-4 shrink-0 text-muted-foreground" />
+        <BrandLogo className="size-4 max-h-4 max-w-4" />
         <span className="max-w-40 truncate">{activeCompany.name}</span>
         <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
       </DropdownMenuTrigger>
@@ -68,7 +70,11 @@ export function CompanySwitcher({ className }: CompanySwitcherProps) {
                 }
               }}
             >
-              <Building2 className="size-4" />
+              <img
+                src={company.logoUrl ?? logoW}
+                alt={company.name}
+                className="size-4 shrink-0 rounded-sm object-contain"
+              />
               <span className="truncate">{company.name}</span>
             </DropdownMenuItem>
           ))}

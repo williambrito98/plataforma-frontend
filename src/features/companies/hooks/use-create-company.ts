@@ -5,6 +5,7 @@ import { executionsQueryKeys } from "@/features/automations/hooks/executions-que
 import { useAuthStore } from "@/features/auth/stores/auth-store";
 import { createCompany } from "@/features/companies/api/create-company";
 import { companiesQueryKeys } from "@/features/companies/hooks/companies-query-keys";
+import { mergeCompanyInAuthUser } from "@/features/companies/lib/merge-company-in-auth-user";
 import { useCompanyStore } from "@/features/companies/stores/company-store";
 
 function getErrorMessage(error: unknown, fallback: string): string {
@@ -21,6 +22,8 @@ export function useCreateCompany() {
   return useMutation({
     mutationFn: createCompany,
     onSuccess: async (company) => {
+      mergeCompanyInAuthUser(company);
+
       const previousSelectedId = useCompanyStore.getState().selectedCompanyId;
       const user = await useAuthStore.getState().refreshUser();
 

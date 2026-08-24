@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { bootstrapAuth } from "@/features/auth/lib/bootstrap-auth";
 import { useAuthStore } from "@/features/auth/stores/auth-store";
+import { CompanyBrandSync } from "@/features/companies/components/company-brand-sync";
 import {
   getUserCompanies,
   needsCompanySelection,
@@ -96,5 +97,10 @@ export function AuthBootstrap({ router, children }: AuthBootstrapProps) {
     return <AuthLoadingScreen />;
   }
 
-  return children;
+  return (
+    <>
+      <CompanyBrandSync />
+      {children}
+    </>
+  );
 }

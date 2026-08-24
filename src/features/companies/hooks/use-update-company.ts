@@ -12,6 +12,7 @@ import {
   getUserCompanies,
   resolveInitialCompanyId,
 } from "@/features/companies/lib/company-selection";
+import { mergeCompanyInAuthUser } from "@/features/companies/lib/merge-company-in-auth-user";
 import { useCompanyStore } from "@/features/companies/stores/company-store";
 import type { CompanyStatus } from "@/features/companies/types/company";
 
@@ -63,7 +64,9 @@ export function useUpdateCompany() {
       id: string;
       payload: UpdateCompanyPayload;
     }) => updateCompany(id, payload),
-    onSuccess: async (_company, variables) => {
+    onSuccess: async (company, variables) => {
+      mergeCompanyInAuthUser(company);
+
       queryClient.invalidateQueries({ queryKey: companiesQueryKeys.all });
       queryClient.invalidateQueries({
         queryKey: companiesQueryKeys.detail(variables.id),

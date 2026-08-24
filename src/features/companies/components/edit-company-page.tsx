@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { alertToast } from "@/components/ui/sonner";
 import { CompanyAutomationsSection } from "@/features/companies/components/company-automations-section";
+import { CompanyBrandingSection } from "@/features/companies/components/company-branding-section";
 import { EditCompanyForm } from "@/features/companies/components/edit-company-form";
 import { CompanyMembersSection } from "@/features/companies/components/company-members-section";
 import { useCompany } from "@/features/companies/hooks/use-company";
@@ -14,6 +15,10 @@ import {
 } from "@/features/companies/hooks/use-company-executions";
 import { useUpdateCompany } from "@/features/companies/hooks/use-update-company";
 import type { EditCompanyFormValues } from "@/features/companies/schemas/edit-company-schema";
+import {
+  DEFAULT_COMPANY_BRANDING,
+  type CompanyBrandingValues,
+} from "@/features/companies/types/company-theme";
 
 type EditCompanyPageProps = {
   companyId: string;
@@ -41,6 +46,10 @@ export function EditCompanyPage({ companyId }: EditCompanyPageProps) {
   );
   const [hasInitializedAutomations, setHasInitializedAutomations] =
     useState(false);
+  const [branding, setBranding] = useState<CompanyBrandingValues>(
+    DEFAULT_COMPANY_BRANDING,
+  );
+  const [hasInitializedBranding, setHasInitializedBranding] = useState(false);
 
   useEffect(() => {
     if (isError) {
@@ -67,6 +76,18 @@ export function EditCompanyPage({ companyId }: EditCompanyPageProps) {
     }
   }, [hasInitializedAutomations, isExecutionsLoading, linkedAutomationIds]);
 
+  useEffect(() => {
+    if (company && !hasInitializedBranding) {
+      setBranding({
+        theme: company.theme,
+        clearTheme: false,
+        logoFile: null,
+        removeLogo: false,
+      });
+      setHasInitializedBranding(true);
+    }
+  }, [company, hasInitializedBranding]);
+
   async function handleSubmit(values: EditCompanyFormValues): Promise<boolean> {
     const automationIdsChanged =
       selectedAutomationIds.length !== linkedAutomationIds.length ||
@@ -76,6 +97,12 @@ export function EditCompanyPage({ companyId }: EditCompanyPageProps) {
       linkedAutomationIds.some(
         (automationId) => !selectedAutomationIds.includes(automationId),
       );
+
+    const brandingChanged =
+      branding.clearTheme ||
+      branding.logoFile !== null ||
+      branding.removeLogo ||
+      JSON.stringify(branding.theme) !== JSON.stringify(company?.theme ?? null);
 
     try {
       await updateCompany.mutateAsync({
@@ -87,6 +114,17 @@ export function EditCompanyPage({ companyId }: EditCompanyPageProps) {
             : {}),
           ...(automationIdsChanged
             ? { automationIds: selectedAutomationIds }
+            : {}),
+          ...(brandingChanged
+            ? {
+                ...(branding.clearTheme
+                  ? { theme: null }
+                  : branding.theme !== company?.theme
+                    ? { theme: branding.theme }
+                    : {}),
+                ...(branding.logoFile ? { logo: branding.logoFile } : {}),
+                ...(branding.removeLogo ? { removeLogo: true } : {}),
+              }
             : {}),
         },
       });
@@ -119,6 +157,13 @@ export function EditCompanyPage({ companyId }: EditCompanyPageProps) {
         formId={formId}
         company={company}
         onSubmit={handleSubmit}
+      />
+
+      <CompanyBrandingSection
+        initialLogoUrl={company.logoUrl}
+        initialTheme={company.theme}
+        value={branding}
+        onChange={setBranding}
       />
 
       <CompanyAutomationsSection
