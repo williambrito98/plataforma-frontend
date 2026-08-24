@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { getExecutionFiles } from "@/features/automations/api/get-execution-files";
 import type {
@@ -7,6 +8,7 @@ import type {
 } from "@/features/automations/types/automation";
 import { isUploadFileSseEvent } from "@/features/automations/types/sse-events";
 import { buildFileDownloadUrl } from "@/features/automations/utils/build-file-download-url";
+import { filesQueryKeys } from "@/features/files/hooks/files-query-keys";
 import { useSse } from "@/hooks/use-sse";
 import { buildSseUrl } from "@/lib/sse/build-sse-url";
 import { parseSseData } from "@/lib/sse/parse-sse-data";
@@ -45,6 +47,7 @@ export function useExecutionFileStream({
   status,
   enabled,
 }: UseExecutionFileStreamOptions): ExecutionFileStreamState {
+  const queryClient = useQueryClient();
   const [outputFile, setOutputFile] =
     useState<AutomationRuntime["outputFile"]>(undefined);
   const [isLoadingFile, setIsLoadingFile] = useState(false);
@@ -75,8 +78,9 @@ export function useExecutionFileStream({
       }
 
       setOutputFile(mapUploadFileToOutput(file));
+      void queryClient.invalidateQueries({ queryKey: filesQueryKeys.all });
     },
-    [executionId],
+    [executionId, queryClient],
   );
 
   const { connectionState } = useSse<SseEventEnvelope>(sseUrl, {

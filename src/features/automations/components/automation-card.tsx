@@ -75,11 +75,12 @@ export function AutomationCard({ execution }: AutomationCardProps) {
       window.clearInterval(intervalId);
     };
   }, [execution.status, execution.startedAt, execution.finishedAt]);
-  
+
   const stream = useExecutionConsoleStream({
     executionId: execution.executionId,
     status: execution.status,
-    enabled: execution.status === "running" && isOpen,
+    enabled: execution.status === "running",
+    accumulateLogs: isOpen,
   });
 
   const { resetMonitor } = stream;
@@ -137,7 +138,14 @@ export function AutomationCard({ execution }: AutomationCardProps) {
       submittedValues,
       outputFile: fileStream.outputFile,
     }),
-    [execution, elapsedSeconds, stream, staticConsole, submittedValues, fileStream.outputFile,],
+    [
+      execution,
+      elapsedSeconds,
+      stream,
+      staticConsole,
+      submittedValues,
+      fileStream.outputFile,
+    ],
   );
 
   function handleAction() {

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { executionsQueryKeys } from "@/features/automations/hooks/executions-query-keys";
 import { useExecutionDetail } from "@/features/automations/hooks/use-execution-detail";
+import { filesQueryKeys } from "@/features/files/hooks/files-query-keys";
 import type {
   AutomationLogEntry,
   AutomationStatus,
@@ -31,6 +32,7 @@ type UseExecutionConsoleStreamOptions = {
   executionId: string;
   status: AutomationStatus;
   enabled: boolean;
+  accumulateLogs?: boolean;
 };
 
 type ExecutionConsoleStreamState = {
@@ -57,6 +59,7 @@ export function useExecutionConsoleStream({
   executionId,
   status,
   enabled,
+  accumulateLogs = true,
 }: UseExecutionConsoleStreamOptions): ExecutionConsoleStreamState {
   const queryClient = useQueryClient();
   const [logs, setLogs] = useState<AutomationLogEntry[]>([]);
@@ -66,27 +69,29 @@ export function useExecutionConsoleStream({
     AutomationStatus | undefined
   >(undefined);
   const seededExecutionIdRef = useRef<string | null>(null);
+  const prevAccumulateLogsRef = useRef(accumulateLogs);
+  const accumulateLogsRef = useRef(accumulateLogs);
+
+  accumulateLogsRef.current = accumulateLogs;
 
   const shouldLoadHistory = enabled || !isTerminalStatus(status);
-  const { data: executionDetail } = useExecutionDetail(
+  const { data: executionDetail, refetch } = useExecutionDetail(
     executionId,
     shouldLoadHistory && status !== "idle",
   );
 
-  const enqueueLog = useCallback(
-    (entry: AutomationLogEntry) => {
-      setLogs((current) => appendLogEntry(current, entry));
-    },
-    [],
-  );
+  const enqueueLog = useCallback((entry: AutomationLogEntry) => {
+    setLogs((current) => appendLogEntry(current, entry));
+  }, []);
 
   const resetMonitor = useCallback(() => {
     seededExecutionIdRef.current = null;
+    prevAccumulateLogsRef.current = accumulateLogs;
     setLogs([]);
     setProcessed(0);
     setTotal(0);
     setStreamStatus(undefined);
-  }, []);
+  }, [accumulateLogs]);
 
   useEffect(() => {
     if (!executionDetail?.dataConsole) {
@@ -101,10 +106,35 @@ export function useExecutionConsoleStream({
     const progress = consoleSnapshotToProgress(snapshot);
 
     seededExecutionIdRef.current = executionId;
-    setLogs(consoleSnapshotToLogEntries(snapshot, executionDetail.updatedAt));
+    if (accumulateLogs) {
+      setLogs(consoleSnapshotToLogEntries(snapshot, executionDetail.updatedAt));
+    }
     setProcessed(progress.processed);
     setTotal(progress.total);
-  }, [executionDetail, executionId]);
+  }, [accumulateLogs, executionDetail, executionId]);
+
+  useEffect(() => {
+    if (!accumulateLogs) {
+      setLogs([]);
+      prevAccumulateLogsRef.current = false;
+      return;
+    }
+
+    if (prevAccumulateLogsRef.current) {
+      return;
+    }
+
+    prevAccumulateLogsRef.current = true;
+
+    void refetch().then(({ data }) => {
+      if (!data?.dataConsole) {
+        return;
+      }
+
+      const snapshot = parseConsoleSnapshot(data.dataConsole);
+      setLogs(consoleSnapshotToLogEntries(snapshot, data.updatedAt));
+    });
+  }, [accumulateLogs, refetch]);
 
   useEffect(() => {
     if (status === "idle") {
@@ -126,8 +156,10 @@ export function useExecutionConsoleStream({
       }
 
       if (isConsoleSseEvent(event)) {
-        const entry = mapSseToLogEntry(event.data, event.timestamp);
-        enqueueLog(entry);
+        if (accumulateLogsRef.current) {
+          const entry = mapSseToLogEntry(event.data, event.timestamp);
+          enqueueLog(entry);
+        }
 
         const progress = extractProgressFromPayload(event.data);
 
@@ -148,6 +180,12 @@ export function useExecutionConsoleStream({
           void queryClient.invalidateQueries({
             queryKey: executionsQueryKeys.all,
           });
+
+          if (mappedStatus === "completed") {
+            void queryClient.invalidateQueries({
+              queryKey: filesQueryKeys.all,
+            });
+          }
         }
       }
     },
