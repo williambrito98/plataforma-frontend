@@ -6,6 +6,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { alertToast } from "@/components/ui/sonner";
 import { listSpreadsheetSheets } from "@/features/automations/api/list-spreadsheet-sheets";
+import { validateSpreadsheetHeader } from "@/features/automations/api/validate-spreadsheet-header";
 import { DynamicAutomationField } from "@/features/automations/components/dynamic-automation-field";
 import {
   buildParameterDefaultValues,
@@ -132,17 +133,29 @@ export function AutomationIdleForm({
   });
 
   const loadSpreadsheetSheets = useCallback(
-    async (file: File) => {
+    async (file: File, parameter: AutomationParameter) => {
       const requestId = ++requestIdRef.current;
       setIsLoadingSheets(true);
       setSheetOptions([]);
-      setValue("sheetName", "");
+      setValue("sheetName", "", { shouldValidate: false });
 
       try {
         const sheets = await listSpreadsheetSheets(file);
 
         if (requestId !== requestIdRef.current) {
           return;
+        }
+
+        const expectedHeader = parameter.templateFile?.fileHeader;
+
+        if (expectedHeader?.length && sheets.length <= 2) {
+          await validateSpreadsheetHeader(file, expectedHeader, {
+            csvDelimiter: parameter.templateFile?.csvDelimiter,
+          });
+
+          if (requestId !== requestIdRef.current) {
+            return;
+          }
         }
 
         const options = toSheetOptions(sheets);
@@ -159,7 +172,21 @@ export function AutomationIdleForm({
         }
 
         setSheetOptions([]);
-        setValue("sheetName", "");
+        setValue("sheetName", "", { shouldValidate: false });
+
+        const isHeaderError =
+          error instanceof Error &&
+          error.message.includes("não está no formato correto");
+
+        if (isHeaderError) {
+          setValue(parameter.name, undefined, { shouldValidate: false });
+          alertToast.error(
+            "Arquivo inválido",
+            error instanceof Error ? error.message : undefined,
+          );
+          return;
+        }
+
         alertToast.error(
           "Falha ao identificar abas",
           error instanceof Error ? error.message : undefined,
@@ -174,7 +201,7 @@ export function AutomationIdleForm({
   );
 
   const handleSpreadsheetFileChange = useCallback(
-    (file: File | null) => {
+    (parameter: AutomationParameter) => (file: File | null) => {
       if (!file || !isSpreadsheetFile(file)) {
         requestIdRef.current += 1;
         setIsLoadingSheets(false);
@@ -183,7 +210,7 @@ export function AutomationIdleForm({
         return;
       }
 
-      void loadSpreadsheetSheets(file);
+      void loadSpreadsheetSheets(file, parameter);
     },
     [loadSpreadsheetSheets, setValue],
   );
@@ -240,7 +267,7 @@ export function AutomationIdleForm({
             onSpreadsheetFileChange={
               parameter.type === "file" &&
               fieldAcceptsSpreadsheet(parameter.extensions)
-                ? handleSpreadsheetFileChange
+                ? handleSpreadsheetFileChange(parameter)
                 : undefined
             }
             isLoadingSheets={

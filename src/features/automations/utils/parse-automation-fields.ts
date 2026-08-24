@@ -69,7 +69,16 @@ function parseTemplateFile(raw: unknown): AutomationTemplateFile | undefined {
     return undefined;
   }
 
-  return { token, name };
+  const fileHeader = parseStringArray(raw.fileHeader);
+  const csvDelimiter =
+    typeof raw.csvDelimiter === "string" ? raw.csvDelimiter : undefined;
+
+  return {
+    token,
+    name,
+    ...(fileHeader ? { fileHeader } : {}),
+    ...(csvDelimiter ? { csvDelimiter } : {}),
+  };
 }
 
 function parseField(raw: unknown, index: number): AutomationParameter | null {

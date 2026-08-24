@@ -71,7 +71,14 @@ export function LoginCompanyPanel() {
             >
               Empresa
             </FieldLabel>
-            <Select value={companyId} onValueChange={handleCompanyChange}>
+            <Select
+              value={companyId || null}
+              onValueChange={handleCompanyChange}
+              items={companies.map((company) => ({
+                label: company.name,
+                value: company.id,
+              }))}
+            >
               <SelectTrigger
                 id="company-select"
                 className={inputClassName}

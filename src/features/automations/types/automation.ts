@@ -40,6 +40,8 @@ export type AutomationParameterOption = {
 export type AutomationTemplateFile = {
   token: string;
   name: string;
+  fileHeader?: string[];
+  csvDelimiter?: string;
 };
 
 export type AutomationParameter = {
