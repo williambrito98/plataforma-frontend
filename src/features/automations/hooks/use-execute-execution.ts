@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { alertToast } from "@/components/ui/sonner";
 import { executeExecution } from "@/features/automations/api/execute-execution";
 import { executionsQueryKeys } from "@/features/automations/hooks/executions-query-keys";
+import { removeExecutionDetailCache } from "@/features/automations/hooks/update-execution-list-cache";
 
 export type ExecuteExecutionPayload = {
   executionId: string;
@@ -25,6 +26,7 @@ export function useExecuteExecution() {
     mutationFn: ({ executionId, formData }: ExecuteExecutionPayload) =>
       executeExecution(executionId, formData),
     onSuccess: (data) => {
+      removeExecutionDetailCache(queryClient, data.id);
       void queryClient.invalidateQueries({ queryKey: executionsQueryKeys.all });
       alertToast.success("Execução iniciada", data.message);
     },

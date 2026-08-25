@@ -52,20 +52,37 @@ export function AutomationCard({ execution }: AutomationCardProps) {
   const continueMutation = useContinueExecution();
   const finishMutation = useFinishExecution();
 
+  const stream = useExecutionConsoleStream({
+    executionId: execution.executionId,
+    status: execution.status,
+    startedAt: execution.startedAt,
+    enabled: execution.status === "running",
+    accumulateLogs: isOpen && execution.status === "running",
+  });
+
+  const { resetMonitor } = stream;
+
+  const effectiveStatus: AutomationStatus =
+    execution.status === "running"
+      ? (stream.status ?? execution.status)
+      : execution.status;
+
+  const effectiveFinishedAt = execution.finishedAt ?? stream.finishedAt ?? null;
+
   const [elapsedSeconds, setElapsedSeconds] = useState(() =>
-    computeElapsedSeconds(execution.startedAt, execution.finishedAt),
+    computeElapsedSeconds(execution.startedAt, effectiveFinishedAt),
   );
 
   useEffect(() => {
     const updateElapsedTime = () => {
       setElapsedSeconds(
-        computeElapsedSeconds(execution.startedAt, execution.finishedAt),
+        computeElapsedSeconds(execution.startedAt, effectiveFinishedAt),
       );
     };
 
     updateElapsedTime();
 
-    if (execution.status !== "running" || !execution.startedAt) {
+    if (effectiveStatus !== "running" || !execution.startedAt) {
       return;
     }
 
@@ -74,16 +91,7 @@ export function AutomationCard({ execution }: AutomationCardProps) {
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [execution.status, execution.startedAt, execution.finishedAt]);
-
-  const stream = useExecutionConsoleStream({
-    executionId: execution.executionId,
-    status: execution.status,
-    enabled: execution.status === "running",
-    accumulateLogs: isOpen,
-  });
-
-  const { resetMonitor } = stream;
+  }, [effectiveStatus, execution.startedAt, effectiveFinishedAt]);
 
   const fileStream = useExecutionFileStream({
     executionId: execution.executionId,
@@ -134,7 +142,10 @@ export function AutomationCard({ execution }: AutomationCardProps) {
         execution.status === "running"
           ? stream.total
           : (staticConsole?.total ?? 0),
-      status: stream.status ?? execution.status,
+      status:
+        execution.status === "running"
+          ? (stream.status ?? execution.status)
+          : execution.status,
       submittedValues,
       outputFile: fileStream.outputFile,
     }),

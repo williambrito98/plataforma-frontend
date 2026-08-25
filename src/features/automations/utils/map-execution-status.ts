@@ -12,8 +12,20 @@ const STATUS_MAP: Record<ExecutionStatusApi, AutomationStatus> = {
   CONCLUIDO: "completed",
 };
 
+const TERMINAL_API_STATUSES: ExecutionStatusApi[] = [
+  "PENDENTE",
+  "PARADO",
+  "PAUSADO",
+  "EM_MANUTENCAO",
+  "CONCLUIDO",
+];
+
 export function mapExecutionStatus(
   status: ExecutionStatusApi,
 ): AutomationStatus {
   return STATUS_MAP[status] ?? "idle";
+}
+
+export function isTerminalApiStatus(status: ExecutionStatusApi): boolean {
+  return TERMINAL_API_STATUSES.includes(status);
 }

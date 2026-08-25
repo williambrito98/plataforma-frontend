@@ -3,8 +3,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { alertToast } from "@/components/ui/sonner";
 import { stopExecution } from "@/features/automations/api/stop-execution";
 import { executionsQueryKeys } from "@/features/automations/hooks/executions-query-keys";
-import type { ExecutionListItem } from "@/features/automations/types/automation";
+import { updateExecutionListCache } from "@/features/automations/hooks/update-execution-list-cache";
 import { mapExecutionStatus } from "@/features/automations/utils/map-execution-status";
+import { useSelectedCompanyId } from "@/features/companies/stores/company-store";
 
 export type StopExecutionPayload = {
   executionId: string;
@@ -20,20 +21,21 @@ function getErrorMessage(error: unknown, fallback: string): string {
 
 export function useStopExecution() {
   const queryClient = useQueryClient();
+  const selectedCompanyId = useSelectedCompanyId();
 
   return useMutation({
     mutationFn: ({ executionId }: StopExecutionPayload) =>
       stopExecution(executionId),
     onSuccess: (data) => {
-      queryClient.setQueryData<ExecutionListItem[]>(
-        executionsQueryKeys.all,
-        (current) =>
-          current?.map((item) =>
+      if (selectedCompanyId) {
+        updateExecutionListCache(queryClient, selectedCompanyId, (items) =>
+          items.map((item) =>
             item.executionId === data.id
               ? { ...item, status: mapExecutionStatus(data.status) }
               : item,
           ),
-      );
+        );
+      }
 
       void queryClient.invalidateQueries({ queryKey: executionsQueryKeys.all });
       alertToast.success("Execução pausada", data.message);
