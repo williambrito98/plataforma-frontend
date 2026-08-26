@@ -13,6 +13,138 @@ export const DEFAULT_TIME_FORMAT = "HH:mm";
 export const DEFAULT_DATETIME_FORMAT = "dd/MM/yyyy HH:mm";
 export const DEFAULT_MONTH_FORMAT = "MM/yyyy";
 
+const SAMPLE_DATE = new Date(2026, 7, 25);
+
+const MONTH_TOKENS = new Set([
+  "M",
+  "MM",
+  "MMM",
+  "MMMM",
+  "L",
+  "LL",
+  "LLL",
+  "LLLL",
+]);
+const YEAR_TOKENS = new Set([
+  "y",
+  "yy",
+  "yyy",
+  "yyyy",
+  "Y",
+  "YY",
+  "YYY",
+  "YYYY",
+]);
+const DAY_TOKENS = new Set(["d", "dd"]);
+
+function extractFormatTokens(formatStr: string): string[] {
+  const tokens: string[] = [];
+  let index = 0;
+
+  while (index < formatStr.length) {
+    const char = formatStr[index];
+
+    if (char === "'") {
+      index += 1;
+      while (index < formatStr.length && formatStr[index] !== "'") {
+        index += 1;
+      }
+      index += 1;
+      continue;
+    }
+
+    if (/[a-zA-Z]/.test(char)) {
+      let end = index + 1;
+      while (end < formatStr.length && formatStr[end] === char) {
+        end += 1;
+      }
+      tokens.push(formatStr.slice(index, end));
+      index = end;
+      continue;
+    }
+
+    index += 1;
+  }
+
+  return tokens;
+}
+
+function hasFormatToken(tokens: string[], allowed: Set<string>): boolean {
+  return tokens.some((token) => allowed.has(token));
+}
+
+export function getDefaultTemporalFormat(type: "date" | "month"): string {
+  return type === "date" ? DEFAULT_DATE_FORMAT : DEFAULT_MONTH_FORMAT;
+}
+
+export function getTemporalFormatValidationError(
+  type: "date" | "month",
+  formatStr: string,
+): string | null {
+  const trimmed = formatStr.trim();
+  if (!trimmed) {
+    return "Informe o formato do campo.";
+  }
+
+  const tokens = extractFormatTokens(trimmed);
+  if (tokens.length === 0) {
+    return "O formato deve conter tokens date-fns (ex.: MM, yyyy, dd).";
+  }
+
+  const allowedTokens =
+    type === "month"
+      ? new Set([...MONTH_TOKENS, ...YEAR_TOKENS])
+      : new Set([...DAY_TOKENS, ...MONTH_TOKENS, ...YEAR_TOKENS]);
+
+  const invalidToken = tokens.find((token) => !allowedTokens.has(token));
+  if (invalidToken) {
+    return `Token "${invalidToken}" não é permitido para o tipo ${type === "month" ? "mês" : "data"}.`;
+  }
+
+  if (!hasFormatToken(tokens, MONTH_TOKENS)) {
+    return "O formato deve incluir o mês (ex.: MM ou M).";
+  }
+
+  if (!hasFormatToken(tokens, YEAR_TOKENS)) {
+    return "O formato deve incluir o ano (ex.: yyyy).";
+  }
+
+  if (type === "date" && !hasFormatToken(tokens, DAY_TOKENS)) {
+    return "O formato deve incluir o dia (ex.: dd).";
+  }
+
+  try {
+    const formatted = format(SAMPLE_DATE, trimmed, { locale: ptBR });
+    const parsed = parse(formatted, trimmed, SAMPLE_DATE, { locale: ptBR });
+
+    if (!isValid(parsed)) {
+      return "Formato inválido: não foi possível interpretar a data formatada.";
+    }
+
+    if (
+      parsed.getFullYear() !== SAMPLE_DATE.getFullYear() ||
+      parsed.getMonth() !== SAMPLE_DATE.getMonth()
+    ) {
+      return "Formato inválido: mês/ano não correspondem após formatação.";
+    }
+
+    if (type === "date" && parsed.getDate() !== SAMPLE_DATE.getDate()) {
+      return "Formato inválido: dia não corresponde após formatação.";
+    }
+  } catch {
+    return "Formato inválido: sintaxe não reconhecida pelo date-fns.";
+  }
+
+  return null;
+}
+
+export function isValidTemporalFormat(
+  type: "date" | "month",
+  formatStr: string,
+): boolean {
+  return getTemporalFormatValidationError(type, formatStr) === null;
+}
+
 export function getDisplayFormat(
   type: "date" | "time" | "datetime-local" | "month",
   customFormat?: string,

@@ -1,8 +1,14 @@
 import { Plus } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -14,6 +20,12 @@ import {
 } from "@/components/ui/select";
 import { alertToast } from "@/components/ui/sonner";
 import { AutomationParameterOptionsEditor } from "@/features/automations/components/automation-parameter-options-editor";
+import {
+  DEFAULT_DATE_FORMAT,
+  DEFAULT_MONTH_FORMAT,
+  getDefaultTemporalFormat,
+  getTemporalFormatValidationError,
+} from "@/features/automations/components/field-pickers/date-format";
 import {
   PARAMETER_INPUT_TYPES,
   type ParameterInputType,
@@ -29,6 +41,7 @@ const PARAMETER_TYPE_SELECT_ITEMS = [
 ];
 
 const OPTION_TYPES = new Set<ParameterInputType>(["select", "multiselect"]);
+const TEMPORAL_FORMAT_TYPES = new Set<ParameterInputType>(["date", "month"]);
 
 function createEmptyOptionDraft() {
   return { label: "", value: "" };
@@ -38,6 +51,20 @@ function isOptionType(
   type: ParameterInputType | "",
 ): type is ParameterInputType {
   return type !== "" && OPTION_TYPES.has(type);
+}
+
+function isTemporalFormatType(
+  type: ParameterInputType | "",
+): type is "date" | "month" {
+  return type !== "" && TEMPORAL_FORMAT_TYPES.has(type);
+}
+
+function resolveFormatValidationError(
+  type: "date" | "month",
+  format: string,
+): string | null {
+  const formatValue = format.trim() || getDefaultTemporalFormat(type);
+  return getTemporalFormatValidationError(type, formatValue);
 }
 
 function buildFileAccept(extensionsText: string): string | undefined {
@@ -71,7 +98,26 @@ export function AutomationParameterForm({
   onDraftChange,
   onAdd,
 }: AutomationParameterFormProps) {
+  const [formatError, setFormatError] = useState<string | null>(null);
+  const temporalFormatType = isTemporalFormatType(draft.type)
+    ? draft.type
+    : null;
+
   function handleAddParameter() {
+    if (temporalFormatType) {
+      const validationError = resolveFormatValidationError(
+        temporalFormatType,
+        draft.format,
+      );
+
+      if (validationError) {
+        setFormatError(validationError);
+        alertToast.error("Formato inválido", validationError);
+        return;
+      }
+    }
+
+    setFormatError(null);
     const result = onAdd(draft);
 
     if (!result.success) {
@@ -91,6 +137,19 @@ export function AutomationParameterForm({
         return;
       }
 
+      if (result.error === "invalid-format") {
+        const validationError = temporalFormatType
+          ? resolveFormatValidationError(temporalFormatType, draft.format)
+          : "Informe um formato válido usando tokens date-fns (ex.: dd/MM/yyyy, MMyyyy).";
+
+        setFormatError(validationError);
+        alertToast.error(
+          "Formato inválido",
+          validationError ?? "Formato inválido.",
+        );
+        return;
+      }
+
       alertToast.error(
         "Campos obrigatórios",
         "Preencha nome, tipo e rótulo do parâmetro.",
@@ -99,15 +158,18 @@ export function AutomationParameterForm({
     }
 
     alertToast.success("Parâmetro adicionado");
+    setFormatError(null);
   }
 
   function handleTypeChange(value: string | null) {
+    setFormatError(null);
     const nextType = (value ?? "") as ParameterInputType | "";
 
     if (nextType === "file") {
       onDraftChange({
         type: nextType,
         options: [],
+        format: "",
         extensionsText: draft.extensionsText,
         templateFileUpload: undefined,
       });
@@ -119,6 +181,18 @@ export function AutomationParameterForm({
         type: nextType,
         options:
           draft.options.length > 0 ? draft.options : [createEmptyOptionDraft()],
+        format: "",
+        extensionsText: "",
+        templateFileUpload: undefined,
+      });
+      return;
+    }
+
+    if (nextType === "date" || nextType === "month") {
+      onDraftChange({
+        type: nextType,
+        options: [],
+        format: getDefaultTemporalFormat(nextType),
         extensionsText: "",
         templateFileUpload: undefined,
       });
@@ -128,6 +202,7 @@ export function AutomationParameterForm({
     onDraftChange({
       type: nextType,
       options: [],
+      format: "",
       extensionsText: "",
       templateFileUpload: undefined,
     });
@@ -213,6 +288,51 @@ export function AutomationParameterForm({
           options={draft.options}
           onChange={(options) => onDraftChange({ options })}
         />
+      ) : null}
+
+      {temporalFormatType ? (
+        <Field
+          orientation="vertical"
+          className="gap-2"
+          data-invalid={formatError ? true : undefined}
+        >
+          <FieldLabel
+            htmlFor="parameter-format"
+            className="text-sm font-medium"
+          >
+            Formato
+          </FieldLabel>
+          <Input
+            id="parameter-format"
+            placeholder={
+              temporalFormatType === "date"
+                ? DEFAULT_DATE_FORMAT
+                : DEFAULT_MONTH_FORMAT
+            }
+            className={inputClassName}
+            value={draft.format}
+            aria-invalid={formatError ? true : undefined}
+            onChange={(event) => {
+              const nextFormat = event.target.value;
+              onDraftChange({ format: nextFormat });
+
+              if (formatError) {
+                setFormatError(
+                  resolveFormatValidationError(temporalFormatType, nextFormat),
+                );
+              }
+            }}
+            onBlur={() => {
+              setFormatError(
+                resolveFormatValidationError(temporalFormatType, draft.format),
+              );
+            }}
+          />
+          <FieldDescription>
+            Tokens date-fns. Exemplos: dd/MM/yyyy, MM/yyyy, MMyyyy.
+          </FieldDescription>
+          {formatError ? <FieldError>{formatError}</FieldError> : null}
+        </Field>
       ) : null}
 
       {draft.type === "file" ? (

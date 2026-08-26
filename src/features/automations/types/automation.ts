@@ -68,6 +68,7 @@ export type AutomationParameterDraft = {
   type: ParameterInputType | "";
   label: string;
   placeholder: string;
+  format: string;
   required: boolean;
   options: AutomationParameterOption[];
   extensionsText: string;

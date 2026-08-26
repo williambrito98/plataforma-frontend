@@ -1,5 +1,9 @@
 import { useCallback, useState } from "react";
 
+import {
+  getDefaultTemporalFormat,
+  isValidTemporalFormat,
+} from "@/features/automations/components/field-pickers/date-format";
 import type {
   AutomationParameter,
   AutomationParameterDraft,
@@ -11,6 +15,7 @@ const emptyDraft: AutomationParameterDraft = {
   type: "",
   label: "",
   placeholder: "",
+  format: "",
   required: false,
   options: [],
   extensionsText: "",
@@ -79,6 +84,19 @@ export function useAutomationParameters() {
         };
       }
 
+      if (parameterDraft.type === "date" || parameterDraft.type === "month") {
+        const formatValue =
+          parameterDraft.format.trim() ||
+          getDefaultTemporalFormat(parameterDraft.type);
+
+        if (!isValidTemporalFormat(parameterDraft.type, formatValue)) {
+          return {
+            success: false as const,
+            error: "invalid-format" as const,
+          };
+        }
+      }
+
       const extensions =
         parameterDraft.type === "file"
           ? parseExtensionsFromDraft(parameterDraft.extensionsText)
@@ -95,6 +113,13 @@ export function useAutomationParameters() {
         ...(extensions.length ? { extensions } : {}),
         ...(parameterDraft.type === "file" && parameterDraft.templateFileUpload
           ? { templateFileUpload: parameterDraft.templateFileUpload }
+          : {}),
+        ...(parameterDraft.type === "date" || parameterDraft.type === "month"
+          ? {
+              format:
+                parameterDraft.format.trim() ||
+                getDefaultTemporalFormat(parameterDraft.type),
+            }
           : {}),
       };
 

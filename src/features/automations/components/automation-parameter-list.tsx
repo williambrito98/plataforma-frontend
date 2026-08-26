@@ -60,6 +60,12 @@ export function AutomationParameterList({
                   .join(", ")}
               </p>
             ) : null}
+            {(parameter.type === "date" || parameter.type === "month") &&
+            parameter.format ? (
+              <p className="text-xs text-muted-foreground">
+                Formato: {parameter.format}
+              </p>
+            ) : null}
             {parameter.type === "file" &&
             (parameter.templateFileUpload || parameter.templateFile) ? (
               <p className="text-xs text-muted-foreground">
