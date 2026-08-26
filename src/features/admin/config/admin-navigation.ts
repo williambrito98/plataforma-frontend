@@ -69,6 +69,28 @@ const editAutomationPageMeta: AdminPageMeta = {
   lucideIcon: "Container",
 };
 
+export function getAdminSectionKey(pathname: string): string {
+  const candidates: string[] = [];
+
+  for (const item of adminNavigation) {
+    if (pathname.startsWith(item.href)) {
+      candidates.push(item.href);
+    }
+  }
+
+  for (const href of Object.keys(adminSecondaryPageMeta)) {
+    if (pathname.startsWith(href)) {
+      candidates.push(href);
+    }
+  }
+
+  if (candidates.length === 0) {
+    return pathname;
+  }
+
+  return candidates.sort((a, b) => b.length - a.length)[0];
+}
+
 export function getAdminPageMeta(pathname: string): AdminPageMeta | null {
   if (/^\/empresas\/\d+\/editar\/?$/.test(pathname)) {
     return editCompanyPageMeta;

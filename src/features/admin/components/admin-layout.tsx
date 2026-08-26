@@ -1,8 +1,7 @@
-import { Outlet } from "@tanstack/react-router";
-
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminPageHeader } from "@/features/admin/components/admin-page-header";
+import { AdminPageTransition } from "@/features/admin/components/admin-page-transition";
 import { AdminPanelToggle } from "@/features/admin/components/admin-panel-toggle";
 import { AdminSidebar } from "@/features/admin/components/admin-sidebar";
 import { RequireRouteAccess } from "@/features/auth/components/require-route-access";
@@ -21,8 +20,8 @@ export function AdminLayout() {
               </div>
             </header>
 
-            <main className="px-6 pt-14.5 pb-6">
-              <Outlet />
+            <main className="overflow-hidden px-6 pt-14.5 pb-6">
+              <AdminPageTransition />
             </main>
           </SidebarInset>
         </SidebarProvider>
