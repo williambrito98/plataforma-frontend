@@ -8,6 +8,7 @@ import {
   updateUserAdmin,
   updateUserPhoto,
 } from "@/features/users/api/update-user";
+import { updateUsersListCache } from "@/features/users/hooks/update-users-list-cache";
 import { usersQueryKeys } from "@/features/users/hooks/users-query-keys";
 import type { UpdateUserAdminPayload } from "@/features/users/types/user";
 
@@ -100,7 +101,10 @@ export function useDeleteUser() {
 
   return useMutation({
     mutationFn: deleteUser,
-    onSuccess: () => {
+    onSuccess: (_data, userId) => {
+      updateUsersListCache(queryClient, (users) =>
+        users.filter((user) => user.id !== userId),
+      );
       queryClient.invalidateQueries({ queryKey: usersQueryKeys.all });
       alertToast.success("Usuário removido", "Usuário removido com sucesso.");
     },

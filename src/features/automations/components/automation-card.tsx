@@ -235,7 +235,7 @@ export function AutomationCard({ execution }: AutomationCardProps) {
     continueMutation.isPending ||
     pendingMutation.isPending;
 
-  const isIdle = runtime.status === "idle";
+  const isIdle = runtime.status === "idle" && !executeMutation.isPending;
   const contentLayoutClassName = isIdle
     ? "flex flex-col gap-4 lg:flex-row lg:flex-wrap"
     : "flex flex-col gap-4 lg:flex-row lg:flex-nowrap";

@@ -1,5 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ChevronUp, LogOut, Moon, Sun, User, UserCog } from "lucide-react";
+import {
+  ChevronUp,
+  Loader,
+  LogOut,
+  Moon,
+  Sun,
+  User,
+  UserCog,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 
 import {
@@ -179,11 +187,13 @@ export function AdminSidebarUserMenu() {
       >
         {sidebarUserMenuItems.map(({ label, icon: Icon, ...item }) => {
           const isLogout = label === "Sair";
+          const displayLabel = isLogout && isLoggingOut ? "Saindo..." : label;
+          const DisplayIcon = isLogout && isLoggingOut ? Loader : Icon;
 
           return (
             <DropdownMenuItem
               key={label}
-              aria-label={label}
+              aria-label={displayLabel}
               className="cursor-pointer text-muted-foreground"
               disabled={isLogout && isLoggingOut}
               render={
@@ -203,8 +213,11 @@ export function AdminSidebarUserMenu() {
                 }
               }}
             >
-              <Icon aria-hidden />
-              <span>{label}</span>
+              <DisplayIcon
+                aria-hidden
+                className={cn(isLogout && isLoggingOut && "animate-spin")}
+              />
+              <span>{displayLabel}</span>
             </DropdownMenuItem>
           );
         })}
