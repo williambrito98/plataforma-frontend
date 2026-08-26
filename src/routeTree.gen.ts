@@ -23,6 +23,7 @@ import { Route as AdminAutomacoesIndexRouteImport } from './routes/_admin/automa
 import { Route as AdminAutomacoesNovaRouteImport } from './routes/_admin/automacoes.nova'
 import { Route as AdminEmpresasIndexRouteImport } from './routes/_admin/empresas.index'
 import { Route as AdminEmpresasNovaRouteImport } from './routes/_admin/empresas.nova'
+import { Route as AdminAutomacoesIdEditarRouteImport } from './routes/_admin/automacoes.$id.editar'
 import { Route as AdminEmpresasIdEditarRouteImport } from './routes/_admin/empresas.$id.editar'
 
 const IndexRoute = IndexRouteImport.update({
@@ -94,6 +95,11 @@ const AdminEmpresasNovaRoute = AdminEmpresasNovaRouteImport.update({
   path: '/nova',
   getParentRoute: () => AdminEmpresasRoute,
 } as any)
+const AdminAutomacoesIdEditarRoute = AdminAutomacoesIdEditarRouteImport.update({
+  id: '/$id/editar',
+  path: '/$id/editar',
+  getParentRoute: () => AdminAutomacoesRoute,
+} as any)
 const AdminEmpresasIdEditarRoute = AdminEmpresasIdEditarRouteImport.update({
   id: '/$id/editar',
   path: '/$id/editar',
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/empresas/nova': typeof AdminEmpresasNovaRoute
   '/automacoes/': typeof AdminAutomacoesIndexRoute
   '/empresas/': typeof AdminEmpresasIndexRoute
+  '/automacoes/$id/editar': typeof AdminAutomacoesIdEditarRoute
   '/empresas/$id/editar': typeof AdminEmpresasIdEditarRoute
 }
 export interface FileRoutesByTo {
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/empresas/nova': typeof AdminEmpresasNovaRoute
   '/automacoes': typeof AdminAutomacoesIndexRoute
   '/empresas': typeof AdminEmpresasIndexRoute
+  '/automacoes/$id/editar': typeof AdminAutomacoesIdEditarRoute
   '/empresas/$id/editar': typeof AdminEmpresasIdEditarRoute
 }
 export interface FileRoutesById {
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/_admin/empresas/nova': typeof AdminEmpresasNovaRoute
   '/_admin/automacoes/': typeof AdminAutomacoesIndexRoute
   '/_admin/empresas/': typeof AdminEmpresasIndexRoute
+  '/_admin/automacoes/$id/editar': typeof AdminAutomacoesIdEditarRoute
   '/_admin/empresas/$id/editar': typeof AdminEmpresasIdEditarRoute
 }
 export interface FileRouteTypes {
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/empresas/nova'
     | '/automacoes/'
     | '/empresas/'
+    | '/automacoes/$id/editar'
     | '/empresas/$id/editar'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/empresas/nova'
     | '/automacoes'
     | '/empresas'
+    | '/automacoes/$id/editar'
     | '/empresas/$id/editar'
   id:
     | '__root__'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/_admin/empresas/nova'
     | '/_admin/automacoes/'
     | '/_admin/empresas/'
+    | '/_admin/automacoes/$id/editar'
     | '/_admin/empresas/$id/editar'
   fileRoutesById: FileRoutesById
 }
@@ -304,6 +316,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEmpresasNovaRouteImport
       parentRoute: typeof AdminEmpresasRoute
     }
+    '/_admin/automacoes/$id/editar': {
+      id: '/_admin/automacoes/$id/editar'
+      path: '/$id/editar'
+      fullPath: '/automacoes/$id/editar'
+      preLoaderRoute: typeof AdminAutomacoesIdEditarRouteImport
+      parentRoute: typeof AdminAutomacoesRoute
+    }
     '/_admin/empresas/$id/editar': {
       id: '/_admin/empresas/$id/editar'
       path: '/$id/editar'
@@ -317,11 +336,13 @@ declare module '@tanstack/react-router' {
 interface AdminAutomacoesRouteChildren {
   AdminAutomacoesNovaRoute: typeof AdminAutomacoesNovaRoute
   AdminAutomacoesIndexRoute: typeof AdminAutomacoesIndexRoute
+  AdminAutomacoesIdEditarRoute: typeof AdminAutomacoesIdEditarRoute
 }
 
 const AdminAutomacoesRouteChildren: AdminAutomacoesRouteChildren = {
   AdminAutomacoesNovaRoute: AdminAutomacoesNovaRoute,
   AdminAutomacoesIndexRoute: AdminAutomacoesIndexRoute,
+  AdminAutomacoesIdEditarRoute: AdminAutomacoesIdEditarRoute,
 }
 
 const AdminAutomacoesRouteWithChildren = AdminAutomacoesRoute._addFileChildren(

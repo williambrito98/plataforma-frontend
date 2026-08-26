@@ -149,12 +149,21 @@ export function useAutomationParameters() {
     [],
   );
 
+  const setParametersFromList = useCallback(
+    (nextParameters: AutomationParameter[]) => {
+      setParameters(nextParameters);
+      setDraft(emptyDraft);
+    },
+    [],
+  );
+
   return {
     parameters,
     draft,
     addParameter,
     removeParameter,
     clearParameters,
+    setParameters: setParametersFromList,
     updateDraft,
   };
 }

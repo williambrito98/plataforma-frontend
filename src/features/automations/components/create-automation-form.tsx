@@ -23,11 +23,15 @@ const inputClassName =
 
 type CreateAutomationFormProps = {
   formId: string;
+  defaultValues?: CreateAutomationFormValues;
+  resetOnSuccess?: boolean;
   onSubmit: (values: CreateAutomationFormValues) => Promise<boolean>;
 };
 
 export function CreateAutomationForm({
   formId,
+  defaultValues,
+  resetOnSuccess = true,
   onSubmit,
 }: CreateAutomationFormProps) {
   const {
@@ -45,13 +49,19 @@ export function CreateAutomationForm({
     formState: { errors },
   } = useForm<CreateAutomationFormValues>({
     resolver: zodResolver(createAutomationSchema),
-    defaultValues: {
+    defaultValues: defaultValues ?? {
       name: "",
       description: "",
       path: "",
       categoryId: "",
     },
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
 
   useEffect(() => {
     if (isCategoriesError) {
@@ -65,7 +75,7 @@ export function CreateAutomationForm({
   async function handleFormSubmit(values: CreateAutomationFormValues) {
     const success = await onSubmit(values);
 
-    if (success) {
+    if (success && resetOnSuccess) {
       reset();
     }
   }

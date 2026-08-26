@@ -64,9 +64,18 @@ const editCompanyPageMeta: AdminPageMeta = {
   lucideIcon: "Building2",
 };
 
+const editAutomationPageMeta: AdminPageMeta = {
+  title: "Editar automação",
+  lucideIcon: "Container",
+};
+
 export function getAdminPageMeta(pathname: string): AdminPageMeta | null {
   if (/^\/empresas\/\d+\/editar\/?$/.test(pathname)) {
     return editCompanyPageMeta;
+  }
+
+  if (/^\/automacoes\/\d+\/editar\/?$/.test(pathname)) {
+    return editAutomationPageMeta;
   }
 
   const candidates: Array<{ href: string; meta: AdminPageMeta }> = [];

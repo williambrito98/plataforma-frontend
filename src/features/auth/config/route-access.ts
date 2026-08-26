@@ -15,10 +15,15 @@ export const routeAccessByPath: Record<string, RouteAccess> = {
 };
 
 const editCompanyRoutePattern = /^\/empresas\/\d+\/editar\/?$/;
+const editAutomationRoutePattern = /^\/automacoes\/\d+\/editar\/?$/;
 
 export function resolveRouteAccess(pathname: string): RouteAccess | undefined {
   if (editCompanyRoutePattern.test(pathname)) {
     return { permissions: [PermissionCodes.COMPANIES_UPDATE] };
+  }
+
+  if (editAutomationRoutePattern.test(pathname)) {
+    return { permissions: [PermissionCodes.AUTOMATIONS_UPDATE] };
   }
 
   const candidates = Object.entries(routeAccessByPath)

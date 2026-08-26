@@ -13,6 +13,7 @@ export const PermissionCodes = {
   COMPANIES_MANAGE_MEMBERS: "companies.manage_members",
 
   AUTOMATIONS_CREATE: "automations.create",
+  AUTOMATIONS_UPDATE: "automations.update",
 
   CATEGORIES_READ: "categories.read",
   CATEGORIES_CREATE: "categories.create",

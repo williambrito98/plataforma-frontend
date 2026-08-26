@@ -10,13 +10,18 @@ import {
   AdminSidebarUserMenu,
 } from "@/features/admin/components/admin-sidebar-nav";
 import { BrandLogo } from "@/features/companies/components/brand-logo";
+import { CompanySwitcher } from "@/features/companies/components/company-switcher";
 
 export function AdminSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r-0">
       <SidebarHeader className="px-6 pt-9.5 pb-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-3.5 group-data-[collapsible=icon]:pt-9.5">
-        <div className="flex h-9 w-10.75 items-center justify-center group-data-[collapsible=icon]:w-auto">
+        <div className="flex min-w-0 items-center gap-2 group-data-[collapsible=icon]:justify-center">
           <BrandLogo />
+          <CompanySwitcher
+            showLogo={false}
+            className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden"
+          />
         </div>
       </SidebarHeader>
 

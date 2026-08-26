@@ -17,9 +17,13 @@ import { cn } from "@/lib/utils";
 
 type CompanySwitcherProps = {
   className?: string;
+  showLogo?: boolean;
 };
 
-export function CompanySwitcher({ className }: CompanySwitcherProps) {
+export function CompanySwitcher({
+  className,
+  showLogo = true,
+}: CompanySwitcherProps) {
   const {
     companies,
     selectedCompany,
@@ -39,17 +43,26 @@ export function CompanySwitcher({ className }: CompanySwitcherProps) {
       <DropdownMenuTrigger
         render={
           <Button
-            variant="outline"
+            variant={showLogo ? "outline" : "ghost"}
             size="sm"
             className={cn(
-              "h-8 gap-2 border-border bg-background px-3 font-normal",
+              showLogo
+                ? "h-8 gap-2 border-border bg-background px-3 font-normal"
+                : "h-auto min-h-9 min-w-0 gap-1.5 px-2 py-1 font-normal hover:bg-accent",
               className,
             )}
           />
         }
       >
-        <BrandLogo className="size-4 max-h-4 max-w-4" />
-        <span className="max-w-40 truncate">{activeCompany.name}</span>
+        {showLogo ? <BrandLogo className="size-4 max-h-4 max-w-4" /> : null}
+        <div className="min-w-0 flex-1 text-left">
+          <span className="block truncate">{activeCompany.name}</span>
+          {activeCompany.document ? (
+            <span className="block truncate text-xs text-muted-foreground">
+              {activeCompany.document}
+            </span>
+          ) : null}
+        </div>
         <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-56">
@@ -75,7 +88,14 @@ export function CompanySwitcher({ className }: CompanySwitcherProps) {
                 alt={company.name}
                 className="size-4 shrink-0 rounded-sm object-contain"
               />
-              <span className="truncate">{company.name}</span>
+              <div className="min-w-0 flex-1">
+                <span className="block truncate">{company.name}</span>
+                {company.document ? (
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {company.document}
+                  </span>
+                ) : null}
+              </div>
             </DropdownMenuItem>
           ))}
         </DropdownMenuGroup>

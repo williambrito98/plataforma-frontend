@@ -1,4 +1,5 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Pencil } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -6,6 +7,8 @@ import { Progress } from "@/components/ui/progress";
 import { AUTOMATION_STATUS_CONFIG } from "@/features/automations/config/automation-status";
 import { AutomationCardAlert } from "@/features/automations/components/automation-card-alert";
 import { AutomationStatusBadge } from "@/features/automations/components/automation-status-badge";
+import { PermissionCodes } from "@/features/auth/constants/permissions";
+import { useCan } from "@/features/auth/hooks/use-can";
 import type {
   AutomationRuntime,
   ExecutionListItem,
@@ -24,6 +27,7 @@ export function AutomationCardHeader({
   onAction,
   isActionPending = false,
 }: AutomationCardHeaderProps) {
+  const canEdit = useCan(PermissionCodes.AUTOMATIONS_UPDATE);
   const config = AUTOMATION_STATUS_CONFIG[runtime.status];
   const ActionIcon = config.action.icon;
   const ProgressBarColor = config.progressBarColor;
@@ -41,6 +45,23 @@ export function AutomationCardHeader({
         <AutomationCardAlert status={runtime.status} runtime={runtime} />
 
         <div className="flex w-40 shrink-0 items-center justify-end gap-2">
+          {canEdit ? (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Editar automação"
+              render={
+                <Link
+                  to="/automacoes/$id/editar"
+                  params={{ id: execution.automationId }}
+                />
+              }
+              nativeButton={false}
+            >
+              <Pencil className="size-4" aria-hidden />
+            </Button>
+          ) : null}
+
           <CollapsibleTrigger
             render={
               <Button
