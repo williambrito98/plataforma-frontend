@@ -148,6 +148,13 @@ export function useExecutionConsoleStream({
 
   const detailEnabled = enabled && !detailTerminal;
 
+  const sseProgressStartedRef = useRef(false);
+  const progressStartedFromStream = processed > 0 || total > 0;
+
+  useEffect(() => {
+    sseProgressStartedRef.current = progressStartedFromStream;
+  }, [progressStartedFromStream]);
+
   const { data: executionDetail, refetch } = useExecutionDetail(
     executionId,
     detailEnabled,
@@ -160,6 +167,20 @@ export function useExecutionConsoleStream({
         const detailStatus = query.state.data?.status;
         if (detailStatus && isTerminalApiStatus(detailStatus)) {
           return false;
+        }
+
+        if (progressStartedFromStream || sseProgressStartedRef.current) {
+          return false;
+        }
+
+        const dataConsole = query.state.data?.dataConsole;
+        if (dataConsole) {
+          const progress = consoleSnapshotToProgress(
+            parseConsoleSnapshot(dataConsole),
+          );
+          if (progress.processed > 0 || progress.total > 0) {
+            return false;
+          }
         }
 
         return RUNNING_POLL_INTERVAL_MS;
