@@ -1,0 +1,88 @@
+---
+description: Select (Base UI) — sempre passar items para exibir label no trigger
+alwaysApply: true
+---
+
+# Select — prop `items` obrigatória
+
+O `Select` em `@/components/ui/select` usa **Base UI**. Sem a prop `items` no `<Select>`, o `<SelectValue>` exibe o **value bruto** (ex.: `CREATE`, UUID) em vez do **label legível** (ex.: `Criação`, nome da empresa).
+
+**Sempre** passe `items` com `{ label, value }` quando o value exibido ao usuário for diferente do label.
+
+## Exemplo correto
+
+```tsx
+const options = [
+  { value: "ALL", label: "Todas as ações" },
+  { value: "CREATE", label: "Criação" },
+];
+
+<Select
+  value={actionFilter}
+  onValueChange={setActionFilter}
+  items={options.map((option) => ({
+    label: option.label,
+    value: option.value,
+  }))}
+>
+  <SelectTrigger className="w-full">
+    <SelectValue placeholder="Filtrar por ação" />
+  </SelectTrigger>
+  <SelectContent>
+    {options.map((option) => (
+      <SelectItem key={option.value} value={option.value}>
+        {option.label}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+```
+
+## Exemplo incorreto
+
+```tsx
+// ❌ Falta items — o trigger mostra "CREATE" em vez de "Criação"
+<Select value={actionFilter} onValueChange={setActionFilter}>
+  <SelectTrigger>
+    <SelectValue placeholder="Filtrar por ação" />
+  </SelectTrigger>
+  <SelectContent>
+    {options.map((option) => (
+      <SelectItem key={option.value} value={option.value}>
+        {option.label}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+```
+
+## Listas dinâmicas (API)
+
+Inclua opções estáticas e itens carregados no mesmo array `items`:
+
+```tsx
+items={[
+  { label: "Todas as empresas", value: "ALL" },
+  ...companies.map((company) => ({
+    label: company.name,
+    value: company.id,
+  })),
+]}
+```
+
+## Alternativa
+
+Se não usar `items`, formate manualmente com função em `<SelectValue>`:
+
+```tsx
+<SelectValue>
+  {(value) => (value ? labels[value] : "Selecione")}
+</SelectValue>
+```
+
+Prefira `items` — é o padrão do projeto (ver `login-company-panel.tsx`, `create-user-form.tsx`).
+
+## Referência
+
+- Componente: `src/components/ui/select.tsx`
+- Docs Base UI: prop `items` em `Select.Root` para mapear value → label no trigger

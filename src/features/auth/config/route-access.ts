@@ -12,6 +12,7 @@ export const routeAccessByPath: Record<string, RouteAccess> = {
   "/empresas/nova": { permissions: [PermissionCodes.COMPANIES_CREATE] },
   "/usuarios": { permissions: [PermissionCodes.USER_CONTROL] },
   "/rbac": "rbac",
+  "/auditoria": { permissions: [PermissionCodes.AUDIT_LOGS_READ] },
 };
 
 const editCompanyRoutePattern = /^\/empresas\/\d+\/editar\/?$/;

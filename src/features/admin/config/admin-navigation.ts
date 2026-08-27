@@ -41,6 +41,12 @@ export const adminNavigation = [
     lucideIcon: "ShieldCheck",
     access: "rbac",
   },
+  {
+    label: "Auditoria",
+    href: "/auditoria",
+    lucideIcon: "ScrollText",
+    access: { permissions: [PermissionCodes.AUDIT_LOGS_READ] },
+  },
 ] as AdminNavItem[];
 
 export const adminPageMetaByHref: Record<AdminNavItem["href"], AdminPageMeta> =
@@ -51,6 +57,7 @@ export const adminPageMetaByHref: Record<AdminNavItem["href"], AdminPageMeta> =
     "/empresas": { title: "Empresas", lucideIcon: "Building2" },
     "/usuarios": { title: "Usuários", lucideIcon: "Users" },
     "/rbac": { title: "RBAC", lucideIcon: "ShieldCheck" },
+    "/auditoria": { title: "Auditoria", lucideIcon: "ScrollText" },
   };
 
 export const adminSecondaryPageMeta = {

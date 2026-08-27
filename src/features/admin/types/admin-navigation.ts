@@ -6,6 +6,7 @@ export type AdminLucideIcon =
   | "Building2"
   | "Container"
   | "FolderTree"
+  | "ScrollText"
   | "ShieldCheck"
   | "Tags"
   | "UserCog"
@@ -16,6 +17,7 @@ export type AdminNavItem = {
   href:
     | "/automacoes"
     | "/arquivos"
+    | "/auditoria"
     | "/categorias"
     | "/empresas"
     | "/rbac"

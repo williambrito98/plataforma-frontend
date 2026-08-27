@@ -31,6 +31,8 @@ export const PermissionCodes = {
   FILES_DOWNLOAD: "files.download",
 
   EVENTS_STREAM: "events.stream",
+
+  AUDIT_LOGS_READ: "audit_logs.read",
 } as const;
 
 export type PermissionCode =
