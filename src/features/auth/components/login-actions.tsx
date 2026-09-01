@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 import { Button } from "@/components/ui/button";
 
 type LoginActionsProps = {
@@ -7,9 +9,12 @@ type LoginActionsProps = {
 export function LoginActions({ loading = false }: LoginActionsProps) {
   return (
     <div className="flex w-full items-center justify-between">
-      <button type="button" className="text-sm leading-5 text-[#737373]">
+      <Link
+        to="/recuperar-senha"
+        className="text-sm leading-5 text-[#737373] hover:underline"
+      >
         Esqueci minha senha
-      </button>
+      </Link>
       <Button size="sm" type="submit" loading={loading} disabled={loading}>
         Entrar
       </Button>

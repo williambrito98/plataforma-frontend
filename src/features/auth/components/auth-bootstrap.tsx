@@ -11,7 +11,7 @@ import {
 } from "@/features/companies/lib/company-selection";
 import { useCompanyStore } from "@/features/companies/stores/company-store";
 
-const PUBLIC_ROUTES = ["/login"] as const;
+const PUBLIC_ROUTES = ["/login", "/recuperar-senha"] as const;
 const DEFAULT_AUTHENTICATED_ROUTE = "/automacoes";
 
 function isPublicRoute(pathname: string) {
