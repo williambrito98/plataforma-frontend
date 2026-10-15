@@ -1,8 +1,12 @@
+import { useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
+
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   AdminSidebarDarkModeItem,
@@ -13,6 +17,14 @@ import { BrandLogo } from "@/features/companies/components/brand-logo";
 import { CompanySwitcher } from "@/features/companies/components/company-switcher";
 
 export function AdminSidebar() {
+  const { setOpenMobile } = useSidebar();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Fecha o drawer (mobile/tablet) sempre que a rota muda.
+  useEffect(() => {
+    setOpenMobile(false);
+  }, [pathname, setOpenMobile]);
+
   return (
     <Sidebar collapsible="icon" className="border-r-0">
       <SidebarHeader className="px-6 pt-9.5 pb-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-3.5 group-data-[collapsible=icon]:pt-9.5">

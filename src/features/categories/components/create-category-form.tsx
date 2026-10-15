@@ -68,7 +68,7 @@ export function CreateCategoryForm() {
             <FieldError errors={[errors.name]} />
           </Field>
 
-          <div className="flex items-end justify-end">
+          <div className="flex items-end justify-end max-md:*:w-full">
             <Button type="submit" loading={createCategory.isPending}>
               Criar categoria
             </Button>

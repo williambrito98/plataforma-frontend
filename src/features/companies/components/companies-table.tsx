@@ -2,6 +2,16 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Ban, CheckCircle, Pencil } from "lucide-react";
 
+import {
+  MobileCardActions,
+  MobileCardEmpty,
+  MobileCardField,
+  MobileCardFields,
+  MobileCardHeader,
+  MobileCardList,
+  MobileCardListItem,
+  MobileCardSkeletons,
+} from "@/components/mobile-card-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -73,133 +83,215 @@ export function CompaniesTable({ companies, isLoading }: CompaniesTableProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Documento</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Cadastrada em</TableHead>
-                {canUpdate ? (
-                  <TableHead className="text-right">Ações</TableHead>
-                ) : null}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading
-                ? Array.from({ length: SKELETON_ROW_COUNT }).map((_, index) => (
-                    <TableRow key={`skeleton-${index}`}>
-                      <TableCell>
-                        <Skeleton className="h-4 w-40" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-32" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-5 w-16" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-28" />
-                      </TableCell>
-                      {canUpdate ? (
-                        <TableCell>
-                          <div className="flex justify-end gap-1">
-                            <Skeleton className="size-8 rounded-md" />
-                            <Skeleton className="size-8 rounded-md" />
-                          </div>
-                        </TableCell>
-                      ) : null}
-                    </TableRow>
-                  ))
-                : null}
-
-              {!isLoading && companies.length === 0 ? (
+          <div className="max-md:hidden">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    colSpan={columnCount}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    Nenhuma empresa cadastrada.
-                  </TableCell>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Documento</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Cadastrada em</TableHead>
+                  {canUpdate ? (
+                    <TableHead className="text-right">Ações</TableHead>
+                  ) : null}
                 </TableRow>
-              ) : null}
-
-              {!isLoading
-                ? companies.map((company) => {
-                    const isActive = company.status === "ATIVA";
-
-                    return (
-                      <TableRow key={company.id}>
-                        <TableCell className="font-medium text-foreground">
-                          {company.name}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {company.document ?? "—"}
-                        </TableCell>
-                        <TableCell>
-                          <CompanyStatusBadge status={company.status} />
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {company.createdAt
-                            ? formatFileDate(company.createdAt)
-                            : "—"}
-                        </TableCell>
-                        {canUpdate ? (
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-1">
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                aria-label={`Editar ${company.name}`}
-                                render={
-                                  <Link
-                                    to="/empresas/$id/editar"
-                                    params={{ id: company.id }}
-                                  />
-                                }
-                                nativeButton={false}
-                              >
-                                <Pencil aria-hidden />
-                              </Button>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon-sm"
-                                aria-label={
-                                  isActive
-                                    ? `Inativar ${company.name}`
-                                    : `Ativar ${company.name}`
-                                }
-                                className={cn(
-                                  isActive &&
-                                    "text-destructive hover:text-destructive",
-                                )}
-                                onClick={() =>
-                                  setStatusToggle({
-                                    id: company.id,
-                                    name: company.name,
-                                    targetStatus: isActive
-                                      ? "INATIVA"
-                                      : "ATIVA",
-                                  })
-                                }
-                              >
-                                {isActive ? (
-                                  <Ban aria-hidden />
-                                ) : (
-                                  <CheckCircle aria-hidden />
-                                )}
-                              </Button>
-                            </div>
+              </TableHeader>
+              <TableBody>
+                {isLoading
+                  ? Array.from({ length: SKELETON_ROW_COUNT }).map(
+                      (_, index) => (
+                        <TableRow key={`skeleton-${index}`}>
+                          <TableCell>
+                            <Skeleton className="h-4 w-40" />
                           </TableCell>
-                        ) : null}
-                      </TableRow>
-                    );
-                  })
-                : null}
-            </TableBody>
-          </Table>
+                          <TableCell>
+                            <Skeleton className="h-4 w-32" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-5 w-16" />
+                          </TableCell>
+                          <TableCell>
+                            <Skeleton className="h-4 w-28" />
+                          </TableCell>
+                          {canUpdate ? (
+                            <TableCell>
+                              <div className="flex justify-end gap-1">
+                                <Skeleton className="size-8 rounded-md" />
+                                <Skeleton className="size-8 rounded-md" />
+                              </div>
+                            </TableCell>
+                          ) : null}
+                        </TableRow>
+                      ),
+                    )
+                  : null}
+
+                {!isLoading && companies.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columnCount}
+                      className="h-24 text-center text-muted-foreground"
+                    >
+                      Nenhuma empresa cadastrada.
+                    </TableCell>
+                  </TableRow>
+                ) : null}
+
+                {!isLoading
+                  ? companies.map((company) => {
+                      const isActive = company.status === "ATIVA";
+
+                      return (
+                        <TableRow key={company.id}>
+                          <TableCell className="font-medium text-foreground">
+                            {company.name}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {company.document ?? "—"}
+                          </TableCell>
+                          <TableCell>
+                            <CompanyStatusBadge status={company.status} />
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {company.createdAt
+                              ? formatFileDate(company.createdAt)
+                              : "—"}
+                          </TableCell>
+                          {canUpdate ? (
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-1">
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  aria-label={`Editar ${company.name}`}
+                                  render={
+                                    <Link
+                                      to="/empresas/$id/editar"
+                                      params={{ id: company.id }}
+                                    />
+                                  }
+                                  nativeButton={false}
+                                >
+                                  <Pencil aria-hidden />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  aria-label={
+                                    isActive
+                                      ? `Inativar ${company.name}`
+                                      : `Ativar ${company.name}`
+                                  }
+                                  className={cn(
+                                    isActive &&
+                                      "text-destructive hover:text-destructive",
+                                  )}
+                                  onClick={() =>
+                                    setStatusToggle({
+                                      id: company.id,
+                                      name: company.name,
+                                      targetStatus: isActive
+                                        ? "INATIVA"
+                                        : "ATIVA",
+                                    })
+                                  }
+                                >
+                                  {isActive ? (
+                                    <Ban aria-hidden />
+                                  ) : (
+                                    <CheckCircle aria-hidden />
+                                  )}
+                                </Button>
+                              </div>
+                            </TableCell>
+                          ) : null}
+                        </TableRow>
+                      );
+                    })
+                  : null}
+              </TableBody>
+            </Table>
+          </div>
+
+          <MobileCardList aria-label="Empresas cadastradas">
+            {isLoading ? (
+              <MobileCardSkeletons />
+            ) : companies.length === 0 ? (
+              <MobileCardEmpty>Nenhuma empresa cadastrada.</MobileCardEmpty>
+            ) : (
+              companies.map((company) => {
+                const isActive = company.status === "ATIVA";
+
+                return (
+                  <MobileCardListItem key={company.id}>
+                    <MobileCardHeader
+                      title={company.name}
+                      aside={<CompanyStatusBadge status={company.status} />}
+                    />
+                    <MobileCardFields>
+                      <MobileCardField label="Documento">
+                        {company.document ?? "—"}
+                      </MobileCardField>
+                      <MobileCardField label="Cadastrada em">
+                        {company.createdAt
+                          ? formatFileDate(company.createdAt)
+                          : "—"}
+                      </MobileCardField>
+                    </MobileCardFields>
+                    {canUpdate ? (
+                      <MobileCardActions>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          aria-label={`Editar ${company.name}`}
+                          render={
+                            <Link
+                              to="/empresas/$id/editar"
+                              params={{ id: company.id }}
+                            />
+                          }
+                          nativeButton={false}
+                        >
+                          <Pencil aria-hidden />
+                          Editar
+                        </Button>
+                        {/* No toque, o texto deixa explícita a consequência que o ícone sozinho não comunica */}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          aria-label={
+                            isActive
+                              ? `Inativar ${company.name}`
+                              : `Ativar ${company.name}`
+                          }
+                          className={cn(
+                            isActive &&
+                              "text-destructive hover:text-destructive",
+                          )}
+                          onClick={() =>
+                            setStatusToggle({
+                              id: company.id,
+                              name: company.name,
+                              targetStatus: isActive ? "INATIVA" : "ATIVA",
+                            })
+                          }
+                        >
+                          {isActive ? (
+                            <Ban aria-hidden />
+                          ) : (
+                            <CheckCircle aria-hidden />
+                          )}
+                          {isActive ? "Inativar" : "Ativar"}
+                        </Button>
+                      </MobileCardActions>
+                    ) : null}
+                  </MobileCardListItem>
+                );
+              })
+            )}
+          </MobileCardList>
         </CardContent>
       </Card>
 

@@ -11,8 +11,21 @@ import { PermissionCodes } from "@/features/auth/constants/permissions";
 import { useCan } from "@/features/auth/hooks/use-can";
 import type {
   AutomationRuntime,
+  AutomationStatus,
   ExecutionListItem,
 } from "@/features/automations/types/automation";
+import { cn } from "@/lib/utils";
+
+// Abaixo de xl a ação principal ganha peso visual conforme a consequência:
+// retomar/reiniciar = primária, pausar = secundária, demais = outline.
+const MOBILE_ACTION_EMPHASIS: Partial<Record<AutomationStatus, string>> = {
+  paused:
+    "max-xl:border-transparent max-xl:bg-primary max-xl:text-primary-foreground max-xl:hover:bg-primary/90 max-xl:hover:text-primary-foreground",
+  completed:
+    "max-xl:border-transparent max-xl:bg-primary max-xl:text-primary-foreground max-xl:hover:bg-primary/90 max-xl:hover:text-primary-foreground",
+  running:
+    "max-xl:border-transparent max-xl:bg-secondary max-xl:text-secondary-foreground max-xl:hover:bg-accent",
+};
 
 type AutomationCardHeaderProps = {
   execution: ExecutionListItem;
@@ -33,23 +46,31 @@ export function AutomationCardHeader({
   const ProgressBarColor = config.progressBarColor;
 
   return (
-    <div className="relative px-6 py-4">
-      <div className="flex items-center gap-4">
-        <div className="flex w-55 shrink-0 flex-col gap-1">
-          <h3 className="truncate font-medium text-foreground">
+    <div className="relative px-6 py-4 max-md:px-4">
+      <div className="flex items-center gap-4 max-md:flex-wrap max-md:gap-x-2 max-md:gap-y-3">
+        <div className="flex w-55 shrink-0 flex-col gap-1 max-md:order-1 max-md:w-auto max-md:min-w-0 max-md:flex-1">
+          <h3
+            className="truncate font-medium text-foreground"
+            title={execution.name}
+          >
             {execution.name}
           </h3>
           <AutomationStatusBadge status={runtime.status} />
         </div>
 
-        <AutomationCardAlert status={runtime.status} runtime={runtime} />
+        <AutomationCardAlert
+          status={runtime.status}
+          runtime={runtime}
+          className="max-md:order-3 max-md:basis-full"
+        />
 
-        <div className="flex w-40 shrink-0 items-center justify-end gap-2">
+        <div className="flex w-40 shrink-0 items-center justify-end gap-2 max-xl:w-auto max-md:contents">
           {canEdit ? (
             <Button
               variant="ghost"
               size="icon-sm"
               aria-label="Editar automação"
+              className="max-md:order-2"
               render={
                 <Link
                   to="/automacoes/$id/editar"
@@ -67,7 +88,8 @@ export function AutomationCardHeader({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Expandir card"
+                aria-label="Expandir ou recolher detalhes"
+                className="max-md:order-2"
               />
             }
           >
@@ -80,7 +102,10 @@ export function AutomationCardHeader({
             onClick={onAction}
             disabled={isActionPending}
             loading={isActionPending}
-            className={"w-28"}
+            className={cn(
+              "w-28 max-md:order-4 max-md:w-full max-md:basis-full",
+              MOBILE_ACTION_EMPHASIS[runtime.status],
+            )}
           >
             <ActionIcon aria-hidden />
             {config.action.label}

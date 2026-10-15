@@ -237,8 +237,8 @@ export function AutomationCard({ execution }: AutomationCardProps) {
 
   const isIdle = runtime.status === "idle" && !executeMutation.isPending;
   const contentLayoutClassName = isIdle
-    ? "flex flex-col gap-4 lg:flex-row lg:flex-wrap"
-    : "flex flex-col gap-4 lg:flex-row lg:flex-nowrap";
+    ? "flex flex-col gap-4 xl:flex-row xl:flex-wrap"
+    : "flex flex-col gap-4 xl:flex-row xl:flex-nowrap";
 
   return (
     <Collapsible
@@ -258,9 +258,9 @@ export function AutomationCard({ execution }: AutomationCardProps) {
         className="h-(--collapsible-panel-height) overflow-hidden transition-[height] duration-200 ease-out data-starting-style:h-0 data-ending-style:h-0 [&[hidden]:not([hidden='until-found'])]:hidden"
       >
         <CardContent
-          className={`border-t border-border py-6 ${contentLayoutClassName} ${isIdle ? "" : "lg:items-stretch"}`}
+          className={`border-t border-border py-6 max-md:px-4 ${contentLayoutClassName} ${isIdle ? "" : "xl:items-stretch"}`}
         >
-          <div className="min-w-0 shrink-0 lg:w-55 lg:self-stretch">
+          <div className="min-w-0 shrink-0 xl:w-55 xl:self-stretch">
             <AutomationCardMetadata
               categorySlug={execution.categorySlug}
               categoryLabel={execution.categoryLabel}
@@ -270,18 +270,18 @@ export function AutomationCard({ execution }: AutomationCardProps) {
 
           {isIdle ? (
             <>
-              <div className="min-w-0 flex-1 border-l border-border pl-4">
+              <div className="min-w-0 flex-1 border-l border-border pl-4 max-xl:border-t max-xl:border-l-0 max-xl:pt-4 max-xl:pl-0">
                 <AutomationIdleForm
                   fields={execution.fields}
                   isSubmitting={executeMutation.isPending}
                   onStart={handleStart}
                 />
               </div>
-              <div className="min-w-0 shrink-0 lg:w-55 lg:self-stretch"></div>
+              <div className="min-w-0 shrink-0 max-xl:hidden xl:w-55 xl:self-stretch"></div>
             </>
           ) : (
             <>
-              <div className="min-w-0 flex-1 lg:border-x lg:border-border lg:px-4">
+              <div className="min-w-0 flex-1 max-xl:border-t max-xl:border-border max-xl:pt-4 xl:border-x xl:border-border xl:px-4">
                 <AutomationExecutionMonitor
                   processed={runtime.processed}
                   total={runtime.total}
@@ -289,7 +289,7 @@ export function AutomationCard({ execution }: AutomationCardProps) {
                   status={runtime.status}
                 />
               </div>
-              <div className="min-w-0 shrink-0 lg:w-55 lg:self-stretch">
+              <div className="min-w-0 shrink-0 max-xl:border-t max-xl:border-border max-xl:pt-4 xl:w-55 xl:self-stretch">
                 <AutomationSubmittedData
                   status={runtime.status}
                   submittedValues={runtime.submittedValues}

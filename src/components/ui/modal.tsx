@@ -60,7 +60,10 @@ function ModalFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="modal-footer"
-      className={cn("flex justify-end gap-2.5", className)}
+      className={cn(
+        "flex justify-end gap-2.5 max-sm:flex-col-reverse max-sm:*:w-full",
+        className,
+      )}
       {...props}
     />
   );
@@ -196,7 +199,10 @@ function AppModalBlockingContent({
 
       {children}
 
-      <div data-slot="modal-footer" className="flex justify-end gap-2.5">
+      <div
+        data-slot="modal-footer"
+        className="flex justify-end gap-2.5 max-sm:flex-col-reverse max-sm:*:w-full"
+      >
         {variant === "confirmation" || variant === "modal" ? (
           <AlertDialogPrimitive.Close
             data-slot="modal-cancel"

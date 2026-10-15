@@ -244,7 +244,7 @@ export function AutomationIdleForm({
 
   return (
     <form
-      className="w-112 mx-auto space-y-6"
+      className="w-112 mx-auto space-y-6 max-xl:w-full max-xl:max-w-xl"
       onSubmit={handleSubmit(handleStart)}
     >
       <div className="space-y-1">
@@ -280,17 +280,28 @@ export function AutomationIdleForm({
         ))}
       </div>
 
-      <div className="flex">
+      <div className="flex flex-col gap-2">
         <Button
           type="submit"
           size="sm"
           loading={isSubmitting}
           disabled={isSubmitting || isLoadingSheets}
-          className="w-full"
+          aria-describedby={
+            isLoadingSheets ? "automation-start-disabled-hint" : undefined
+          }
+          className="w-full max-xl:h-11"
         >
           <Play aria-hidden />
           Iniciar
         </Button>
+        {isLoadingSheets ? (
+          <p
+            id="automation-start-disabled-hint"
+            className="text-center text-xs text-muted-foreground xl:sr-only"
+          >
+            Aguarde a identificação das abas da planilha para iniciar.
+          </p>
+        ) : null}
       </div>
     </form>
   );

@@ -157,7 +157,7 @@ export function CreateUserForm() {
             <FieldError errors={[errors.roleId]} />
           </Field>
 
-          <Field orientation="vertical" className="gap-2">
+          <Field orientation="vertical" className="gap-2 md:max-xl:col-span-2">
             <FieldLabel htmlFor="user-company">Empresa</FieldLabel>
             <Controller
               control={control}
@@ -200,7 +200,7 @@ export function CreateUserForm() {
             <FieldError errors={[errors.companyIds]} />
           </Field>
 
-          <div className="flex items-end justify-end md:col-span-2 xl:col-span-5">
+          <div className="flex items-end justify-end md:col-span-2 xl:col-span-5 max-md:*:w-full">
             <Button type="submit" loading={createUser.isPending}>
               Criar usuário
             </Button>

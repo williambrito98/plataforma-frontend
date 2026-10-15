@@ -72,7 +72,7 @@ export function AuditLogsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         <div className="space-y-2">
           <label className="text-sm font-medium" htmlFor="audit-company-filter">
             Empresa

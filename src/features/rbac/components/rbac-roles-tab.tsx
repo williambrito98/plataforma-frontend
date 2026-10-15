@@ -41,11 +41,11 @@ export function RbacRolesTab() {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-5">
-        <div className="md:col-span-3">
+      <div className="grid gap-6 xl:grid-cols-5">
+        <div className="xl:col-span-3">
           <CreateRoleForm />
         </div>
-        <div className="md:col-span-2">
+        <div className="xl:col-span-2">
           <RolePermissionsEditor roles={roles} permissions={permissions} />
         </div>
       </div>

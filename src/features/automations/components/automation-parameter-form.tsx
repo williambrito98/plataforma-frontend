@@ -210,7 +210,7 @@ export function AutomationParameterForm({
 
   return (
     <div className="space-y-3 rounded-lg bg-muted/30 p-4">
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
         <Field orientation="vertical" className="gap-2">
           <FieldLabel htmlFor="parameter-name" className="text-sm font-medium">
             Nome do parâmetro

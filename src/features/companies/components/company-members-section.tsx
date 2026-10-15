@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Trash2, Users } from "lucide-react";
 
+import {
+  MobileCardActions,
+  MobileCardHeader,
+  MobileCardList,
+  MobileCardListItem,
+} from "@/components/mobile-card-list";
 import { AppModal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import {
@@ -198,31 +204,64 @@ export function CompanyMembersSection({
               Nenhum usuário vinculado a esta empresa.
             </p>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>E-mail</TableHead>
-                  {canListUsers ? (
-                    <TableHead className="text-right">Ações</TableHead>
-                  ) : null}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              <div className="max-md:hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome</TableHead>
+                      <TableHead>E-mail</TableHead>
+                      {canListUsers ? (
+                        <TableHead className="text-right">Ações</TableHead>
+                      ) : null}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {members.map((member) => (
+                      <TableRow key={member.id}>
+                        <TableCell className="text-foreground">
+                          {member.name}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {member.email}
+                        </TableCell>
+                        {canListUsers ? (
+                          <TableCell className="text-right">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-label={`Desvincular ${member.name}`}
+                              className="text-destructive hover:text-destructive"
+                              onClick={() =>
+                                setMemberToRemove({
+                                  id: member.id,
+                                  name: member.name,
+                                })
+                              }
+                            >
+                              <Trash2 aria-hidden />
+                            </Button>
+                          </TableCell>
+                        ) : null}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              <MobileCardList aria-label="Usuários vinculados">
                 {members.map((member) => (
-                  <TableRow key={member.id}>
-                    <TableCell className="text-foreground">
-                      {member.name}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {member.email}
-                    </TableCell>
+                  <MobileCardListItem key={member.id}>
+                    <MobileCardHeader
+                      title={member.name}
+                      subtitle={member.email}
+                    />
                     {canListUsers ? (
-                      <TableCell className="text-right">
+                      <MobileCardActions>
                         <Button
                           type="button"
-                          variant="ghost"
-                          size="icon-sm"
+                          variant="outline"
                           aria-label={`Desvincular ${member.name}`}
                           className="text-destructive hover:text-destructive"
                           onClick={() =>
@@ -233,13 +272,14 @@ export function CompanyMembersSection({
                           }
                         >
                           <Trash2 aria-hidden />
+                          Desvincular
                         </Button>
-                      </TableCell>
+                      </MobileCardActions>
                     ) : null}
-                  </TableRow>
+                  </MobileCardListItem>
                 ))}
-              </TableBody>
-            </Table>
+              </MobileCardList>
+            </>
           )}
         </CardContent>
       </Card>

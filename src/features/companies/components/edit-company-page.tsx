@@ -174,7 +174,8 @@ export function EditCompanyPage({ companyId }: EditCompanyPageProps) {
 
       <CompanyMembersSection companyId={companyId} />
 
-      <div className="flex justify-end gap-2">
+      {/* Abaixo de md as ações ficam fixas no rodapé, sempre visíveis */}
+      <div className="flex justify-end gap-2 max-md:sticky max-md:bottom-0 max-md:z-10 max-md:-mx-4 max-md:border-t max-md:border-border max-md:bg-background/95 max-md:px-4 max-md:py-3 max-md:backdrop-blur max-md:*:h-11 max-md:*:flex-1">
         <Button
           type="button"
           variant="outline"

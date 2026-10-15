@@ -64,7 +64,9 @@ function DiffTable({ diff }: { diff: Record<string, AuditDiffEntry> }) {
         <TableBody>
           {entries.map(([field, entry]) => (
             <TableRow key={field}>
-              <TableCell className="font-mono text-xs">{field}</TableCell>
+              <TableCell className="font-mono text-xs max-xl:break-all max-xl:whitespace-normal">
+                {field}
+              </TableCell>
               <TableCell className="max-w-40 whitespace-pre-wrap break-all text-xs">
                 {formatAuditValue(entry.from)}
               </TableCell>

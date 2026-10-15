@@ -1,3 +1,5 @@
+import { ChevronDown } from "lucide-react";
+
 import { CollapsibleTrigger } from "@/components/ui/collapsible";
 import { AUTOMATION_STATUS_CONFIG } from "@/features/automations/config/automation-status";
 import type {
@@ -75,7 +77,7 @@ export function AutomationCardAlert({
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-1 items-start gap-3 border-l border-border pl-4",
+        "flex min-w-0 flex-1 items-start gap-3 border-l border-border pl-4 max-md:border-t max-md:border-l-0 max-md:pt-3 max-md:pl-0",
         className,
       )}
     >
@@ -96,11 +98,16 @@ export function AutomationCardAlert({
           render={
             <button
               type="button"
-              className="truncate text-left text-sm text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+              className="truncate text-left text-sm text-muted-foreground transition-colors hover:text-foreground cursor-pointer max-xl:flex max-xl:max-w-full max-xl:items-center max-xl:min-h-10 max-xl:gap-1 max-xl:py-2 max-xl:underline max-xl:underline-offset-4"
             ></button>
           }
         >
-          {subtitle}
+          <span className="max-xl:truncate">{subtitle}</span>
+          {/* Pista visual de que o texto expande os detalhes (sem hover no toque) */}
+          <ChevronDown
+            aria-hidden
+            className="size-3.5 shrink-0 transition-transform group-data-open/card:rotate-180 xl:hidden"
+          />
         </CollapsibleTrigger>
       </div>
     </div>

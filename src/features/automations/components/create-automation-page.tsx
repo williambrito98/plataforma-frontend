@@ -73,15 +73,23 @@ export function CreateAutomationPage() {
           </CardContent>
         </Card>
 
-        <Button
-          type="submit"
-          form={formId}
-          loading={createAutomation.isPending}
-          disabled={parameters.length === 0}
-          className="ml-auto grid justify-self-end"
-        >
-          Criar automação
-        </Button>
+        {/* Abaixo de md a ação principal fica fixa no rodapé, sempre visível */}
+        <div className="space-y-2 max-md:sticky max-md:bottom-0 max-md:z-10 max-md:-mx-4 max-md:border-t max-md:border-border max-md:bg-background/95 max-md:px-4 max-md:py-3 max-md:backdrop-blur">
+          {parameters.length === 0 ? (
+            <p className="text-right text-xs text-muted-foreground xl:hidden">
+              Adicione ao menos um parâmetro para criar a automação.
+            </p>
+          ) : null}
+          <Button
+            type="submit"
+            form={formId}
+            loading={createAutomation.isPending}
+            disabled={parameters.length === 0}
+            className="ml-auto grid justify-self-end max-md:h-11"
+          >
+            Criar automação
+          </Button>
+        </div>
       </div>
     </div>
   );

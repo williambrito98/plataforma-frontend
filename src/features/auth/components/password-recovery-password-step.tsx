@@ -11,7 +11,7 @@ import {
 } from "@/features/auth/schemas/password-recovery-schema";
 
 const inputClassName =
-  "h-8 border-border bg-secondary px-3 shadow-none rounded-md";
+  "h-8 border-border bg-secondary px-3 shadow-none rounded-md max-xl:h-11";
 
 type PasswordRecoveryPasswordStepProps = {
   loading?: boolean;
@@ -86,14 +86,20 @@ export function PasswordRecoveryPasswordStep({
         <FieldError errors={[errors.confirmPassword]} />
       </Field>
 
-      <div className="flex w-full items-center justify-between">
+      <div className="flex w-full items-center justify-between max-sm:flex-col-reverse max-sm:items-stretch max-sm:gap-2 max-sm:text-center">
         <Link
           to="/login"
-          className="text-sm leading-5 text-[#737373] hover:underline"
+          className="text-sm leading-5 text-[#737373] hover:underline max-xl:py-2.5 max-xl:text-muted-foreground max-xl:underline max-xl:underline-offset-4"
         >
           Voltar ao login
         </Link>
-        <Button size="sm" type="submit" loading={loading} disabled={loading}>
+        <Button
+          size="sm"
+          type="submit"
+          loading={loading}
+          disabled={loading}
+          className="max-xl:h-11"
+        >
           Redefinir senha
         </Button>
       </div>

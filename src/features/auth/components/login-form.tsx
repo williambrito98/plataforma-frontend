@@ -11,7 +11,7 @@ import {
 } from "@/features/auth/schemas/login-schema";
 
 const inputClassName =
-  "h-8 border-border bg-secondary px-3 shadow-none rounded-md";
+  "h-8 border-border bg-secondary px-3 shadow-none rounded-md max-xl:h-11";
 
 export function LoginForm() {
   const loginMutation = useLogin();

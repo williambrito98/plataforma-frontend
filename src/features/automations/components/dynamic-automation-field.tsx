@@ -45,7 +45,7 @@ import {
   isSpreadsheetFile,
 } from "@/features/automations/utils/spreadsheet-file";
 import { cn } from "@/lib/utils";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, Download } from "lucide-react";
 
 const inputClassName =
   "h-8 border-border bg-secondary px-3 shadow-none rounded-md";
@@ -269,7 +269,7 @@ export function DynamicAutomationField<T extends FieldValues>({
                         <label
                           key={option.value}
                           htmlFor={`${parameter.name}-${option.value}`}
-                          className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted"
+                          className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted max-xl:py-2.5"
                         >
                           <Checkbox
                             id={`${parameter.name}-${option.value}`}
@@ -394,15 +394,18 @@ export function DynamicAutomationField<T extends FieldValues>({
       return (
         <Field orientation="vertical" className="gap-2">
           <div className="flex items-center justify-between gap-2">
-            <FieldLabel htmlFor={parameter.name}>{parameter.label}</FieldLabel>
+            <FieldLabel htmlFor={parameter.name} className="min-w-0">
+              {parameter.label}
+            </FieldLabel>
             {parameter.templateFile ? (
               <button
                 type="button"
                 onClick={() =>
                   downloadTemplateFile(parameter.templateFile!.token)
                 }
-                className="shrink-0 text-xs text-primary hover:underline"
+                className="shrink-0 text-xs text-primary hover:underline max-xl:inline-flex max-xl:items-center max-xl:gap-1 max-xl:rounded-md max-xl:px-2 max-xl:py-2 max-xl:-mr-2 max-xl:underline max-xl:underline-offset-4"
               >
+                <Download aria-hidden className="size-3.5 xl:hidden" />
                 Baixar modelo
               </button>
             ) : null}

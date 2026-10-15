@@ -1,6 +1,16 @@
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 
+import {
+  MobileCardActions,
+  MobileCardEmpty,
+  MobileCardField,
+  MobileCardFields,
+  MobileCardHeader,
+  MobileCardList,
+  MobileCardListItem,
+  MobileCardSkeletons,
+} from "@/components/mobile-card-list";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -110,153 +120,255 @@ export function CategoriesTable({
           </CardTitle>
         </CardHeader>
         <CardContent className="overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Criado em</TableHead>
-                {showActions ? (
-                  <TableHead className="text-right">Ações</TableHead>
-                ) : null}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                Array.from({ length: SKELETON_ROW_COUNT }, (_, index) => {
-                  const isLastRow = index === SKELETON_ROW_COUNT - 1;
-
-                  return (
-                    <TableRow
-                      key={index}
-                      className={cn(
-                        "border-border hover:bg-transparent",
-                        isLastRow && "border-0",
-                      )}
-                    >
-                      <TableCell className="px-3 py-2.5">
-                        <Skeleton className="h-4 w-40" />
-                      </TableCell>
-                      <TableCell className="px-3 py-2.5">
-                        <Skeleton className="h-4 w-28" />
-                      </TableCell>
-                      {showActions ? (
-                        <TableCell className="px-3 py-2.5">
-                          <div className="flex justify-end gap-1">
-                            <Skeleton className="size-8 rounded-md" />
-                            <Skeleton className="size-8 rounded-md" />
-                          </div>
-                        </TableCell>
-                      ) : null}
-                    </TableRow>
-                  );
-                })
-              ) : categories.length === 0 ? (
+          <div className="max-md:hidden">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    colSpan={columnCount}
-                    className="text-muted-foreground"
-                  >
-                    Nenhuma categoria encontrada.
-                  </TableCell>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Criado em</TableHead>
+                  {showActions ? (
+                    <TableHead className="text-right">Ações</TableHead>
+                  ) : null}
                 </TableRow>
-              ) : (
-                categories.map((category) => {
-                  const isEditing = editingId === category.id;
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  Array.from({ length: SKELETON_ROW_COUNT }, (_, index) => {
+                    const isLastRow = index === SKELETON_ROW_COUNT - 1;
 
-                  return (
-                    <TableRow key={category.id}>
-                      <TableCell className="text-foreground">
-                        {isEditing ? (
-                          <div className="space-y-1">
-                            <Input
-                              value={editedName}
-                              onChange={(event) => {
-                                setEditedName(event.target.value);
-                                setEditError(null);
-                              }}
-                              aria-invalid={!!editError}
-                              className={inputClassName}
-                              autoFocus
-                            />
-                            {editError ? (
-                              <p className="text-xs text-destructive">
-                                {editError}
-                              </p>
-                            ) : null}
-                          </div>
-                        ) : (
-                          category.name
+                    return (
+                      <TableRow
+                        key={index}
+                        className={cn(
+                          "border-border hover:bg-transparent",
+                          isLastRow && "border-0",
                         )}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
+                      >
+                        <TableCell className="px-3 py-2.5">
+                          <Skeleton className="h-4 w-40" />
+                        </TableCell>
+                        <TableCell className="px-3 py-2.5">
+                          <Skeleton className="h-4 w-28" />
+                        </TableCell>
+                        {showActions ? (
+                          <TableCell className="px-3 py-2.5">
+                            <div className="flex justify-end gap-1">
+                              <Skeleton className="size-8 rounded-md" />
+                              <Skeleton className="size-8 rounded-md" />
+                            </div>
+                          </TableCell>
+                        ) : null}
+                      </TableRow>
+                    );
+                  })
+                ) : categories.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columnCount}
+                      className="text-muted-foreground"
+                    >
+                      Nenhuma categoria encontrada.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  categories.map((category) => {
+                    const isEditing = editingId === category.id;
+
+                    return (
+                      <TableRow key={category.id}>
+                        <TableCell className="text-foreground">
+                          {isEditing ? (
+                            <div className="space-y-1">
+                              <Input
+                                value={editedName}
+                                onChange={(event) => {
+                                  setEditedName(event.target.value);
+                                  setEditError(null);
+                                }}
+                                aria-invalid={!!editError}
+                                className={inputClassName}
+                                autoFocus
+                              />
+                              {editError ? (
+                                <p className="text-xs text-destructive">
+                                  {editError}
+                                </p>
+                              ) : null}
+                            </div>
+                          ) : (
+                            category.name
+                          )}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {category.createdAt
+                            ? formatFileDate(category.createdAt)
+                            : "—"}
+                        </TableCell>
+                        {showActions ? (
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-1">
+                              {isEditing ? (
+                                <>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={updateCategory.isPending}
+                                    onClick={cancelEditing}
+                                  >
+                                    Cancelar
+                                  </Button>
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    loading={updateCategory.isPending}
+                                    onClick={() => saveEditing(category.id)}
+                                  >
+                                    Salvar
+                                  </Button>
+                                </>
+                              ) : (
+                                <>
+                                  {canUpdate ? (
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="icon-sm"
+                                      aria-label={`Editar ${category.name}`}
+                                      onClick={() => startEditing(category)}
+                                    >
+                                      <Pencil aria-hidden />
+                                    </Button>
+                                  ) : null}
+                                  {canDelete ? (
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="icon-sm"
+                                      aria-label={`Excluir ${category.name}`}
+                                      className="text-destructive hover:text-destructive"
+                                      onClick={() =>
+                                        setCategoryToDelete({
+                                          id: category.id,
+                                          name: category.name,
+                                        })
+                                      }
+                                    >
+                                      <Trash2 aria-hidden />
+                                    </Button>
+                                  ) : null}
+                                </>
+                              )}
+                            </div>
+                          </TableCell>
+                        ) : null}
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          <MobileCardList aria-label="Categorias cadastradas">
+            {isLoading ? (
+              <MobileCardSkeletons />
+            ) : categories.length === 0 ? (
+              <MobileCardEmpty>Nenhuma categoria encontrada.</MobileCardEmpty>
+            ) : (
+              categories.map((category) => {
+                const isEditing = editingId === category.id;
+
+                return (
+                  <MobileCardListItem key={category.id}>
+                    {isEditing ? (
+                      <div className="space-y-1">
+                        <Input
+                          value={editedName}
+                          onChange={(event) => {
+                            setEditedName(event.target.value);
+                            setEditError(null);
+                          }}
+                          aria-label="Nome da categoria"
+                          aria-invalid={!!editError}
+                          className={inputClassName}
+                          autoFocus
+                        />
+                        {editError ? (
+                          <p className="text-xs text-destructive">
+                            {editError}
+                          </p>
+                        ) : null}
+                      </div>
+                    ) : (
+                      <MobileCardHeader title={category.name} />
+                    )}
+                    <MobileCardFields>
+                      <MobileCardField label="Criado em">
                         {category.createdAt
                           ? formatFileDate(category.createdAt)
                           : "—"}
-                      </TableCell>
-                      {showActions ? (
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-1">
-                            {isEditing ? (
-                              <>
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  disabled={updateCategory.isPending}
-                                  onClick={cancelEditing}
-                                >
-                                  Cancelar
-                                </Button>
-                                <Button
-                                  type="button"
-                                  size="sm"
-                                  loading={updateCategory.isPending}
-                                  onClick={() => saveEditing(category.id)}
-                                >
-                                  Salvar
-                                </Button>
-                              </>
-                            ) : (
-                              <>
-                                {canUpdate ? (
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon-sm"
-                                    aria-label={`Editar ${category.name}`}
-                                    onClick={() => startEditing(category)}
-                                  >
-                                    <Pencil aria-hidden />
-                                  </Button>
-                                ) : null}
-                                {canDelete ? (
-                                  <Button
-                                    type="button"
-                                    variant="ghost"
-                                    size="icon-sm"
-                                    aria-label={`Excluir ${category.name}`}
-                                    className="text-destructive hover:text-destructive"
-                                    onClick={() =>
-                                      setCategoryToDelete({
-                                        id: category.id,
-                                        name: category.name,
-                                      })
-                                    }
-                                  >
-                                    <Trash2 aria-hidden />
-                                  </Button>
-                                ) : null}
-                              </>
-                            )}
-                          </div>
-                        </TableCell>
-                      ) : null}
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
+                      </MobileCardField>
+                    </MobileCardFields>
+                    {showActions ? (
+                      <MobileCardActions>
+                        {isEditing ? (
+                          <>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              disabled={updateCategory.isPending}
+                              onClick={cancelEditing}
+                            >
+                              Cancelar
+                            </Button>
+                            <Button
+                              type="button"
+                              loading={updateCategory.isPending}
+                              onClick={() => saveEditing(category.id)}
+                            >
+                              Salvar
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            {canUpdate ? (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                aria-label={`Editar ${category.name}`}
+                                onClick={() => startEditing(category)}
+                              >
+                                <Pencil aria-hidden />
+                                Editar
+                              </Button>
+                            ) : null}
+                            {canDelete ? (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                aria-label={`Excluir ${category.name}`}
+                                className="text-destructive hover:text-destructive"
+                                onClick={() =>
+                                  setCategoryToDelete({
+                                    id: category.id,
+                                    name: category.name,
+                                  })
+                                }
+                              >
+                                <Trash2 aria-hidden />
+                                Excluir
+                              </Button>
+                            ) : null}
+                          </>
+                        )}
+                      </MobileCardActions>
+                    ) : null}
+                  </MobileCardListItem>
+                );
+              })
+            )}
+          </MobileCardList>
         </CardContent>
       </Card>
 

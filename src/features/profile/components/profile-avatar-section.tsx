@@ -4,6 +4,7 @@ import { User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { alertToast } from "@/components/ui/sonner";
+import { cn } from "@/lib/utils";
 
 const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg"] as const;
 
@@ -11,12 +12,15 @@ type ProfileAvatarSectionProps = {
   name: string;
   avatar?: string;
   onPhotoUpload: (file: File) => Promise<void>;
+  /** Reduz a foto no celular (ex.: dentro de sheets). */
+  compact?: boolean;
 };
 
 export function ProfileAvatarSection({
   name,
   avatar,
   onPhotoUpload,
+  compact = false,
 }: ProfileAvatarSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -52,7 +56,10 @@ export function ProfileAvatarSection({
   return (
     <div className="flex flex-col items-center gap-4">
       <div
-        className="group relative inline-block size-48 cursor-pointer xl:size-64"
+        className={cn(
+          "group relative inline-block size-48 cursor-pointer xl:size-64",
+          compact && "max-md:size-32",
+        )}
         onClick={handlePickPhoto}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {
@@ -77,8 +84,9 @@ export function ProfileAvatarSection({
           </AvatarFallback>
         </Avatar>
 
-        <div className="absolute inset-0 flex items-center justify-center rounded-md bg-black/0 transition-colors group-hover:bg-black/50">
-          <span className="text-sm text-primary-foreground opacity-0 transition-opacity group-hover:opacity-100">
+        {/* Em telas de toque (sem hover) a dica fica sempre visível na base da foto */}
+        <div className="absolute inset-0 flex items-center justify-center rounded-md bg-black/0 transition-colors group-hover:bg-black/50 max-xl:pointer-coarse:items-end max-xl:pointer-coarse:bg-linear-to-t max-xl:pointer-coarse:from-black/60 max-xl:pointer-coarse:to-transparent max-xl:pointer-coarse:pb-3">
+          <span className="text-sm text-primary-foreground opacity-0 transition-opacity group-hover:opacity-100 max-xl:pointer-coarse:opacity-100">
             {isUploading ? "Enviando..." : "Escolher foto"}
           </span>
         </div>
@@ -95,7 +103,10 @@ export function ProfileAvatarSection({
       <Button
         variant="link"
         type="button"
-        className="mt-2 inline-block w-48 text-center text-sm xl:w-64"
+        className={cn(
+          "mt-2 inline-block w-48 text-center text-sm xl:w-64",
+          compact && "max-md:mt-0 max-md:w-32",
+        )}
         onClick={handlePickPhoto}
         disabled={isUploading}
       >

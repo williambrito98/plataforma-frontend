@@ -1,4 +1,9 @@
-import { EyeIcon } from "lucide-react";
+import { ChevronRight, EyeIcon } from "lucide-react";
+
+import {
+  MobileCardList,
+  MobileCardSkeletons,
+} from "@/components/mobile-card-list";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,7 +49,10 @@ export function AuditLogsTable({
           <CardTitle>Logs de auditoria</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
+          <MobileCardList>
+            <MobileCardSkeletons />
+          </MobileCardList>
+          <div className="space-y-3 max-md:hidden">
             {Array.from({ length: SKELETON_ROW_COUNT }).map((_, index) => (
               <div
                 key={index}
@@ -68,70 +76,122 @@ export function AuditLogsTable({
             Nenhum log encontrado para os filtros selecionados.
           </p>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Data/hora</TableHead>
-                <TableHead>Usuário</TableHead>
-                <TableHead>Empresa</TableHead>
-                <TableHead>Ação</TableHead>
-                <TableHead>Entidade</TableHead>
-                <TableHead className="text-right">Detalhes</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          <>
+            <div className="max-md:hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Data/hora</TableHead>
+                    <TableHead>Usuário</TableHead>
+                    <TableHead>Empresa</TableHead>
+                    <TableHead>Ação</TableHead>
+                    <TableHead>Entidade</TableHead>
+                    <TableHead className="text-right">Detalhes</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {logs.map((log) => {
+                    const variant = actionVariant(log.action);
+
+                    return (
+                      <TableRow key={log.id}>
+                        <TableCell className="whitespace-nowrap">
+                          {formatFileDate(log.createdAt)}
+                        </TableCell>
+                        <TableCell>
+                          {log.user ? (
+                            <div className="flex flex-col">
+                              <span className="font-medium">
+                                {log.user.name}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {log.user.email}
+                              </span>
+                            </div>
+                          ) : (
+                            "—"
+                          )}
+                        </TableCell>
+                        <TableCell>{log.company?.name ?? "—"}</TableCell>
+                        <TableCell>
+                          <Badge variant={variant} category={variant}>
+                            {formatAuditAction(log.action)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span>{formatAuditEntityType(log.entityType)}</span>
+                            {log.entityId ? (
+                              <span className="text-xs text-muted-foreground">
+                                #{log.entityId}
+                              </span>
+                            ) : null}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            aria-label={`Ver detalhes: ${formatAuditAction(log.action)} em ${formatAuditEntityType(log.entityType)}`}
+                            onClick={() => onViewDetails(log)}
+                          >
+                            <EyeIcon className="size-4" />
+                            Ver
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+
+            <MobileCardList aria-label="Logs de auditoria">
               {logs.map((log) => {
                 const variant = actionVariant(log.action);
 
                 return (
-                  <TableRow key={log.id}>
-                    <TableCell className="whitespace-nowrap">
-                      {formatFileDate(log.createdAt)}
-                    </TableCell>
-                    <TableCell>
-                      {log.user ? (
-                        <div className="flex flex-col">
-                          <span className="font-medium">{log.user.name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {log.user.email}
+                  <li key={log.id}>
+                    {/* O card inteiro é o alvo de toque; o chevron indica que abre detalhes */}
+                    <button
+                      type="button"
+                      onClick={() => onViewDetails(log)}
+                      aria-label={`Ver detalhes: ${formatAuditAction(log.action)} em ${formatAuditEntityType(log.entityType)}`}
+                      className="flex w-full items-center gap-3 rounded-lg border border-border bg-background p-4 text-left transition-colors active:bg-muted"
+                    >
+                      <div className="min-w-0 flex-1 space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge variant={variant} category={variant}>
+                            {formatAuditAction(log.action)}
+                          </Badge>
+                          <span className="text-sm font-medium text-foreground">
+                            {formatAuditEntityType(log.entityType)}
                           </span>
+                          {log.entityId ? (
+                            <span className="text-xs wrap-anywhere text-muted-foreground">
+                              #{log.entityId}
+                            </span>
+                          ) : null}
                         </div>
-                      ) : (
-                        "—"
-                      )}
-                    </TableCell>
-                    <TableCell>{log.company?.name ?? "—"}</TableCell>
-                    <TableCell>
-                      <Badge variant={variant} category={variant}>
-                        {formatAuditAction(log.action)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-col">
-                        <span>{formatAuditEntityType(log.entityType)}</span>
-                        {log.entityId ? (
-                          <span className="text-xs text-muted-foreground">
-                            #{log.entityId}
-                          </span>
-                        ) : null}
+                        <p className="text-sm wrap-anywhere text-muted-foreground">
+                          {log.user ? log.user.name : "—"}
+                          {log.company ? ` · ${log.company.name}` : ""}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatFileDate(log.createdAt)}
+                        </p>
                       </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onViewDetails(log)}
-                      >
-                        <EyeIcon className="size-4" />
-                        Ver
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                      <ChevronRight
+                        aria-hidden
+                        className="size-5 shrink-0 text-muted-foreground"
+                      />
+                    </button>
+                  </li>
                 );
               })}
-            </TableBody>
-          </Table>
+            </MobileCardList>
+          </>
         )}
       </CardContent>
     </Card>

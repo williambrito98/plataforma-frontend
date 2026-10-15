@@ -78,11 +78,11 @@ export function CompanyAutomationsSection({
         ) : null}
 
         {!isAutomationsLoading && automations.length > 0 ? (
-          <div className="max-h-80 space-y-3 overflow-auto rounded-md border border-border p-4">
+          <div className="max-h-80 space-y-3 overflow-auto rounded-md border border-border p-4 max-md:max-h-none max-md:space-y-1 max-md:p-2">
             {automations.map((automation) => (
               <label
                 key={automation.id}
-                className="flex cursor-pointer items-start gap-3"
+                className="flex cursor-pointer items-start gap-3 max-xl:rounded-md max-xl:py-1 max-md:p-2 max-md:active:bg-muted"
               >
                 <Checkbox
                   checked={selectedAutomationIds.includes(automation.id)}

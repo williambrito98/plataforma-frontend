@@ -1,6 +1,7 @@
 import * as React from "react";
 
-const MOBILE_BREAKPOINT = 768;
+// Abaixo de 1280px (xl) o layout é tratado como mobile/tablet: a sidebar vira drawer.
+const MOBILE_BREAKPOINT = 1280;
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean>(

@@ -180,7 +180,7 @@ export function AssignUserRoleForm() {
             <FieldError errors={[errors.roleId]} />
           </Field>
 
-          <div className="flex justify-end">
+          <div className="flex justify-end max-md:*:w-full">
             <Button
               type="submit"
               loading={setUserRole.isPending}

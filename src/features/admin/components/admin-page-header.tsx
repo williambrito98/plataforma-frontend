@@ -21,7 +21,7 @@ export function AdminPageHeader({ className }: AdminPageHeaderProps) {
   return (
     <div
       className={cn(
-        "flex w-full items-center justify-start gap-4 px-4 py-2",
+        "flex w-full min-w-0 items-center justify-start gap-4 px-4 py-2 max-xl:gap-3 max-xl:px-2",
         className,
       )}
     >

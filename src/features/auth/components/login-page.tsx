@@ -3,7 +3,7 @@ import { LoginIllustrationPanel } from "@/features/auth/components/login-illustr
 
 export function LoginPage() {
   return (
-    <div className="flex min-h-screen bg-secondary">
+    <div className="flex min-h-screen bg-secondary max-xl:min-h-svh">
       <LoginIllustrationPanel />
       <LoginFormPanel />
     </div>

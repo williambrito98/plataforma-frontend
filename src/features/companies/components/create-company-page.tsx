@@ -50,14 +50,17 @@ export function CreateCompanyPage() {
 
       <CompanyBrandingSection value={branding} onChange={setBranding} />
 
-      <Button
-        type="submit"
-        form={formId}
-        loading={createCompany.isPending}
-        className="ml-auto grid justify-self-end"
-      >
-        Cadastrar empresa
-      </Button>
+      {/* Abaixo de md a ação principal fica fixa no rodapé, sempre visível */}
+      <div className="flex flex-col max-md:sticky max-md:bottom-0 max-md:z-10 max-md:-mx-4 max-md:border-t max-md:border-border max-md:bg-background/95 max-md:px-4 max-md:py-3 max-md:backdrop-blur">
+        <Button
+          type="submit"
+          form={formId}
+          loading={createCompany.isPending}
+          className="ml-auto grid justify-self-end max-md:ml-0 max-md:h-11"
+        >
+          Cadastrar empresa
+        </Button>
+      </div>
     </div>
   );
 }

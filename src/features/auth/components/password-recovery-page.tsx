@@ -3,7 +3,7 @@ import { PasswordRecoveryFormPanel } from "@/features/auth/components/password-r
 
 export function PasswordRecoveryPage() {
   return (
-    <div className="flex min-h-screen bg-secondary">
+    <div className="flex min-h-screen bg-secondary max-xl:min-h-svh">
       <LoginIllustrationPanel />
       <PasswordRecoveryFormPanel />
     </div>

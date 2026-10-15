@@ -19,4 +19,18 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    port: 5173,
+    allowedHosts: [
+      ".ngrok-free.app",
+      "unconsociated-paradisaical-olimpia.ngrok-free.dev",
+    ], // Vite bloqueia hosts desconhecidos
+    proxy: {
+      "/api": {
+        target: "http://localhost:8284",
+        changeOrigin: true,
+        cookieDomainRewrite: "", // remove Domain=localhost do Set-Cookie
+      },
+    },
+  },
 });

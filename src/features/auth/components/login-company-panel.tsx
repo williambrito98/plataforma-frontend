@@ -16,7 +16,8 @@ import { LoginLogo } from "@/features/auth/components/login-logo";
 import { getUserCompanies } from "@/features/companies/lib/company-selection";
 import { useCompanyStore } from "@/features/companies/stores/company-store";
 
-const inputClassName = "h-8 border-border bg-secondary shadow-none rounded-md";
+const inputClassName =
+  "h-8 border-border bg-secondary shadow-none rounded-md max-xl:data-[size=default]:h-11 max-xl:data-[size=sm]:h-11";
 
 export function LoginCompanyPanel() {
   const navigate = useNavigate();
@@ -50,8 +51,8 @@ export function LoginCompanyPanel() {
   }
 
   return (
-    <main className="flex flex-1 items-start justify-center overflow-hidden py-24">
-      <div className="flex w-80 flex-col gap-16">
+    <main className="flex flex-1 items-start justify-center overflow-hidden py-24 max-xl:items-center max-xl:px-4 max-xl:py-12">
+      <div className="flex w-full max-w-80 flex-col gap-16 max-xl:gap-10">
         <LoginLogo />
         <div className="flex w-full flex-col gap-6">
           <div className="flex flex-col gap-2">

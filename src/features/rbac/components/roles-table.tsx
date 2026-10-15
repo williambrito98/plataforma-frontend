@@ -1,5 +1,14 @@
 import { useMemo, useState } from "react";
 
+import {
+  MobileCardEmpty,
+  MobileCardField,
+  MobileCardFields,
+  MobileCardHeader,
+  MobileCardList,
+  MobileCardListItem,
+  MobileCardSkeletons,
+} from "@/components/mobile-card-list";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -125,7 +134,7 @@ export function RolePermissionsEditor({
           {permissions.map((permission) => (
             <label
               key={permission.id}
-              className="flex cursor-pointer items-start gap-3"
+              className="flex cursor-pointer items-start gap-3 max-xl:py-1"
             >
               <Checkbox
                 checked={selectedPermissionIds.includes(permission.id)}
@@ -145,9 +154,16 @@ export function RolePermissionsEditor({
           ))}
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex items-center justify-end gap-3 max-md:flex-col max-md:items-stretch">
+          {/* Sinaliza edição pendente (trocar de papel descarta as alterações) */}
+          {editedPermissionIds !== null ? (
+            <p className="text-xs text-warning-foreground xl:hidden">
+              Alterações não salvas
+            </p>
+          ) : null}
           <Button
             type="button"
+            className="max-md:h-11"
             disabled={!resolvedRoleId}
             loading={setRolePermissions.isPending}
             onClick={handleSaveRolePermissions}
@@ -165,6 +181,22 @@ type RolesTableProps = {
   isLoading: boolean;
 };
 
+function RolePermissionBadges({ role }: { role: Role }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {role.permissions?.map((item) => (
+        <Badge
+          key={`${role.id}-${item.permission.id}`}
+          variant="category"
+          className="border border-border bg-transparent text-muted-foreground"
+        >
+          {item.permission.code}
+        </Badge>
+      ))}
+    </div>
+  );
+}
+
 export function RolesTable({ roles, isLoading }: RolesTableProps) {
   return (
     <Card className="shadow-none">
@@ -172,74 +204,100 @@ export function RolesTable({ roles, isLoading }: RolesTableProps) {
         <CardTitle className="text-foreground">Papéis cadastrados</CardTitle>
       </CardHeader>
       <CardContent className="overflow-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Papel</TableHead>
-              <TableHead>Descrição</TableHead>
-              <TableHead>Permissões</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              Array.from({ length: SKELETON_ROW_COUNT }, (_, index) => {
-                const isLastRow = index === SKELETON_ROW_COUNT - 1;
+        <div className="max-md:hidden">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Papel</TableHead>
+                <TableHead>Descrição</TableHead>
+                <TableHead>Permissões</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                Array.from({ length: SKELETON_ROW_COUNT }, (_, index) => {
+                  const isLastRow = index === SKELETON_ROW_COUNT - 1;
 
-                return (
-                  <TableRow
-                    key={index}
-                    className={cn(
-                      "border-border hover:bg-transparent",
-                      isLastRow && "border-0",
-                    )}
-                  >
-                    <TableCell className="px-3 py-2.5">
-                      <Skeleton className="h-4 w-32" />
+                  return (
+                    <TableRow
+                      key={index}
+                      className={cn(
+                        "border-border hover:bg-transparent",
+                        isLastRow && "border-0",
+                      )}
+                    >
+                      <TableCell className="px-3 py-2.5">
+                        <Skeleton className="h-4 w-32" />
+                      </TableCell>
+                      <TableCell className="px-3 py-2.5">
+                        <Skeleton className="h-4 w-48" />
+                      </TableCell>
+                      <TableCell className="px-3 py-2.5">
+                        <div className="flex flex-wrap gap-2">
+                          <Skeleton className="h-5 w-20 rounded-full" />
+                          <Skeleton className="h-5 w-24 rounded-full" />
+                          <Skeleton className="h-5 w-16 rounded-full" />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : roles.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-muted-foreground">
+                    Nenhum papel encontrado.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                roles.map((role) => (
+                  <TableRow key={role.id}>
+                    <TableCell className="text-foreground">
+                      {role.name}
                     </TableCell>
-                    <TableCell className="px-3 py-2.5">
-                      <Skeleton className="h-4 w-48" />
+                    <TableCell className="text-muted-foreground">
+                      {role.description || "Sem descrição"}
                     </TableCell>
-                    <TableCell className="px-3 py-2.5">
+                    <TableCell>
                       <div className="flex flex-wrap gap-2">
-                        <Skeleton className="h-5 w-20 rounded-full" />
-                        <Skeleton className="h-5 w-24 rounded-full" />
-                        <Skeleton className="h-5 w-16 rounded-full" />
+                        {role.permissions?.map((item) => (
+                          <Badge
+                            key={`${role.id}-${item.permission.id}`}
+                            variant="category"
+                            className="border border-border bg-transparent text-muted-foreground"
+                          >
+                            {item.permission.code}
+                          </Badge>
+                        ))}
                       </div>
                     </TableCell>
                   </TableRow>
-                );
-              })
-            ) : roles.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={3} className="text-muted-foreground">
-                  Nenhum papel encontrado.
-                </TableCell>
-              </TableRow>
-            ) : (
-              roles.map((role) => (
-                <TableRow key={role.id}>
-                  <TableCell className="text-foreground">{role.name}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {role.description || "Sem descrição"}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-2">
-                      {role.permissions?.map((item) => (
-                        <Badge
-                          key={`${role.id}-${item.permission.id}`}
-                          variant="category"
-                          className="border border-border bg-transparent text-muted-foreground"
-                        >
-                          {item.permission.code}
-                        </Badge>
-                      ))}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        <MobileCardList aria-label="Papéis cadastrados">
+          {isLoading ? (
+            <MobileCardSkeletons />
+          ) : roles.length === 0 ? (
+            <MobileCardEmpty>Nenhum papel encontrado.</MobileCardEmpty>
+          ) : (
+            roles.map((role) => (
+              <MobileCardListItem key={role.id}>
+                <MobileCardHeader
+                  title={role.name}
+                  subtitle={role.description || "Sem descrição"}
+                />
+                <MobileCardFields>
+                  <MobileCardField label="Permissões" fullWidth>
+                    <RolePermissionBadges role={role} />
+                  </MobileCardField>
+                </MobileCardFields>
+              </MobileCardListItem>
+            ))
+          )}
+        </MobileCardList>
       </CardContent>
     </Card>
   );

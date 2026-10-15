@@ -88,7 +88,7 @@ export function CreatePermissionForm() {
             <FieldError errors={[errors.description]} />
           </Field>
 
-          <div className="flex justify-end md:col-span-2">
+          <div className="flex justify-end md:col-span-2 max-md:*:w-full">
             <Button type="submit" loading={createPermission.isPending}>
               Criar permissão
             </Button>

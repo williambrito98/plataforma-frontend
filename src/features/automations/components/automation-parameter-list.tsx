@@ -27,14 +27,14 @@ export function AutomationParameterList({
         >
           <div className="min-w-0 flex-1 space-y-1">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-sm font-medium text-foreground">
+              <p className="text-sm font-medium text-foreground max-xl:wrap-anywhere">
                 {parameter.label}
               </p>
               {parameter.required ? (
                 <Badge variant="error">Obrigatório</Badge>
               ) : null}
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground max-xl:wrap-anywhere">
               {parameter.name} • {getParameterInputTypeLabel(parameter.type)}
             </p>
             {parameter.placeholder ? (
@@ -43,7 +43,7 @@ export function AutomationParameterList({
               </p>
             ) : null}
             {parameter.options?.length ? (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground max-xl:wrap-anywhere">
                 Opções:{" "}
                 {parameter.options
                   .map((option) => `${option.label} (${option.value})`)

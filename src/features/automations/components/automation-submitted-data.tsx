@@ -67,7 +67,7 @@ export function AutomationSubmittedData({
                   }
                 >
                   <dt className="text-xs text-muted-foreground">{label}</dt>
-                  <dd className="text-sm font-medium text-foreground">
+                  <dd className="text-sm font-medium text-foreground max-xl:wrap-anywhere">
                     {value}
                   </dd>
                 </div>
@@ -83,11 +83,12 @@ export function AutomationSubmittedData({
               <Button
                 variant="default"
                 size="sm"
-                className="w-full"
+                className="w-full max-xl:h-11"
                 onClick={onDownload}
+                title={outputFile.name}
               >
                 <FileArchive aria-hidden />
-                {outputFile.name}
+                <span className="max-xl:truncate">{outputFile.name}</span>
               </Button>
             </div>
           ) : isLoadingFile ? (
@@ -107,6 +108,7 @@ export function AutomationSubmittedData({
               onClick={() => setIsCancelModalOpen(true)}
               disabled={isCancelPending}
               loading={isCancelPending}
+              className="max-md:w-full max-md:h-11"
             >
               Cancelar
             </Button>
@@ -119,7 +121,7 @@ export function AutomationSubmittedData({
         open={isCancelModalOpen}
         onOpenChange={setIsCancelModalOpen}
         title="Você tem certeza absoluta?"
-        description="Está ação não poderá ser desfeita. Você perderá completamente seu progresso e os dados encotrados até aqui."
+        description="Esta ação não poderá ser desfeita. Você perderá completamente seu progresso e os dados encontrados até aqui."
         onConfirm={handleConfirmCancel}
       />
     </>

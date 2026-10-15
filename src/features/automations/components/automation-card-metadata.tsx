@@ -20,8 +20,8 @@ export function AutomationCardMetadata({
   runtime,
 }: AutomationCardMetadataProps) {
   return (
-    <div className="w-55 min-w-0 space-y-4">
-      <dl className="grid gap-4">
+    <div className="w-55 min-w-0 space-y-4 max-xl:w-full">
+      <dl className="grid gap-4 max-xl:grid-cols-2 md:max-xl:grid-cols-4">
         <div className="space-y-1">
           <dt className="text-sm text-muted-foreground">Iniciado em</dt>
           <dd className="text-sm font-medium text-foreground">

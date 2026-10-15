@@ -22,7 +22,7 @@ export function ProfileRoleCard({ role, permissions }: ProfileRoleCardProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6 sm:flex-row">
-        <div className="w-32 shrink-0 space-y-2">
+        <div className="w-32 shrink-0 space-y-2 max-sm:w-full">
           <p className="text-sm font-medium text-foreground">Papel</p>
           <div className="flex flex-wrap gap-2">
             {role ? (

@@ -111,7 +111,7 @@ export function PasswordRecoveryCodeStep({
           type="button"
           variant="ghost"
           size="sm"
-          className="self-start px-0 text-[#737373] hover:bg-transparent"
+          className="self-start px-0 text-[#737373] hover:bg-transparent max-xl:text-muted-foreground max-xl:underline max-xl:underline-offset-4"
           disabled={cooldown > 0 || resendLoading}
           loading={resendLoading}
           onClick={handleResend}
@@ -119,14 +119,20 @@ export function PasswordRecoveryCodeStep({
           {cooldown > 0 ? `Reenviar código em ${cooldown}s` : "Reenviar código"}
         </Button>
 
-        <div className="flex w-full items-center justify-between">
+        <div className="flex w-full items-center justify-between max-sm:flex-col-reverse max-sm:items-stretch max-sm:gap-2 max-sm:text-center">
           <Link
             to="/login"
-            className="text-sm leading-5 text-[#737373] hover:underline"
+            className="text-sm leading-5 text-[#737373] hover:underline max-xl:py-2.5 max-xl:text-muted-foreground max-xl:underline max-xl:underline-offset-4"
           >
             Voltar ao login
           </Link>
-          <Button size="sm" type="submit" loading={loading} disabled={loading}>
+          <Button
+            size="sm"
+            type="submit"
+            loading={loading}
+            disabled={loading}
+            className="max-xl:h-11"
+          >
             Continuar
           </Button>
         </div>

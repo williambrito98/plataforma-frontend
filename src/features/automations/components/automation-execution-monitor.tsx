@@ -70,6 +70,12 @@ export function AutomationExecutionMonitor({
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
+    // Abaixo de xl só acompanha o fim se o usuário já estiver lá,
+    // para não brigar com a rolagem manual no toque.
+    const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+    if (!isDesktop && distanceFromBottom > 120) return;
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [logs]);
 
@@ -87,7 +93,7 @@ export function AutomationExecutionMonitor({
 
       <div
         ref={scrollContainerRef}
-        className="max-h-64 space-y-3 overflow-y-auto scroll-smooth rounded-lg bg-accent p-4 custom-scrollbar"
+        className="max-h-64 space-y-3 overflow-y-auto scroll-smooth rounded-lg bg-accent p-4 custom-scrollbar max-xl:overscroll-contain max-md:max-h-[50svh] max-md:p-3"
       >
         {logs.length === 0 ? (
           <p className="text-sm text-muted-foreground">
@@ -141,9 +147,9 @@ export function AutomationExecutionMonitor({
 
                   {/* Diferenciação de UX: Se tiver etapas vira Colapsável, senão exibe texto simples */}
                   {hasSteps ? (
-                    <CollapsibleTrigger className="flex flex-col text-left w-full hover:bg-foreground/5 rounded px-1 -mx-1 transition-colors cursor-pointer">
+                    <CollapsibleTrigger className="flex flex-col text-left w-full min-w-0 hover:bg-foreground/5 rounded px-1 -mx-1 transition-colors cursor-pointer max-xl:py-2 max-xl:active:bg-foreground/5">
                       <div className="flex items-center justify-between w-full">
-                        <span className="text-sm font-medium text-foreground">{clientName}</span>
+                        <span className="text-sm font-medium text-foreground max-xl:min-w-0 max-xl:wrap-anywhere">{clientName}</span>
                         {/* Container dos Ícones Dinâmicos */}
                         <div className="text-muted-foreground shrink-0 ml-2">
                           {/* Ícone exibido apenas quando FECHADO (padrão block, fica hidden quando o grupo abre) */}
@@ -153,12 +159,12 @@ export function AutomationExecutionMonitor({
                           <ChevronUp className="size-4 hidden group-data-[open]:block" />
                         </div>
                       </div>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-muted-foreground max-xl:wrap-anywhere">
                         {steps[steps.length - 1]}
                       </span>
                     </CollapsibleTrigger>
                   ) : (
-                    <p className="text-sm text-foreground whitespace-pre-line">{latestLog.message}</p>
+                    <p className="text-sm text-foreground whitespace-pre-line min-w-0 max-xl:wrap-anywhere">{latestLog.message}</p>
                   )}
                 </div>
 

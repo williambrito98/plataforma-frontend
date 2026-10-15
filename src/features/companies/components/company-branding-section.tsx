@@ -1,4 +1,4 @@
-import { ImageIcon, Palette, Trash2 } from "lucide-react";
+import { ChevronDown, ImageIcon, Palette, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -210,8 +210,13 @@ export function CompanyBrandingSection({
             <TabsContent key={mode} value={mode} className="grid gap-3">
               {COMPANY_THEME_GROUPS.map((group) => (
                 <Collapsible key={group.id} defaultOpen={group.id === "brand"}>
-                  <CollapsibleTrigger className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2 text-left text-sm font-medium">
+                  <CollapsibleTrigger className="group/trigger flex w-full items-center justify-between rounded-md border border-border px-3 py-2 text-left text-sm font-medium max-xl:min-h-11 max-xl:active:bg-muted">
                     {group.label}
+                    {/* Pista de expansão visível sem depender de hover */}
+                    <ChevronDown
+                      aria-hidden
+                      className="size-4 shrink-0 text-muted-foreground transition-transform group-data-panel-open/trigger:rotate-180 xl:hidden"
+                    />
                   </CollapsibleTrigger>
                   <CollapsibleContent className="grid gap-3 px-1 py-3 md:grid-cols-2">
                     {group.tokens.map(({ token, label }) => {
@@ -234,13 +239,14 @@ export function CompanyBrandingSection({
                               disabled={
                                 !isHexColor(currentValue) && !!currentValue
                               }
-                              className="h-8 w-12 shrink-0 cursor-pointer p-1"
+                              className="h-8 w-12 shrink-0 cursor-pointer p-1 max-xl:size-10"
                               onChange={(event) =>
                                 updateToken(mode, token, event.target.value)
                               }
                             />
                             <Input
                               value={currentValue}
+                              aria-label={`${label} (hexadecimal)`}
                               placeholder="Usar padrão"
                               className={inputClassName}
                               onChange={(event) =>

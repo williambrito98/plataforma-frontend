@@ -134,6 +134,7 @@ export function EditUserSheet({
               name={user.name}
               avatar={user.profilePhotoUrl ?? undefined}
               onPhotoUpload={handlePhotoUpload}
+              compact
             />
 
             <Field orientation="vertical" className="gap-2">
